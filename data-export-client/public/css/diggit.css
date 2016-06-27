@@ -1,0 +1,182 @@
+body {
+  background-color: #ebf0f4;
+}
+
+a:hover{
+	cursor:pointer;
+}
+
+.tab-content{
+	border: 1px solid #cccccc;
+	border-top: none;
+	background-color:#ffffff;
+	padding: 20px;
+	border-radius: 0 0 5px 5px;
+}
+
+.nav-tabs li a{
+	background-color:#f5f5f5;
+	border-color:#ddd;
+}
+
+.list-link{
+	width:100%;
+	display:block;
+	padding:5px;
+	border-bottom:1px solid #eeeeee;
+}
+			
+.well, .jumbotron{
+	background-color:#68c3cc;
+	color:#fff;
+}
+
+.jumbotron{
+	background-image:url("../img/worldmap.png");
+	background-size:contain;
+	padding-bottom: 5px;
+    padding-top: 5px;
+}
+
+.well legend{
+	color:#fff;
+}
+
+.navbar-inverse{
+	background-color:#354052;
+}
+
+.navbar-inverse .navbar-brand {
+  color: #53bbc6;
+}
+
+.table-striped>tbody>tr:nth-of-type(even) {
+    background-color: #ffffff;
+}
+
+.table>thead>tr>th {
+    background-color:#354052;
+    color: #ffffff;
+}
+
+.table>tbody>tr>td {
+    word-break:break-all;
+}
+
+.st-sort-ascent:before{
+	content: '\25B2';
+}
+
+.st-sort-descent:before{
+	content: '\25BC';
+}
+
+.repeater-bar{
+ margin: 0 15px;
+ margin-bottom: 10px;
+}
+.top-buffer-10 { padding-top:10px; }
+
+.switch-field {
+  font-family: "Lucida Grande", Tahoma, Verdana, sans-serif;
+  overflow: hidden;
+}
+
+.switch-title {
+  margin-bottom: 6px;
+}
+
+.switch-field input {
+  display: none;
+}
+
+.switch-field label {
+  float: left;
+}
+
+.switch-field label {
+  display: inline-block;
+  width: 100px;
+  background-color: #e4e4e4;
+  color: rgba(0, 0, 0, 0.6);
+  font-size: 14px;
+  font-weight: normal;
+  text-align: center;
+  text-shadow: none;
+  padding: 6px 14px;
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  -webkit-box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.3), 0 1px rgba(255, 255, 255, 0.1);
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.3), 0 1px rgba(255, 255, 255, 0.1);
+  -webkit-transition: all 0.1s ease-in-out;
+  -moz-transition:    all 0.1s ease-in-out;
+  -ms-transition:     all 0.1s ease-in-out;
+  -o-transition:      all 0.1s ease-in-out;
+  transition:         all 0.1s ease-in-out;
+}
+
+.switch-field label:hover {
+    cursor: pointer;
+}
+
+.switch-field input:checked + label {
+  background-color: #52adb6;
+  -webkit-box-shadow: none;
+  box-shadow: none;
+  color: #fff;
+}
+
+.switch-field label:first-of-type {
+  border-radius: 4px 0 0 4px;
+}
+
+.switch-field label:last-of-type {
+  border-radius: 0 4px 4px 0;
+}
+#dynamic-elem fieldset{
+    padding: 16px;
+    border: 1px solid #D5D5D5;
+}
+#dynamic-elem .addfields{
+    background: #ef8913 none repeat scroll 0 0;
+    border: 0 none;
+    border-radius: 50%;
+    color: #fff;
+    cursor: pointer;
+    display: inline-block;
+    font-size: 21px;
+    font-weight: bold;
+    height: auto;
+    line-height: 30px;
+    padding: 0 0 0;
+    vertical-align: top;
+    width: 6%;
+}
+
+#dynamic-elem #choicesDisplay {
+    padding: 10px;
+    background: rgb(227, 250, 227);
+    border: 1px solid rgb(171, 239, 171);
+    color: rgb(9, 56, 9);
+}
+#dynamic-elem .remove{
+    background: #ef8913 none repeat scroll 0 0;
+    border: 0 none;
+    border-radius: 50%;
+    color: #fff;
+    cursor: pointer;
+    display: inline-block;
+    font-size: 21px;
+    font-weight: bold;
+    height: auto;
+    line-height: 30px;
+    padding: 0 0 0;
+    vertical-align: top;
+    width: 6%;  
+}
+#dynamic-elem input[type="text"],
+#dynamic-elem select{
+    padding:5px;
+}
+.form-group {
+    margin-bottom: 50px;
+}
