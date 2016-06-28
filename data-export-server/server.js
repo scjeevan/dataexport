@@ -38,7 +38,7 @@ app.use(function (req, res, next) {
 });
 
 // Start the server
-app.set('port', process.env.IMDB_SERVER_PORT);
+app.set('port', process.env.DATAEXPORT_SERVER_PORT);
 console.log("port " + app.get('port'));
 
 var server = app.listen(app.get('port'), function () {
