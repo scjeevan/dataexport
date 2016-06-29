@@ -4,7 +4,7 @@
   "description": "Data Export - Web Client",
   "main": "index.js",
   "scripts": {
-    "start": "http-server -a 0.0.0.0 -p 8081",
+    "start": "http-server -a 0.0.0.0 -p 4141",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Jeevan Pussella <jeevan@moogilu.com>",
