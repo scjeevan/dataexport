@@ -1,20 +1,20 @@
 var mysql = require("mysql");
-/*
-var mysql_client = mysql.createConnection({
-    host: process.env.IMDB_MYSQL_HOST,
-    user: process.env.IMDB_MYSQL_USER,
-    password: process.env.IMDB_MYSQL_PASSWORD,
-    database: process.env.IMDB_MYSQL_DBNAME
-});
-*/
 
+var mysql_client = mysql.createConnection({
+    host: process.env.DATAEXPORT_MYSQL_HOST,
+    user: process.env.DATAEXPORT_MYSQL_USER,
+    password: process.env.DATAEXPORT_MYSQL_PASSWORD,
+    database: process.env.DATAEXPORT_MYSQL_DBNAME
+});
+
+/*
 var mysql_client = mysql.createConnection({
     host: '10.0.1.12',
     user: 'usrimdb_new',
     password: 'Admin$323',
     database: 'imdb_new'
 });
-
+*/
 
 function searchById(titleId, callback) {
 	//mysql_client.connect();
