@@ -16,7 +16,7 @@ connection.connect();
  
 
 
-function testDB(titleId, callback) {
+function testDB(callback) {
 	connection.query('SELECT * from imdb_titles1', function(err, rows, fields) {
 	if (!err)
 		console.log('The solution is: ', rows);
