@@ -22,6 +22,7 @@ function testDB(callback) {
 		console.log('The solution is: ', rows);
 	else
 		console.log('Error while performing Query.');
+		throw err
 	});
 }
 
