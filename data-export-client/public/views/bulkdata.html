@@ -1,4 +1,8 @@
-<div ng-controller="dataExportForm">
+<div ng-controller="dataExportForm" class="panel panel-primary">
+<div class="panel-heading">
+	<h3 class="panel-title">Export Bulk Data to FTP Location</h3>
+</div>
+<div class="panel-body">
 <div class="col-md-8" >
 	<!--
 	<div class="form-group">
@@ -14,15 +18,16 @@
 	</div>
 	-->
 	<div class="form-group">
-		<label class="control-label  col-sm-4" for="email">Time Range:</label>
-		<div class="col-sm-4">
+		<label class="control-label col-sm-2">Time Range:</label>
+		<div class="col-sm-5">
 		<input ui-date="dateOptions" ng-model="exp.startDate" placeholder="Start Date" class="form-control" id="startDate" ng-required="true">
 		</div>
-		<div class="col-sm-4">
+		<div class="col-sm-5">
 		<input ui-date="dateOptions" ng-model="exp.endDate" placeholder="End Date" class="form-control" id="endDate" ng-required="true">
 		</div>
 	</div>
 	<div class="form-group">
+		<label class="control-label">Table:</label>
 		<div class="radio">
 			<label><input type="radio" name="optradio" ng-change='loadColumns(exp.optradio)' value="title" ng-model="exp.optradio"/> Title</label>
 		</div>
@@ -30,11 +35,21 @@
 			<label><input type="radio" name="optradio" ng-change='loadColumns(exp.optradio)' value="infohash" ng-model="exp.optradio"/> Infohash</label>
 		</div>
 		<div class="radio">
-			<label><input type="radio" name="optradio" ng-change='loadColumns(exp.optradio)' value="timestamp" ng-model="exp.optradio"/> TimeStamp</label>
+			<label><input type="radio" name="optradio" ng-change='loadColumns(exp.optradio)' value="ip" ng-model="exp.optradio"/> IP</label>
 		</div>
-		<label class="control-label col-sm-4" for="email">Export To:</label>
-		<div class="switch-field">
-			<button value="FTP Location" class="btn btn-primary" ng-click="exportData()">FTP Location</button>
+	</div>
+	<div class="form-group">
+		<label class="control-label col-sm-2" for="email">Export To:</label>
+		<div class="col-sm-4">
+		<select class="form-control">
+			<option>1</option>
+			<option>2</option>
+			<option>3</option>
+			<option>4</option>
+		</select>
+		</div>
+		<div class="col-sm-6">
+		<button value="FTP Location" class="btn btn-primary" ng-click="exportData()">FTP Location</button>
 		</div>
 	</div>
 </div>
@@ -43,6 +58,7 @@
 	<div class="checkbox" ng-repeat="column in columns">
 		<label><input type="checkbox" checklist-model="exp.columns" checklist-value="column"> {{column}}</label>
 	</div>
+</div>
 </div>
 </div>
 

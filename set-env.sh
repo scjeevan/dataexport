@@ -10,7 +10,6 @@ DATAEXPORT_MYSQL_HOST='104.197.152.119'
 DATAEXPORT_MYSQL_USER=torrentsappusr
 DATAEXPORT_MYSQL_PASSWORD=torrentsadmin@77654
 DATAEXPORT_MYSQL_DBNAME=torrents
-#IMDB_SERVER_PORT=4141
 #MANAGEMENT_API_URL=http://dev.management.diggit.com/public/api/
 #AUTH_API_BASE_URL=http://dev.management.diggit.com/
 

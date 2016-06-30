@@ -17,6 +17,10 @@ mvpApp.config(function($routeProvider, $httpProvider) {
 			templateUrl: 'views/thematicdata.html',
 			controller: 'MainCtrl'
 		})
+		.when('/credentials', {
+			templateUrl: 'views/credentials.html',
+			controller: 'MainCtrl'
+		})
 		.otherwise({
 			redirectTo: '/login'
 		});
@@ -24,7 +28,7 @@ mvpApp.config(function($routeProvider, $httpProvider) {
 
 
 mvpApp.controller('MvpCtrl', ['$window', '$scope', '$location', function($window, $scope, $location) {
-	$scope.showMenu = false;
+	$scope.showMenu = true;
 	$scope.isCollapsed = true;
 	$scope.activeMenu = "";
 	$scope.setActive = function(menuItem) {
@@ -44,8 +48,8 @@ mvpApp.controller('dataExportForm', ['$window', '$scope', '$location', '$http', 
 		} else if(value=='infohash'){
 			$scope.table = "Infohash Table";
 			$scope.columns = ["infohash", "file_name", "created_by", "created_time", "added_time", "updated_time", "episode_title", "added_by", "languages", "verified"]; // infohashes
-		} else if(value=='timestamp'){
-			$scope.table = "TimeStamp";
+		} else if(value=='ip'){
+			$scope.table = "IP";
 			$scope.columns = ["Infohash", "Type", "TimeStamp", "Aspect Ratio"];
 		}
 	};

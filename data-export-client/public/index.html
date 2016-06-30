@@ -39,27 +39,20 @@
 				</div>
                 <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1" collapse="isCollapsed">
                     <ul class="nav navbar-nav" ng-show="showMenu" >
-						<li><a ng-href="#/home">Credentials</a></li>
-						<li><a ng-href="#/bulk">Bulk Data</a></li>
-						<li><a ng-href="#/thematic">Thematic Data</a></li>
+						<li ng-class="{active : activeMenu === 'credentials'}"><a ng-href="#/credentials" ng-click="setActive('credentials')">Credentials</a></li>
+						<li ng-class="{active : activeMenu === 'bulk'}"><a ng-href="#/bulk" ng-click="setActive('bulk')">Bulk Data</a></li>
+						<li ng-class="{active : activeMenu === 'thematic'}"><a ng-href="#/thematic" ng-click="setActive('thematic')">Thematic Data</a></li>
                     </ul>
                 </div>
             </div>
         </nav>
 		<div class="jumbotron">
 			<div class="span text-center">
-				<h3>Data Export | Bulk Data | Frequency</h3>
+				<h3>Data Export</h3>
 			</div>
 		</div>
 		<div class="container">
-			<div class="col-md-3">
-				<ul class="nav nav-pills nav-stacked">
-					<li ng-class="{active : activeMenu === 'login'}"><a ng-href="#/home" ng-click="setActive('login')">Credentials</a></li>
-					<li ng-class="{active : activeMenu === 'bulk'}"><a ng-href="#/bulk" ng-click="setActive('bulk')">Bulk Data</a></li>
-					<li ng-class="{active : activeMenu === 'thematic'}"><a ng-href="#/thematic" ng-click="setActive('thematic')">Thematic Data</a></li>
-				</ul>
-			</div>
-			<div class="col-md-9" ng-view=""></div>
+			<div ng-view=""></div>
 		</div>
 		<div style="height:100px;"></div>
 		<nav class="navbar navbar-default navbar-fixed-bottom">
