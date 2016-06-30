@@ -1,4 +1,4 @@
-var mysql      = require('mysql');
+var mysql = require('mysql');
 
 var connection = mysql.createConnection({
     host: process.env.DATAEXPORT_MYSQL_HOST,
@@ -12,7 +12,7 @@ console.log('MYSQL_USER: ', process.env.DATAEXPORT_MYSQL_USER);
 console.log('MYSQL_PASSWORD: ', process.env.DATAEXPORT_MYSQL_PASSWORD);
 console.log('MYSQL_DBNAME: ', process.env.DATAEXPORT_MYSQL_DBNAME);
 
-connection.connect();
+//connection.connect();
  
 
 
@@ -24,5 +24,20 @@ function testDB(callback) {
 		console.log('Error while performing Query.');
 	});
 }
- 
-connection.end();
+
+//connection.end();
+
+var testTableData = {
+
+	testDB: function (req, res) {
+        
+        testDB(function (result) {
+            res.json({
+                values: result
+            });
+        });
+    },
+
+};
+
+module.exports = testTableData;

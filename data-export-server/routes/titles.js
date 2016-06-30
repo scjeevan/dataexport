@@ -88,15 +88,6 @@ var titleTableData = {
             });
         });
     },
-	
-	testDB: function (req, res) {
-        
-        testDB(function (result) {
-            res.json({
-                values: result
-            });
-        });
-    },
 
 };
 
