@@ -82,14 +82,17 @@ mvpApp.controller('dataExportForm', ['$window', '$scope', '$location', '$http', 
 
 
 mvpApp.controller('ftpAccountManager', ['$window', '$scope', '$location', '$http', 'Api', function($window, $scope, $location, $http, Api) {
+	var ftp_data = [];
 	$http.get(Api.root_url+ "api/listftpaccounts").
-			success(function (data, status, headers, config) {
-				console.log(data);
-				ngToast.create('Data saved successfully');
-			}).
-			error(function (data, status, headers, config) {
-				alert("Error while saving data");
-			});
+	success(function (response, status, headers, config) {
+		angular.forEach(response.data, function (v, k) {
+			console.log(v.ftp_account_id + " | " + v.title);
+		}, ftp_data);
+	}).
+	error(function (data, status, headers, config) {
+		alert("Error while retrieving data");
+	});
+		
 }]);
 
 mvpApp.controller('NavBarCtrl', ['$scope', '$location', function($scope, $location) {
