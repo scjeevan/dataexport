@@ -1,5 +1,5 @@
 'use strict';
-var server_path = 'http://52.1.199.191:4141/';
+var server_path = 'http://146.148.110.133:4142/';
 
 var mvpApp = angular.module('dataExportApp', ['ngCookies', 'ngAnimate', 'ngRoute', 'googlechart', 'ui.bootstrap', 'infinite-scroll', 'smart-table', 'ngToast', 'angularSpinner', 'checklist-model', 'ui.date']);
 
@@ -79,6 +79,18 @@ mvpApp.controller('dataExportForm', ['$window', '$scope', '$location', '$http', 
     };
 }
 ]);
+
+
+mvpApp.controller('ftpAccountManager', ['$window', '$scope', '$location', '$http', 'Api', function($window, $scope, $location, $http, Api) {
+	$http.get(Api.root_url+ "api/listftpaccounts").
+			success(function (data, status, headers, config) {
+				console.log(data);
+				ngToast.create('Data saved successfully');
+			}).
+			error(function (data, status, headers, config) {
+				alert("Error while saving data");
+			});
+}]);
 
 mvpApp.controller('NavBarCtrl', ['$scope', '$location', function($scope, $location) {
 

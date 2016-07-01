@@ -17,6 +17,6 @@ router.get('/api/login', auth.checkAuthenticity());
  * Routes that can be accessed only by autheticated users
  */
 router.get('/api/test', test.testDB); //auth.hasPrivilege(CONTENT_PRIVILEGE),
-router.get('/api/listFtpAccounts', ftpDetailsManager.listFtpAccounts); //auth.hasPrivilege(CONTENT_PRIVILEGE),
+router.get('/api/listftpaccounts', ftpDetailsManager.listFtpAccounts); //auth.hasPrivilege(CONTENT_PRIVILEGE),
 
 module.exports = router;
