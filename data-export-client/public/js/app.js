@@ -82,17 +82,53 @@ mvpApp.controller('dataExportForm', ['$window', '$scope', '$location', '$http', 
 
 
 mvpApp.controller('ftpAccountManager', ['$window', '$scope', '$location', '$http', 'Api', function($window, $scope, $location, $http, Api) {
-	var ftp_data = [];
+	$scope.ftp_data = [];
+	$scope.ftp = {};
 	$http.get(Api.root_url+ "api/listftpaccounts").
 	success(function (response, status, headers, config) {
-		angular.forEach(response.data, function (v, k) {
-			console.log(v.ftp_account_id + " | " + v.title);
-		}, ftp_data);
+		angular.forEach(response.values, function (v, k) {
+			this.push(v);
+		}, $scope.ftp_data);
 	}).
 	error(function (data, status, headers, config) {
 		alert("Error while retrieving data");
 	});
-		
+	
+	$scope.selectedRow = null;
+	$scope.setClickedRow = function(index){
+		$scope.selectedRow = index;
+		$scope.ftp = $scope.ftp_data[index];
+	}
+	
+	$scope.resetForm = function(){
+		$scope.ftp = [];
+		$scope.selectedRow = null;
+	}
+	
+	$scope.saveFtp = function(){
+		console.log($scope.ftp);
+		if (typeof $scope.ftp.title == 'undefined') {
+			alert("Please enter a title");
+		} else if (typeof $scope.ftp.username == 'undefined') {
+			alert("Please enter Username");
+		} else if (typeof $scope.ftp.password == 'undefined') {
+			alert("Please enter Password");
+		} else if (typeof $scope.ftp.ip == 'undefined') {
+			alert("Please enter a Host");
+		} else if (typeof $scope.ftp.port == 'undefined') {
+			alert("Please enter a Port");
+		} else if (typeof $scope.ftp.protocol == 'undefined') {
+			alert("Please enter a Protocol");
+		} else {
+			$http.post(Api.root_url+ "api/saveftpaccount", $scope.ftp).
+			success(function (data, status, headers, config) {
+				 console.log(data);
+			}).
+			error(function (data, status, headers, config) {
+				alert("Error while saving data");
+			});
+		}
+	}
 }]);
 
 mvpApp.controller('NavBarCtrl', ['$scope', '$location', function($scope, $location) {

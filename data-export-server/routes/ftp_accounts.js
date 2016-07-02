@@ -24,9 +24,32 @@ function getAllFtpAccounts(callback) {
 	
 }
 
+function saveFtpAccount(callback) {
+	
+		
+		
+		
+	var query = 'SELECT * FROM ftp_accounts';
+    var formatedQuery;
+
+    formatedQuery = mysql.format(query, []);
+    mysql_client.query(formatedQuery, function (err, result) {
+        if (err) {
+            console.log(err);
+            callback([]);
+        }
+        else {
+            callback(result);
+        }
+    });
+	
+}
+
 var ftpAccountsData = {
 
     listFtpAccounts: function (req, res) {
+		
+		
 
         getAllFtpAccounts(function (result) {
             res.json({
@@ -34,8 +57,22 @@ var ftpAccountsData = {
             });
         });
        
+    },
+	
+	saveFtpAccount: function (req, res) {
+		var query = "";
+		var params = [];
+		if (req.ftp.ftp_account_id == 0) {
+			query = "INSERT INTO ";
+			//params = [new_name, torrents.length];
+		} else {
+			query = 'UPDATE "uptodate_aggregated_title_curated" SET "nooffiles" = ? WHERE "titlename" = ?';
+			//params = [torrents.length, old_name.toString()];
+		}
+		console.log(query);
     }
 
 };
 
 module.exports = ftpAccountsData;
+
