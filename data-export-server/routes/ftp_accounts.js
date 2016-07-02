@@ -39,6 +39,7 @@ var ftpAccountsData = {
     },
 	
 	saveFtpAccount: function (req, res) {
+		console.log(req);
 		var query = "";
 		var params = [];
 		if (req.ftp.ftp_account_id == 0) {
