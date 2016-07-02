@@ -39,19 +39,27 @@ var ftpAccountsData = {
     },
 	
 	saveFtpAccount: function (req, res) {
-		console.log(req.body.ftp_account_id);
 		var query = "";
 		var params = [];
-		if (req.body.ftp_account_id == 0) {
-			query = "INSERT INTO ";
-			//params = [new_name, torrents.length];
+		if (typeof req.body.ftp_account_id == 'undefined'){
+			query = "INSERT INTO `ftp_accounts` (`title`,`username`,`password`,`ip`,`port`,`protocol`) VALUES (?,?,?,?,?,?)";
+			params = [req.body.title, req.body.username, req.body.password, req.body.ip, req.body.port, req.body.protocol];
 		} else {
-			
-			query = 'UPDATE "uptodate_aggregated_title_curated" SET "nooffiles" = ? WHERE "titlename" = ?';
-			//params = [torrents.length, old_name.toString()];
+			query = "UPDATE `ftp_accounts` SET `title` = ?, `username` = ?, `password` = ?, `ip` = ?, `port` = ?,`protocol` = ?  WHERE `ftp_account_id` = ?";
+			params = [req.body.title, req.body.username, req.body.password, req.body.ip, req.body.port, req.body.protocol, parseInt(req.body.ftp_account_id)];
 		}
-		console.log(query);
-    }
+		var formatedQuery = mysql.format(query, params);
+		mysql_client.query(formatedQuery, function (err, result) {
+			if (err) {
+				console.log(err);
+			}
+			else {
+				res.json({
+					values: result
+				});
+			}
+		});
+	}
 
 };
 
