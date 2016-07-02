@@ -24,27 +24,6 @@ function getAllFtpAccounts(callback) {
 	
 }
 
-function saveFtpAccount(callback) {
-	
-		
-		
-		
-	var query = 'SELECT * FROM ftp_accounts';
-    var formatedQuery;
-
-    formatedQuery = mysql.format(query, []);
-    mysql_client.query(formatedQuery, function (err, result) {
-        if (err) {
-            console.log(err);
-            callback([]);
-        }
-        else {
-            callback(result);
-        }
-    });
-	
-}
-
 var ftpAccountsData = {
 
     listFtpAccounts: function (req, res) {
