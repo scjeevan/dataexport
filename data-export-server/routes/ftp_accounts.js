@@ -42,7 +42,7 @@ var ftpAccountsData = {
 		console.log(req);
 		var query = "";
 		var params = [];
-		if (req.ftp.ftp_account_id == 0) {
+		if (req.ftp_account_id == 0) {
 			query = "INSERT INTO ";
 			//params = [new_name, torrents.length];
 		} else {
