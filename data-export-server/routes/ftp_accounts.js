@@ -39,10 +39,10 @@ var ftpAccountsData = {
     },
 	
 	saveFtpAccount: function (req, res) {
-		console.log(req.ftp_account_id);
+		console.log(req.body.ftp_account_id);
 		var query = "";
 		var params = [];
-		if (req.ftp_account_id == 0) {
+		if (req.body.ftp_account_id == 0) {
 			query = "INSERT INTO ";
 			//params = [new_name, torrents.length];
 		} else {
