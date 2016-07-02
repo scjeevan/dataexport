@@ -18,6 +18,6 @@ router.get('/api/login', auth.checkAuthenticity());
  */
 router.get('/api/test', test.testDB); //auth.hasPrivilege(CONTENT_PRIVILEGE),
 router.get('/api/listftpaccounts', ftpDetailsManager.listFtpAccounts);
-router.get('/api/saveftpaccount', ftpDetailsManager.saveFtpAccount);
+router.post('/api/saveftpaccount', ftpDetailsManager.saveFtpAccount);
 
 module.exports = router;

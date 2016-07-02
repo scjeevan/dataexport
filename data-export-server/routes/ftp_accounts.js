@@ -45,6 +45,7 @@ var ftpAccountsData = {
 			query = "INSERT INTO ";
 			//params = [new_name, torrents.length];
 		} else {
+			
 			query = 'UPDATE "uptodate_aggregated_title_curated" SET "nooffiles" = ? WHERE "titlename" = ?';
 			//params = [torrents.length, old_name.toString()];
 		}
