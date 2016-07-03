@@ -32,7 +32,7 @@ function exportData(req, res) {
 			ftp_account = rows;
 		}
 	});
-	
+	console.log(ftp_account);
 }
 
 var exportDataMng = {
