@@ -10,6 +10,8 @@ var ftp_account = [];
 function setValue(value) {
 	ftp_account = value;
 	console.log(ftp_account);
+	console.log("1 . " + ftp_account[0].title + " | " + ftp_account[0].ip);
+	//console.log("2 . " + ftp_account.title + " | " + ftp_account.ip);
 }
 
 var exportDataMng = {
@@ -34,8 +36,7 @@ var exportDataMng = {
 				setValue(rows)
 			}
 		});
-		//console.log("1 . " + ftp_account[0].title + " | " + ftp_account[0].ip);
-		//console.log("2 . " + ftp_account.title + " | " + ftp_account.ip);
+		
 	}
 	
 	
