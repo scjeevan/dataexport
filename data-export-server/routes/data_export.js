@@ -31,8 +31,7 @@ var exportDataMng = {
 				console.log(err);
 			}
 			else {
-				//console.log(rows[0].title+ " | " + rows[0].ip);
-				setValue(rows);
+				setValue(rows[0]);
 			}
 		});
 		console.log("1 . " + ftp_account.title + " | " + ftp_account.ip);
