@@ -16,7 +16,6 @@ function setValue(value) {
 
 function processRow (row) {
 	fs.appendFile('your-file.csv', row.join(';'), function (err) {
-    connection.resume();
   });
 }
 
@@ -57,7 +56,7 @@ var exportDataMng = {
 			}
 			else {
 				processRow(rows, function (err) {
-					connection.resume();
+					
 				});
 			}
 		});
