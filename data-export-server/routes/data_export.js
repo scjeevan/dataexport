@@ -25,6 +25,7 @@ var exportDataMng = {
 				console.log(err);
 			}
 			else {
+				console.log(rows);
 				ftp_account = rows[0];
 			}
 		});
