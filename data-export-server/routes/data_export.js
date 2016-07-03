@@ -1,4 +1,5 @@
 var mysql = require("mysql");
+var fs = require("file-system");
 
 var mysql_client = mysql.createConnection({
     host: process.env.DATAEXPORT_MYSQL_HOST,
@@ -11,6 +12,12 @@ var ftp_account = [];
 function setValue(value) {
   ftp_account = value;
   console.log(ftp_account);
+}
+
+function processRow (row) {
+	fs.appendFile('your-file.csv', row.join(';'), function (err) {
+    connection.resume();
+  });
 }
 
 var exportDataMng = {
@@ -49,7 +56,9 @@ var exportDataMng = {
 				console.log(err);
 			}
 			else {
-				console.log(rows);
+				processRow(rows, function (err) {
+					connection.resume();
+				});
 			}
 		});
 		//console.log("2 . " + ftp_account.title + " | " + ftp_account.ip);
