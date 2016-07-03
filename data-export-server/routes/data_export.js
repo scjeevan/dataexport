@@ -7,12 +7,18 @@ var mysql_client = mysql.createConnection({
     database: process.env.DATAEXPORT_MYSQL_DBNAME
 });
 
+var ftp_account = [];
+function setValue(value) {
+  ftp_account = value;
+  console.log(ftp_account);
+}
+
 var exportDataMng = {
 	
 	exportData: function (req, res) {
 		var query = "";
 		var params = [];
-		var ftp_account = [];
+		
 		var ftp_account_id = 1;
 		if (typeof req.body.ftp_account_id != 'undefined'){
 			ftp_account_id = parseInt(req.body.ftp_account_id);
@@ -26,7 +32,7 @@ var exportDataMng = {
 			}
 			else {
 				//console.log(rows[0].title+ " | " + rows[0].ip);
-				ftp_account =  rows;
+				setValue(rows);
 			}
 		});
 		console.log("1 . " + ftp_account[0].title + " | " + ftp_account[0].ip);
