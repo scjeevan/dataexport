@@ -56,7 +56,7 @@ mvpApp.controller('dataExportForm', ['$window', '$scope', '$location', '$http', 
 		if(value=='title'){
 			$scope.table = "Title Table";
 			$scope.columns = ["title", "season", "episode", "studio", "content-type", "genre", "mpaa_rating"]; //mm_titles
-		} else if(value=='infohash'){
+		} else if(value=='infohashes1'){
 			$scope.table = "Infohash Table";
 			$scope.columns = ["infohash", "file_name", "created_by", "created_time", "added_time", "updated_time", "episode_title", "added_by", "languages", "verified"]; // infohashes
 		} else if(value=='ip'){
