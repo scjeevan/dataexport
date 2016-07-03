@@ -32,12 +32,6 @@ var exportDataMng = {
 		//console.log("1 . " + ftp_account[0].title + " | " + ftp_account[0].ip);
 		console.log("2 . " + ftp_account.title + " | " + ftp_account.ip);
 	}
-	
-	function setValue(value) {
-		someVar = value;
-		console.log(someVar);
-	}
-
 };
 
 module.exports = exportDataMng;
