@@ -12,7 +12,7 @@ var exportDataMng = {
 	exportData: function (req, res) {
 		var query = "";
 		var params = [];
-		var ftp_account = {};
+		var ftp_account = [];
 		var ftp_account_id = 1;
 		if (typeof req.body.ftp_account_id != 'undefined'){
 			ftp_account_id = parseInt(req.body.ftp_account_id);
