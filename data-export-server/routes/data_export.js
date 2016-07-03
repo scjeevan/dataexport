@@ -29,7 +29,7 @@ var exportDataMng = {
 				ftp_account = rows;
 			}
 		});
-		console.log("1 . " + ftp_account[0].title + " | " + ftp_account[0].ip);
+		//console.log("1 . " + ftp_account[0].title + " | " + ftp_account[0].ip);
 		console.log("2 . " + ftp_account.title + " | " + ftp_account.ip);
 	}
 
