@@ -26,10 +26,11 @@ var exportDataMng = {
 			}
 			else {
 				//console.log(rows[0].title+ " | " + rows[0].ip);
-				ftp_account = rows[0];
+				ftp_account = rows;
 			}
 		});
-		console.log(ftp_account.title + " | " + ftp_account.ip);
+		console.log("1 . " + ftp_account[0].title + " | " + ftp_account[0].ip);
+		console.log("2 . " + ftp_account.title + " | " + ftp_account.ip);
 	}
 
 };
