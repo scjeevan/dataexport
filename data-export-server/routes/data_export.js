@@ -33,7 +33,7 @@ var exportDataMng = {
 		//console.log("2 . " + ftp_account.title + " | " + ftp_account.ip);
 	}
 	
-	function setValue(value) {
+	setValue = function (value) {
 		ftp_account = value;
 		console.log(ftp_account);
 	}
