@@ -38,6 +38,17 @@ mvpApp.controller('MvpCtrl', ['$window', '$scope', '$location', function($window
 ]);
 
 mvpApp.controller('dataExportForm', ['$window', '$scope', '$location', '$http', 'Api', function($window, $scope, $location, $http, Api) {
+	$scope.ftp_acc_list = [];
+	$http.get(Api.root_url+ "api/listftpaccounts").
+	success(function (response, status, headers, config) {
+		angular.forEach(response.values, function (v, k) {
+			this.push(v);
+		}, $scope.ftp_acc_list);
+	}).
+	error(function (data, status, headers, config) {
+		alert("Error while retrieving data");
+	});
+	
 	$scope.exp = {};
 	$scope.table = "Title Table";
 	$scope.columns = ["title", "season", "episode", "studio", "content-type", "genre", "mpaa_rating"]; //mm_titles
@@ -57,11 +68,14 @@ mvpApp.controller('dataExportForm', ['$window', '$scope', '$location', '$http', 
 		if((typeof $scope.exp.startDate == 'undefined') || (typeof $scope.exp.endDate == 'undefined')){
 			alert("Please select date range");
 		}
-		else if(typeof $scope.exp.optradio == 'undefined'){
+		else if(typeof $scope.exp.table == 'undefined'){
 			alert("Please select table");
 		}
 		else if(typeof $scope.exp.columns == 'undefined'){
 			alert("Please select atleast one column");
+		}
+		else if(typeof $scope.exp.ftp_account_id == 'undefined'){
+			alert("Please select FTP account");
 		}
 		else{
 			$http.post(Api.root_url+ "api/export", $scope.exp).
@@ -105,6 +119,15 @@ mvpApp.controller('ftpAccountManager', ['$window', '$scope', '$location', '$http
 		$scope.selectedRow = null;
 	}
 	
+	$scope.deleteFtp = function(){
+		if (typeof $scope.ftp.ftp_account_id != 'undefined') {
+			var deleteFtpAcc = $window.confirm('Are you absolutely sure you want to delete?');
+			if (deleteFtpAcc) {
+				$window.alert('Going to delete the FTP account');
+			}
+		}
+	}
+	
 	$scope.saveFtp = function(){
 		console.log($scope.ftp);
 		if (typeof $scope.ftp.title == 'undefined') {
@@ -122,7 +145,17 @@ mvpApp.controller('ftpAccountManager', ['$window', '$scope', '$location', '$http
 		} else {
 			$http.post(Api.root_url+ "api/saveftpaccount", $scope.ftp).
 			success(function (data, status, headers, config) {
-				 console.log(data);
+				alert("FTP account has been saved");
+				$scope.ftp_data = [];
+				$http.get(Api.root_url+ "api/listftpaccounts").
+				success(function (response, status, headers, config) {
+					angular.forEach(response.values, function (v, k) {
+						this.push(v);
+					}, $scope.ftp_data);
+				}).
+				error(function (data, status, headers, config) {
+					alert("Error while retrieving data");
+				});
 			}).
 			error(function (data, status, headers, config) {
 				alert("Error while saving data");

@@ -7,35 +7,11 @@ var mysql_client = mysql.createConnection({
     database: process.env.DATAEXPORT_MYSQL_DBNAME
 });
 
-function getAllFtpAccounts(callback) {
-	var query = 'SELECT * FROM ftp_accounts';
-    var formatedQuery;
-
-    formatedQuery = mysql.format(query, []);
-    mysql_client.query(formatedQuery, function (err, result) {
-        if (err) {
-            console.log(err);
-            callback([]);
-        }
-        else {
-            callback(result);
-        }
-    });
+var exportDataMng = {
 	
-}
-
-var ftpAccountsData = {
-
-    listFtpAccounts: function (req, res) {
-        getAllFtpAccounts(function (result) {
-            res.json({
-                values: result
-            });
-        });
-       
-    },
-	
-	saveFtpAccount: function (req, res) {
+	exportData: function (req, res) {
+		console.log("OK")
+		/*
 		var query = "";
 		var params = [];
 		if (typeof req.body.ftp_account_id == 'undefined'){
@@ -56,9 +32,10 @@ var ftpAccountsData = {
 				});
 			}
 		});
+		*/
 	}
 
 };
 
-module.exports = ftpAccountsData;
+module.exports = exportDataMng;
 
