@@ -34,7 +34,15 @@ var exportDataMng = {
 				setValue(rows[0]);
 			}
 		});
-		console.log("1 . " + ftp_account.title + " | " + ftp_account.ip);
+		
+		var _query = "SELECT ";
+		for (var i in req.body.columns) {
+			_query += req.body.columns[i] + ",";
+		}
+		_query = _query.substring(0, _query.length - 1);
+		_query += " FROM " + req.body.table + " WHERE added_time BETWEEN ? AND ?";
+
+		console.log(_query);
 		//console.log("2 . " + ftp_account.title + " | " + ftp_account.ip);
 	}
 };
