@@ -6,13 +6,18 @@ var mysql_client = mysql.createConnection({
     password: process.env.DATAEXPORT_MYSQL_PASSWORD,
     database: process.env.DATAEXPORT_MYSQL_DBNAME
 });
+var ftp_account = [];
+function setValue(value) {
+	ftp_account = value;
+	console.log(ftp_account);
+}
 
 var exportDataMng = {
 	
 	exportData: function (req, res) {
 		var query = "";
 		var params = [];
-		var ftp_account = [];
+		
 		var ftp_account_id = 1;
 		if (typeof req.body.ftp_account_id != 'undefined'){
 			ftp_account_id = parseInt(req.body.ftp_account_id);
@@ -29,14 +34,11 @@ var exportDataMng = {
 				setValue(rows)
 			}
 		});
-		console.log("1 . " + ftp_account[0].title + " | " + ftp_account[0].ip);
+		//console.log("1 . " + ftp_account[0].title + " | " + ftp_account[0].ip);
 		//console.log("2 . " + ftp_account.title + " | " + ftp_account.ip);
 	}
 	
-	setValue = function (value) {
-		ftp_account = value;
-		console.log(ftp_account);
-	}
+	
 
 };
 
