@@ -7,12 +7,6 @@ var mysql_client = mysql.createConnection({
     database: process.env.DATAEXPORT_MYSQL_DBNAME
 });
 
-function setValue(value) {
-	ftp_account = value;
-	console.log(ftp_account);
-	console.log("1 . " + ftp_account[0].title + " | " + ftp_account[0].ip);
-}
-
 function exportData(req, res) {
 	var query = "";
 	var params = [];
