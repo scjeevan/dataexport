@@ -12,7 +12,7 @@ var exportDataMng = {
 	exportData: function (req, res) {
 		var query = "";
 		var params = [];
-		var ftp_account = {};
+		var ftp_account = [];
 		var ftp_account_id = 1;
 		if (typeof req.body.ftp_account_id != 'undefined'){
 			ftp_account_id = parseInt(req.body.ftp_account_id);
@@ -26,10 +26,11 @@ var exportDataMng = {
 			}
 			else {
 				//console.log(rows[0].title+ " | " + rows[0].ip);
-				ftp_account = rows;
+				this.push(rows);
+				//ftp_account = rows;
 			}
-		});
-		//console.log("1 . " + ftp_account[0].title + " | " + ftp_account[0].ip);
+		}, ftp_account);
+		console.log("1 . " + ftp_account[0].title + " | " + ftp_account[0].ip);
 		console.log("2 . " + ftp_account.title + " | " + ftp_account.ip);
 	}
 
