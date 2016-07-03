@@ -41,8 +41,17 @@ var exportDataMng = {
 		}
 		_query = _query.substring(0, _query.length - 1);
 		_query += " FROM " + req.body.table + " WHERE added_time BETWEEN ? AND ?";
-
-		console.log(_query);
+		var start = req.body.startDate.replace(/T/, ' ').replace(/\..+/, '');
+		var end = req.body.endDate.replace(/T/, ' ').replace(/\..+/, '');
+		var _formatedQuery = mysql.format(_query, [start, end]);
+		mysql_client.query(_formatedQuery, function (err, rows) {
+			if (err) {
+				console.log(err);
+			}
+			else {
+				console.log(rows);
+			}
+		});
 		//console.log("2 . " + ftp_account.title + " | " + ftp_account.ip);
 	}
 };
