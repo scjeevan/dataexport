@@ -16,31 +16,27 @@
 			<label for="switch_3_right">Quarterly</label>
 		</div>
 	</div>
-	
 	<div class="form-group">
 		<label class="control-label">Table:</label>
 		<div class="radio">
-			<label><input type="radio" name="optradio" ng-change='loadColumns(exp.optradio)' value="title" ng-model="exp.optradio"/> Title</label>
+			<label><input type="radio" name="table" ng-change='loadColumns(exp.table)' value="title" ng-model="exp.table"/> Title</label>
 		</div>
 		<div class="radio">
-			<label><input type="radio" name="optradio" ng-change='loadColumns(exp.optradio)' value="infohash" ng-model="exp.optradio"/> Infohash</label>
+			<label><input type="radio" name="table" ng-change='loadColumns(exp.table)' value="infohashes1" ng-model="exp.table"/> Infohash</label>
 		</div>
 		<div class="radio">
-			<label><input type="radio" name="optradio" ng-change='loadColumns(exp.optradio)' value="ip" ng-model="exp.optradio"/> IP</label>
+			<label><input type="radio" name="table" ng-change='loadColumns(exp.table)' value="ip" ng-model="exp.table"/> IP</label>
 		</div>
 	</div>
 	<div class="form-group">
 		<label class="control-label col-sm-2" for="email">Schedule:</label>
 		<div class="col-sm-4">
-		<select class="form-control">
-			<option>1</option>
-			<option>2</option>
-			<option>3</option>
-			<option>4</option>
+		<select class="form-control" ng-model="exp.ftp_account_id">
+			<option ng-repeat="option in ftp_acc_list" value="{{option.ftp_account_id}}">{{option.title}}</option>
 		</select>
 		</div>
 		<div class="col-sm-6">
-		<button value="FTP Location" class="btn btn-primary" ng-click="exportData()">Save</button>
+		<button value="FTP Location" class="btn btn-primary" ng-click="createSchedule()">Save</button>
 		</div>
 	</div>
 </div>
