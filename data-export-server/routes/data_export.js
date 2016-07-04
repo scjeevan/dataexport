@@ -55,7 +55,7 @@ var exportDataMng = {
 				console.log(err);
 			}
 			else {
-				processRow(rows, function (err) {
+				fs.appendFile('your-file2.csv', rows.join(','), function (err) {
 					
 				});
 			}
