@@ -14,11 +14,6 @@ function setValue(value) {
   console.log(ftp_account);
 }
 
-function processRow (row) {
-	fs.appendFile('your-file.csv', row.join(';'), function (err) {
-  });
-}
-
 var exportDataMng = {
 	
 	exportData: function (req, res) {
@@ -55,9 +50,11 @@ var exportDataMng = {
 				console.log(err);
 			}
 			else {
-				fs.appendFile('your-file2.csv', rows.join(','), function (err) {
-					
-				});
+				var file_name = req.body.table + "-" + Math.floor(new Date() / 1000) + ".csv";
+				for (i = 0; i < rows.length; i++) {
+					fs.appendFile(file_name, rows[i].join(','), function (err) {
+					});
+				}
 			}
 		});
 		//console.log("2 . " + ftp_account.title + " | " + ftp_account.ip);
