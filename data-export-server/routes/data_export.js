@@ -51,13 +51,8 @@ var exportDataMng = {
 			}
 			else {
 				var file_name = req.body.table + "-" + Math.floor(new Date() / 1000) + ".csv";
-				console.log(file_name);
-				for (i = 0; i < rows.length; i++) {
-					console.log(rows[i]);
-					fs.appendFile(file_name, rows[i].join(','), function (err) {
-					});
-				}
-				console.log("DONE");
+				fs.appendFile(file_name, rows.join(','), function (err) {
+				});
 			}
 		});
 		//console.log("2 . " + ftp_account.title + " | " + ftp_account.ip);
