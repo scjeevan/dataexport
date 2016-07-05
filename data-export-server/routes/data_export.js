@@ -50,7 +50,7 @@ var exportDataMng = {
 				console.log(err);
 			}
 			else {
-				var file_name = req.body.table + "-" + Math.floor(new Date() / 1000) + ".csv";
+				var file_name = process.env.DATAEXPORT_CSV_SAVE_PATH + req.body.table + "-" + Math.floor(new Date() / 1000) + ".csv";
 				fs.appendFile(file_name, rows.join(','), function (err) {
 				});
 			}
