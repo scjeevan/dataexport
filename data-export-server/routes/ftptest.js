@@ -11,10 +11,15 @@ var connectionProperties = {
 
 function testFTP(callback) {
 	c.on('ready', function() {
-		c.put('foo.txt', 'foo.remote-copy.txt', function(err) {
+		c.list(function(err, list) {
 			if (err) throw err;
+			console.dir(list);
 			c.end();
 		});
+		/*c.put('foo.txt', 'foo.remote-copy.txt', function(err) {
+			if (err) throw err;
+			c.end();
+		});*/
 	});
 }
 c.connect(connectionProperties);
