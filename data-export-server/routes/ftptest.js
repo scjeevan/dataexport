@@ -1,0 +1,35 @@
+var fs = require('fs');
+var Client = require('ftp');
+
+var c = new Client();
+
+var connectionProperties = {
+	host: "104.198.206.191",
+	user: "jeevan_dataexport",
+	password: "!Jeevan@1234"
+};
+
+function testFTP(callback) {
+	c.on('ready', function() {
+		c.put('foo.txt', 'foo.remote-copy.txt', function(err) {
+			if (err) throw err;
+			c.end();
+		});
+	});
+}
+c.connect(connectionProperties);
+
+var testFtpData = {
+
+	testFTP: function (req, res) {
+        
+        testFTP(function (result) {
+            res.json({
+                values: result
+            });
+        });
+    },
+
+};
+
+module.exports = testFtpData;
