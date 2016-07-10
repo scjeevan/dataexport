@@ -17,7 +17,7 @@ function testFTP(callback) {
 			console.dir(list);
 			c.end();
 		});*/
-		c.put('foo.txt', 'foo.remote-copy.txt', function(err) {
+		c.put(fs.createReadStream('/home/jeevan/dataexport/dataexport/your-file.csv'), 'your-file.csv', function(err) {
 			if (err) throw err;
 			c.end();
 		});
