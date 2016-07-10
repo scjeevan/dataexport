@@ -12,15 +12,15 @@ var connectionProperties = {
 
 function testFTP(callback) {
 	c.on('ready', function() {
-		/*c.list(function(err, list) {
+		c.list(function(err, list) {
 			if (err) throw err;
 			console.dir(list);
 			c.end();
-		});*/
-		c.put(fs.createReadStream('/home/jeevan/dataexport/dataexport/your-file.csv'), 'your-file.csv', function(err) {
+		});
+		/*c.put(fs.createReadStream('/home/jeevan/dataexport/dataexport/your-file.csv'), 'your-file.csv', function(err) {
 			if (err) throw err;
 			c.end();
-		});
+		});*/
 	});
 }
 c.connect(connectionProperties);
