@@ -11,6 +11,7 @@ DATAEXPORT_MYSQL_USER=torrentsappusr
 DATAEXPORT_MYSQL_PASSWORD=torrentsadmin@77654
 DATAEXPORT_MYSQL_DBNAME=torrents
 DATAEXPORT_CSV_SAVE_PATH=/home/jeevan/data/
+DATAEXPORT_FTP_LOCATION=/dataexport_sftp/
 #MANAGEMENT_API_URL=http://dev.management.diggit.com/public/api/
 #AUTH_API_BASE_URL=http://dev.management.diggit.com/
 

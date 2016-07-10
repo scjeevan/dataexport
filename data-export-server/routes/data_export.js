@@ -13,8 +13,13 @@ var conn = new Client();
 var connectionProperties = {};
 
 function saveDateRemort(fileName, data) {
+	var act_file = process.env.DATAEXPORT_CSV_SAVE_PATH + fileName;
+	var ftl_loc = process.env.DATAEXPORT_FTP_LOCATION;
 	conn.connect(connectionProperties);
-	//fs.appendFile(fileName, rows.join(','), function (err) { });
+	fs.appendFile(act_file, rows.join(','), function (err) {
+		if (err) throw err;
+		console.log('Saved!');
+	});
 	conn.on(
 		'connect',
 		function () {
@@ -32,7 +37,7 @@ function saveDateRemort(fileName, data) {
 	conn.on(
 		'end',
 		function () {
-			process.exit( 0 );
+			console.log( "- finished" );
 		}
 	);
 	conn.on('ready', function () {
@@ -43,8 +48,8 @@ function saveDateRemort(fileName, data) {
 				process.exit( 2 );
 			}
 			console.log( "- SFTP started" );
-			var readStream = fs.createReadStream('/home/jeevan/dataexport/dataexport/your-file.csv');
-			var writeStream = sftp.createWriteStream('/dataexport_sftp/your-file2.csv');
+			var readStream = fs.createReadStream(act_file);
+			var writeStream = sftp.createWriteStream(ftl_loc + fileName);
 			writeStream.on(
 				'close',
 				function () {
