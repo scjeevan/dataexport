@@ -3,7 +3,7 @@ var Client = require('ssh2').Client;
 
 var connectionProperties = {
 	host: "104.198.206.191",
-	user: "jeevan_dataexporti",
+	user: "jeevan_dataexport",
 	port: "22",
 	password: "!Jeevan@1234"
 };
@@ -49,7 +49,17 @@ function testFTP2(callback) {
 				process.exit( 2 );
 			}
 			console.log( "- SFTP started" );
-			
+			var readStream = fs.createReadStream('/home/jeevan/dataexport/dataexport/your-file.csv');
+			var writeStream = sftp.createWriteStream('/dataexport_sftpyour-file.csv');
+			writeStream.on(
+				'close',
+				function () {
+					console.log( "- file transferred" );
+					sftp.end();
+					process.exit( 0 );
+				}
+			);
+			readStream.pipe( writeStream );
 		});
 	}); 
 	console.log("END METHOD");
