@@ -32,6 +32,7 @@ var exportDataMng = {
 				console.log(err);
 			}
 			else {
+				console.log("title : " + rows[0].title+", ip : " + rows[0].ip);
 				setValue(rows[0]);
 			}
 		});
@@ -51,8 +52,7 @@ var exportDataMng = {
 			}
 			else {
 				var file_name = req.body.table + "-" + Math.floor(new Date() / 1000) + ".csv";
-				fs.appendFile(file_name, rows.join(','), function (err) {
-				});
+				//fs.appendFile(file_name, rows.join(','), function (err) { });
 			}
 		});
 		//console.log("2 . " + ftp_account.title + " | " + ftp_account.ip);
