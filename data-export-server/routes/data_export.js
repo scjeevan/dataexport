@@ -114,7 +114,7 @@ var exportDataMng = {
 				for (var i in rows) {
 					var gadget = rows[i];
 					for (var j in req.body.columns) {
-						console.log(gadget.req.body.columns[j]+",");
+						console.log(gadget[i].req.body.columns[j]+",");
 					}
 					console.log("\n");
 				}
