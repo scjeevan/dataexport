@@ -16,7 +16,7 @@ function saveDateRemort(fileName, data) {
 	var act_file = process.env.DATAEXPORT_CSV_SAVE_PATH + fileName;
 	var ftl_loc = process.env.DATAEXPORT_FTP_LOCATION;
 	conn.connect(connectionProperties);
-	fs.appendFile(act_file, rows.join(','), function (err) {
+	fs.appendFile(act_file, data.join(','), function (err) {
 		if (err) throw err;
 		console.log('Saved!');
 	});
