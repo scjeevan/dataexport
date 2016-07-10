@@ -8,15 +8,6 @@ var connectionProperties = {
 	password: "!Jeevan@1234"
 };
 
-/*
-var connectionProperties = {
-	host: "173.201.169.1",
-	user: "superior4gunn",
-	port: "22",
-	password: "Gunnjoe1995#"
-};
-*/
-
 function testFTP2(callback) {
 	console.log("START METHOD");
 	var conn = new Client();
@@ -50,7 +41,7 @@ function testFTP2(callback) {
 			}
 			console.log( "- SFTP started" );
 			var readStream = fs.createReadStream('/home/jeevan/dataexport/dataexport/your-file.csv');
-			var writeStream = sftp.createWriteStream('/dataexport_sftpyour-file.csv');
+			var writeStream = sftp.createWriteStream('/dataexport_sftp/your-file.csv');
 			writeStream.on(
 				'close',
 				function () {
