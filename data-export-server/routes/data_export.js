@@ -1,5 +1,6 @@
 var mysql = require("mysql");
 var fs = require("file-system");
+var Client = require('ssh2').Client;
 
 var mysql_client = mysql.createConnection({
     host: process.env.DATAEXPORT_MYSQL_HOST,
@@ -8,15 +9,60 @@ var mysql_client = mysql.createConnection({
     database: process.env.DATAEXPORT_MYSQL_DBNAME
 });
 
-var ftp_account = [];
-function setValue(value) {
-  ftp_account = value;
-  console.log(ftp_account);
+var conn = new Client();
+var connectionProperties = {};
+
+function saveDateRemort(fileName, data) {
+	conn.connect(connectionProperties);
+	//fs.appendFile(fileName, rows.join(','), function (err) { });
+	conn.on(
+		'connect',
+		function () {
+			console.log( "- connected" );
+		}
+	);
+	conn.on(
+		'error',
+		function (err) {
+			console.log( "- connection error: %s", err );
+			process.exit( 1 );
+		}
+	);
+	 
+	conn.on(
+		'end',
+		function () {
+			process.exit( 0 );
+		}
+	);
+	conn.on('ready', function () {
+		console.log( "- ready" );
+		conn.sftp(function (err, sftp) {
+			if (err) {
+				console.log( "Error, problem starting SFTP: %s", err );
+				process.exit( 2 );
+			}
+			console.log( "- SFTP started" );
+			var readStream = fs.createReadStream('/home/jeevan/dataexport/dataexport/your-file.csv');
+			var writeStream = sftp.createWriteStream('/dataexport_sftp/your-file2.csv');
+			writeStream.on(
+				'close',
+				function () {
+					console.log( "- file transferred" );
+					sftp.end();
+					process.exit( 0 );
+				}
+			);
+			readStream.pipe( writeStream );
+		});
+	}); 
+	console.log("END METHOD");
 }
 
 var exportDataMng = {
 	
 	exportData: function (req, res) {
+		
 		var query = "";
 		var params = [];
 		
@@ -33,7 +79,13 @@ var exportDataMng = {
 			}
 			else {
 				console.log("title : " + rows[0].title+", ip : " + rows[0].ip);
-				setValue(rows[0]);
+				connectionProperties = {
+					host: rows[0].ip,
+					user: rows[0].username,
+					port: rows[0].port,
+					password: rows[0].password
+				};
+				
 			}
 		});
 		
@@ -52,10 +104,9 @@ var exportDataMng = {
 			}
 			else {
 				var file_name = req.body.table + "-" + Math.floor(new Date() / 1000) + ".csv";
-				//fs.appendFile(file_name, rows.join(','), function (err) { });
+				saveDateRemort(file_name, rows);
 			}
 		});
-		//console.log("2 . " + ftp_account.title + " | " + ftp_account.ip);
 	}
 };
 
