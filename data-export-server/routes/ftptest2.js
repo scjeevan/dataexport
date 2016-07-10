@@ -3,7 +3,7 @@ var Client = require('ssh2').Client;
 
 var connectionProperties = {
 	host: "104.198.206.191",
-	user: "jeevan_dataexport",
+	user: "jeevan_dataexporti",
 	port: "22",
 	password: "!Jeevan@1234"
 };
@@ -49,6 +49,7 @@ function testFTP2(callback) {
 				process.exit( 2 );
 			}
 			console.log( "- SFTP started" );
+			
 		});
 	}); 
 	console.log("END METHOD");
