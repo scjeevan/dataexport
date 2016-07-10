@@ -25,7 +25,9 @@ function testFTP(callback) {
 			if (err) throw err;
 			c.end();
 		});*/
-	}).connect(connectionProperties);
+	}).on('error', function (err) {
+            console.log("ERR");
+          }).connect(connectionProperties);
 	console.log("END METHOD");
 }
 //c.connect(connectionProperties);
