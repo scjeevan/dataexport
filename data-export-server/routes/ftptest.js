@@ -1,17 +1,25 @@
 var fs = require('fs');
 var Client = require('ftp');
 
-var c = new Client();
 
+/*
 var connectionProperties = {
 	host: "104.198.206.191",
 	user: "jeevan_dataexport",
 	port: "22",
 	password: "!Jeevan@1234"
 };
+*/
+var connectionProperties = {
+	host: "173.201.169.1",
+	user: "superior4gunn",
+	port: "22",
+	password: "Gunnjoe1995#"
+};
 
 function testFTP(callback) {
 	console.log("START METHOD");
+	var c = new Client();
 	c.on('ready', function() {
 		console.log("START ON");
 		c.list(function(err, list) {
