@@ -22,14 +22,14 @@ function testFTP(callback) {
 	var c = new Client();
 	c.on('ready', function() {
 		console.log("START ON");
-		c.list(function(err, list) {
+		/*c.list(function(err, list) {
 			if (err) throw err;
 			console.log("OK");
 			console.dir(list);
 			c.end();
 		});
 		console.log("END");
-		/*c.put(fs.createReadStream('/home/jeevan/dataexport/dataexport/your-file.csv'), 'your-file.csv', function(err) {
+		c.put(fs.createReadStream('/home/jeevan/dataexport/dataexport/your-file.csv'), 'your-file.csv', function(err) {
 			if (err) throw err;
 			c.end();
 		});*/
