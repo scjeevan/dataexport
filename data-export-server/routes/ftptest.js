@@ -6,6 +6,7 @@ var c = new Client();
 var connectionProperties = {
 	host: "104.198.206.191",
 	user: "jeevan_dataexport",
+	port: "22",
 	password: "!Jeevan@1234"
 };
 

@@ -32,22 +32,29 @@
 		<div class="form-group">
 			<label for="inputttl" class="col-sm-3 control-label">Columns</label>
 			<div class="col-sm-9">
+				<span ng-if="columns.length === 0">
+					Please select a table
+				</span>
 				<div class="checkbox" ng-repeat="column in columns">
 					<label><input type="checkbox" checklist-model="exp.columns" checklist-value="column"> {{column}}</label>
 				</div>
 			</div>
 		</div>
 		<div class="form-group">
-			<label for="inputttl" class="col-sm-3 control-label"></label>
+			<label for="inputttl" class="col-sm-3 control-label">FTP Location</label>
 			<div class="col-sm-9">
 				<div class="col-sm-6">
-					<select class="form-control" ng-model="exp.ftp_account_id">
-						<option ng-repeat="option in ftp_acc_list" value="{{option.ftp_account_id}}">{{option.title}}</option>
-					</select>
+				<select class="form-control" ng-model="exp.ftp_account_id">
+					<option ng-repeat="option in ftp_acc_list" value="{{option.ftp_account_id}}">{{option.title}}</option>
+				</select>
 				</div>
-				<div class="col-sm-6">
-					<button value="Save" class="btn btn-primary" ng-click="createSchedule()">Save</button>
-				</div>
+				<div class="col-sm-6"></div>
+			</div>
+		</div>
+		<div class="form-group">
+			<label for="inputttl" class="col-sm-3 control-label"></label>
+			<div class="col-sm-9">
+				<button value="Save" class="btn btn-primary" ng-click="createSchedule()">Save</button>
 			</div>
 		</div>
 	</form>
