@@ -125,7 +125,6 @@ var exportDataMng = {
 	},
 	
 	scheduleExportData: function (req, res) {
-		
 		var query = "";
 		var params = [];
 		
@@ -152,6 +151,11 @@ var exportDataMng = {
 		mysql_client.query(_formatedQuery, function (err, rows) {
 			console.log("SAVED");
 		});
+		res.json({
+            data: {
+                "status": 'done'
+            }
+        });
 	}
 };
 
