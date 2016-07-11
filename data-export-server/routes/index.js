@@ -23,5 +23,6 @@ router.get('/api/testftp', testftp.testFTP2); //auth.hasPrivilege(CONTENT_PRIVIL
 router.get('/api/listftpaccounts', ftpDetailsManager.listFtpAccounts);
 router.post('/api/saveftpaccount', ftpDetailsManager.saveFtpAccount);
 router.post('/api/export', dataExportManager.exportData);
+router.post('/api/schedule', dataExportManager.scheduleExportData);
 
 module.exports = router;

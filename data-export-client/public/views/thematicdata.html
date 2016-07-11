@@ -1,4 +1,4 @@
-<div ng-controller="dataExportForm" class="panel panel-primary">
+<div ng-controller="scheduleDataExport" class="panel panel-primary">
 <div class="panel-heading">
 	<h3 class="panel-title">Create Schedule to Export Bulk Data</h3>
 </div>
@@ -7,11 +7,11 @@
 		<div class="form-group">
 			<label class="control-label col-sm-3" for="email">Frequency:</label>
 			<div class="col-sm-9 switch-field">
-				<input type="radio" id="switch_3_left" name="switch_3" value="yes" checked/>
+				<input type="radio" id="switch_3_left" name="switch_3" checked value="weekly" ng-model="exp.switch_3"/>
 				<label for="switch_3_left">Weekly</label>
-				<input type="radio" id="switch_3_center" name="switch_3" value="maybe" />
+				<input type="radio" id="switch_3_center" name="switch_3" value="monthly" ng-model="exp.switch_3"/>
 				<label for="switch_3_center">Monthly</label>
-				<input type="radio" id="switch_3_right" name="switch_3" value="no" />
+				<input type="radio" id="switch_3_right" name="switch_3" value="quarterly" ng-model="exp.switch_3"/>
 				<label for="switch_3_right">Quarterly</label>
 			</div>
 		</div>

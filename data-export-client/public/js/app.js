@@ -90,6 +90,59 @@ mvpApp.controller('dataExportForm', ['$window', '$scope', '$location', '$http', 
 }
 ]);
 
+mvpApp.controller('scheduleDataExport', ['$window', '$scope', '$location', '$http', 'Api', function($window, $scope, $location, $http, Api) {
+	$scope.ftp_acc_list = [];
+	$http.get(Api.root_url+ "api/listftpaccounts").
+	success(function (response, status, headers, config) {
+		angular.forEach(response.values, function (v, k) {
+			this.push(v);
+		}, $scope.ftp_acc_list);
+	}).
+	error(function (data, status, headers, config) {
+		alert("Error while retrieving data");
+	});
+	
+	$scope.exp = {};
+	$scope.columns = [];
+	$scope.loadColumns = function(value) {
+		if(value=='title'){
+			$scope.columns = ["title", "season", "episode", "studio", "content-type", "genre", "mpaa_rating"]; //mm_titles
+		} else if(value=='infohashes1'){
+			$scope.columns = ["infohash", "file_name", "created_by", "created_time", "added_time", "updated_time", "episode_title", "added_by", "languages", "verified"]; // infohashes
+		} else if(value=='ip'){
+			$scope.columns = ["Infohash", "Type", "TimeStamp", "Aspect Ratio"];
+		}
+	};
+	$scope.createSchedule = function() {
+		if(typeof $scope.exp.switch_3 == 'undefined'){
+			alert("Please select Schedule type");
+		}
+		else if(typeof $scope.exp.table == 'undefined'){
+			alert("Please select table");
+		}
+		else if(typeof $scope.exp.columns == 'undefined'){
+			alert("Please select atleast one column");
+		}
+		else if(typeof $scope.exp.ftp_account_id == 'undefined'){
+			alert("Please select FTP account");
+		}
+		else{
+			$http.post(Api.root_url+ "api/schedule", $scope.exp).
+			success(function (data, status, headers, config) {
+				console.log(data);
+				ngToast.create('Data saved successfully');
+			}).
+			error(function (data, status, headers, config) {
+				alert("Error while saving data");
+			});
+		}
+	};
+	$scope.dateOptions = {
+		dateFormat:'dd-mm-yy',
+    };
+}
+]);
+
 
 mvpApp.controller('ftpAccountManager', ['$window', '$scope', '$location', '$http', 'Api', function($window, $scope, $location, $http, Api) {
 	$scope.ftp_data = [];
