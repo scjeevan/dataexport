@@ -115,7 +115,7 @@ var exportDataMng = {
 				for (var i in rows) {
 					var gadget = rows[i];
 					for (var j in cols) {
-						console.log(gadget[i].cols[j]+",");
+						console.log(gadget[i][cols[j]]+",");
 					}
 					console.log("\n");
 				}
