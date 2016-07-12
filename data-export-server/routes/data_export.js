@@ -123,10 +123,11 @@ var exportDataMng = {
 					if (row.value === null) {
 						resultRow.push(' ')
 					} else {
+						var rowData = [];
 						headers.forEach(function (header) {
-							resultRow.push(row[header]);
+							rowData.push(row[header]);
 						});
-						//resultRow.push(row);
+						resultRow.push(rowData);
 						//console.log(JSON.stringify(row));
 					}
 				});
