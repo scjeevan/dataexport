@@ -37,7 +37,7 @@ mvpApp.controller('MvpCtrl', ['$window', '$scope', '$location', function($window
 }
 ]);
 
-mvpApp.controller('dataExportForm', ['$window', '$scope', '$location', '$http', 'Api', function($window, $scope, $location, $http, Api, ngToast) {
+mvpApp.controller('dataExportForm', ['$window', '$scope', '$location', '$http', 'Api', 'ngToast', function($window, $scope, $location, $http, Api, ngToast) {
 	$scope.ftp_acc_list = [];
 	$http.get(Api.root_url+ "api/listftpaccounts").
 	success(function (response, status, headers, config) {
@@ -144,7 +144,7 @@ mvpApp.controller('scheduleDataExport', ['$window', '$scope', '$location', '$htt
 ]);
 
 
-mvpApp.controller('ftpAccountManager', ['$window', '$scope', '$location', '$http', 'Api', function($window, $scope, $location, $http, Api) {
+mvpApp.controller('ftpAccountManager', ['$window', '$scope', '$location', '$http', 'Api', 'ngToast', function($window, $scope, $location, $http, Api, ngToast) {
 	$scope.ftp_data = [];
 	$scope.ftp = {};
 	$http.get(Api.root_url+ "api/listftpaccounts").
