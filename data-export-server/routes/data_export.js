@@ -129,6 +129,7 @@ var exportDataMng = {
 						});
 						resultRow.push(rowData);
 						console.log("ROW - " + JSON.stringify(row));
+						console.log("ROW_DATA - " + JSON.stringify(rowData));
 					}
 				});
 				writer.write(resultRow)
