@@ -1,6 +1,8 @@
 var mysql = require("mysql");
 var fs = require("file-system");
 var Client = require('ssh2').Client;
+var csv = require('fast-csv');
+
 
 var mysql_client = mysql.createConnection({
     host: process.env.DATAEXPORT_MYSQL_HOST,
@@ -112,13 +114,18 @@ var exportDataMng = {
 			else {
 				var file_name = process.env.DATAEXPORT_CSV_SAVE_PATH + req.body.table + "-" + Math.floor(new Date() / 1000) + ".csv";
 				var cols = req.body.columns;
-				fs.appendFile(file_name, rows.join(','), function (err) {
+				var stream = fs.createReadStream(file_name);
+				var csvStream = csv()
+				.on("data", function(rows){
+					console.log(rows);
+				})
+				.on("end", function(){
+					console.log("done");
 				});
-				/*
+				stream.pipe(csvStream);
 				res.json({
 					values: rows
 				});
-				*/
 				//saveDateRemort(file_name, rows);
 			}
 		});
