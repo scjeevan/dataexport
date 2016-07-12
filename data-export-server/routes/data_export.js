@@ -123,8 +123,11 @@ var exportDataMng = {
 					if (row.value === null) {
 						resultRow.push(' ')
 					} else {
-						resultRow.push(row);
-						console.log(JSON.stringify(row));
+						headers.forEach(function (header) {
+							resultRow.push(row[header]);
+						});
+						//resultRow.push(row);
+						//console.log(JSON.stringify(row));
 					}
 				});
 				writer.write(resultRow)
