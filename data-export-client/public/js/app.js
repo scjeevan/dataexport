@@ -130,7 +130,7 @@ mvpApp.controller('scheduleDataExport', ['$window', '$scope', '$location', '$htt
 			$http.post(Api.root_url+ "api/schedule", $scope.exp).
 			success(function (data, status, headers, config) {
 				console.log(data);
-				ngToast.create('Data saved successfully');
+				ngToast.create('Data Exported to FTP location successfully');
 			}).
 			error(function (data, status, headers, config) {
 				alert("Error while saving data");

@@ -112,9 +112,13 @@ var exportDataMng = {
 			else {
 				var file_name = req.body.table + "-" + Math.floor(new Date() / 1000) + ".csv";
 				var cols = req.body.columns;
+				fs.appendFile(file_name, rows.join(','), function (err) {
+				});
+				/*
 				res.json({
 					values: rows
 				});
+				*/
 				//saveDateRemort(file_name, rows);
 			}
 		});
