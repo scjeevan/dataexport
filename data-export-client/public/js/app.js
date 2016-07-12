@@ -174,6 +174,7 @@ mvpApp.controller('ftpAccountManager', ['$window', '$scope', '$location', '$http
 			if (deleteFtpAcc) {
 				$window.alert('Going to delete the FTP account');
 			}
+			ngToast.create('Data deleted successfully');
 		}
 	}
 	
@@ -209,6 +210,7 @@ mvpApp.controller('ftpAccountManager', ['$window', '$scope', '$location', '$http
 			error(function (data, status, headers, config) {
 				alert("Error while saving data");
 			});
+			ngToast.create('Data saved successfully');
 		}
 	}
 }]);
