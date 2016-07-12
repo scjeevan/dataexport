@@ -123,7 +123,8 @@ var exportDataMng = {
 					if (row.value === null) {
 						resultRow.push(' ')
 					} else {
-						resultRow.push(row)
+						resultRow.push(row);
+						console.log(JSON.stringify(row));
 					}
 				});
 				writer.write(resultRow)
