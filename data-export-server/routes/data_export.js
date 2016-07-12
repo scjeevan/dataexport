@@ -120,7 +120,7 @@ var exportDataMng = {
 				writer.pipe(fs.createWriteStream( file_name ));
 				var resultRow = [];
 				rows.forEach(function (row) {
-					if (row.value != null) {
+					if (row != null) {
 						var rowData = [];
 						headers.forEach(function (header) {
 							rowData.push(row[header]);
