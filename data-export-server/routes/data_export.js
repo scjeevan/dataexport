@@ -120,18 +120,17 @@ var exportDataMng = {
 				writer.pipe(fs.createWriteStream( file_name ));
 				var resultRow = [];
 				rows.forEach(function (row) {
-					if (row.value === null) {
-						resultRow.push(' ')
-					} else {
+					if (row.value != null) {
 						var rowData = [];
 						headers.forEach(function (header) {
 							rowData.push(row[header]);
 						});
 						resultRow.push(rowData);
-						console.log("ROW - " + JSON.stringify(row));
-						console.log("ROW_DATA - " + JSON.stringify(rowData));
+						//console.log("ROW - " + JSON.stringify(row));
+						//console.log("ROW_DATA - " + JSON.stringify(rowData));
 					}
 				});
+				console.log("FULL - " + JSON.stringify(resultRow));
 				writer.write(resultRow)
 				res.json({
 					values: rows
