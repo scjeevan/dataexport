@@ -99,8 +99,10 @@ var exportDataMng = {
 		});
 		
 		var _query = "SELECT ";
+		var headers = [];
 		for (var i in req.body.columns) {
 			_query += req.body.columns[i] + ",";
+			headers.push(req.body.columns[i]);
 		}
 		_query = _query.substring(0, _query.length - 1);
 		_query += " FROM " + req.body.table + " WHERE added_time BETWEEN ? AND ?";
@@ -114,7 +116,7 @@ var exportDataMng = {
 			else {
 				var file_name = process.env.DATAEXPORT_CSV_SAVE_PATH + req.body.table + "-" + Math.floor(new Date() / 1000) + ".csv";
 				var cols = req.body.columns;
-				//var writer = csvWriter({ headers: headers });
+				var writer = csvWriter({ headers: headers });
 				writer.pipe(fs.createWriteStream( file_name ));
 				var resultRow = [];
 				rows.forEach(function (row) {
