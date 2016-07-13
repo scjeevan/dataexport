@@ -9,10 +9,9 @@ var bigquery = gcloud.bigquery({
 });
  
 function testDB(callback) {
-	bigquery.query('select count(*) from diggit_hist.Diggit_IP', function(e,r,d){
+	bigquery.query('select count(*) from diggit_hist.Diggit_IP', function(e,r){
 		if(e) console.log(e);
 		//console.log(JSON.stringify(d));
-		console.log(d);
 		console.log(r);
 		callback(r);
 	});
