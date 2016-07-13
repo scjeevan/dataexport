@@ -14,7 +14,7 @@ function testDB(callback) {
 		//console.log(JSON.stringify(d));
 		console.log(d);
 		console.log(r);
-		callback(d);
+		callback(r);
 	});
 }
 
