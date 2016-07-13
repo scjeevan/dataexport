@@ -19,9 +19,9 @@ router.get('/api/login', auth.checkAuthenticity());
 /*
  * Routes that can be accessed only by autheticated users
  */
-router.get('/api/test', test.testDB); //auth.hasPrivilege(CONTENT_PRIVILEGE),
+router.get('/api/test', test.testDB);
 router.get('/api/gqtest', gqtest.testBigQuery);
-router.get('/api/testftp', testftp.testFTP2); //auth.hasPrivilege(CONTENT_PRIVILEGE),
+router.get('/api/testftp', testftp.testFTP2);
 router.get('/api/listftpaccounts', ftpDetailsManager.listFtpAccounts);
 router.post('/api/saveftpaccount', ftpDetailsManager.saveFtpAccount);
 router.post('/api/export', dataExportManager.exportData);
