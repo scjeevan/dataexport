@@ -4,6 +4,15 @@ var Client = require('ssh2').Client;
 var csvWriter = require('csv-write-stream');
 var writer = csvWriter();
 
+var gcloud = require('gcloud')({
+  projectId: 'diggit-1266',
+  keyFilename: '/home/dileepa/gcloud.key/Diggit-ffb0bd215a66.json'
+});
+var bigquery = gcloud.bigquery({
+  projectId: 'diggit-1266',
+  keyFilename: '/home/dileepa/gcloud.key/Diggit-ffb0bd215a66.json'
+});
+
 var mysql_client = mysql.createConnection({
     host: process.env.DATAEXPORT_MYSQL_HOST,
     user: process.env.DATAEXPORT_MYSQL_USER,
