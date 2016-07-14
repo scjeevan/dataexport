@@ -29,10 +29,7 @@ function saveDateRemort(fileName, data) {
 	var ftl_loc = process.env.DATAEXPORT_FTP_LOCATION;
 	console.log('ftl_loc : '+ftl_loc);
 	conn.connect(connectionProperties);
-	fs.appendFile(act_file, data.join(','), function (err) {
-		if (err) throw err;
-		console.log('Saved!');
-	});
+
 	conn.on(
 		'connect',
 		function () {
@@ -121,6 +118,22 @@ var exportDataMng = {
 			_query += " FROM diggit_hist.Diggit_IP WHERE Date BETWEEN '"+start+"' AND '"+end+"'";
 			bigquery.query(_query, function(e,r){
 				if(e) console.log(e);
+				var writer = csvWriter({ headers: headers });
+				writer.pipe(fs.createWriteStream( file_name ));
+				var resultRow = [];
+				r.forEach(function (row) {
+					if (row != null) {
+						var rowData = [];
+						headers.forEach(function (header) {
+							rowData.push(row[header]);
+						});
+						resultRow.push(rowData);
+						//console.log("ROW - " + JSON.stringify(row));
+						//console.log("ROW_DATA - " + JSON.stringify(rowData));
+					}
+				});
+				console.log("FULL - " + JSON.stringify(resultRow));
+				writer.write(resultRow);
 				saveDateRemort(file_name, r);
 				res.json({
 					values: "SUCCESS"
