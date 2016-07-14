@@ -114,39 +114,45 @@ var exportDataMng = {
 			headers.push(req.body.columns[i]);
 		}
 		_query = _query.substring(0, _query.length - 1);
-		_query += " FROM " + req.body.table + " WHERE added_time BETWEEN ? AND ?";
 		var start = req.body.startDate.replace(/T/, ' ').replace(/\..+/, '');
 		var end = req.body.endDate.replace(/T/, ' ').replace(/\..+/, '');
-		var _formatedQuery = mysql.format(_query, [start, end]);
-		mysql_client.query(_formatedQuery, function (err, rows) {
-			if (err) {
-				console.log(err);
-			}
-			else {
-				var file_name = process.env.DATAEXPORT_CSV_SAVE_PATH + req.body.table + "-" + Math.floor(new Date() / 1000) + ".csv";
-				var cols = req.body.columns;
-				var writer = csvWriter({ headers: headers });
-				writer.pipe(fs.createWriteStream( file_name ));
-				var resultRow = [];
-				rows.forEach(function (row) {
-					if (row != null) {
-						var rowData = [];
-						headers.forEach(function (header) {
-							rowData.push(row[header]);
-						});
-						resultRow.push(rowData);
-						//console.log("ROW - " + JSON.stringify(row));
-						//console.log("ROW_DATA - " + JSON.stringify(rowData));
-					}
-				});
-				console.log("FULL - " + JSON.stringify(resultRow));
-				writer.write(resultRow)
-				res.json({
-					values: rows
-				});
-				//saveDateRemort(file_name, rows);
-			}
-		});
+		if(req.body.table == 'ip'){
+			_query += " FROM diggit-1266:diggit_hist.Diggit_IP WHERE Date BETWEEN '"+start+"' AND '"+end+"'";
+			console.log(_query);
+		}
+		else{
+			_query += " FROM " + req.body.table + " WHERE added_time BETWEEN ? AND ?";
+			var _formatedQuery = mysql.format(_query, [start, end]);
+			mysql_client.query(_formatedQuery, function (err, rows) {
+				if (err) {
+					console.log(err);
+				}
+				else {
+					var file_name = process.env.DATAEXPORT_CSV_SAVE_PATH + req.body.table + "-" + Math.floor(new Date() / 1000) + ".csv";
+					var cols = req.body.columns;
+					var writer = csvWriter({ headers: headers });
+					writer.pipe(fs.createWriteStream( file_name ));
+					var resultRow = [];
+					rows.forEach(function (row) {
+						if (row != null) {
+							var rowData = [];
+							headers.forEach(function (header) {
+								rowData.push(row[header]);
+							});
+							resultRow.push(rowData);
+							//console.log("ROW - " + JSON.stringify(row));
+							//console.log("ROW_DATA - " + JSON.stringify(rowData));
+						}
+					});
+					console.log("FULL - " + JSON.stringify(resultRow));
+					writer.write(resultRow)
+					res.json({
+						values: rows
+					});
+					//saveDateRemort(file_name, rows);
+				}
+			});
+		}
 	},
 	
 	scheduleExportData: function (req, res) {

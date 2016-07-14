@@ -57,7 +57,7 @@ mvpApp.controller('dataExportForm', ['$window', '$scope', '$location', '$http', 
 		} else if(value=='infohashes1'){
 			$scope.columns = ["infohash", "file_name", "created_by", "created_time", "added_time", "updated_time", "episode_title", "added_by", "languages", "verified"]; // infohashes
 		} else if(value=='ip'){
-			$scope.columns = ["Infohash", "Type", "TimeStamp", "Aspect Ratio"];
+			$scope.columns = ["Infohash", "TitleID", "Date", "IP", "Port", "Continent", "Country", "Region", "State", "City", "Latitude", "Longitude", "ISP", "OrganizationType", "NameofProtocol", "UniqueDownloads", "source"];
 		}
 	};
 	$scope.exportData = function() {
