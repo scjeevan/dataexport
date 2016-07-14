@@ -117,7 +117,7 @@ var exportDataMng = {
 		var start = req.body.startDate.replace(/T/, ' ').replace(/\..+/, '');
 		var end = req.body.endDate.replace(/T/, ' ').replace(/\..+/, '');
 		if(req.body.table == 'ip'){
-			_query += " FROM diggit-1266:diggit_hist.Diggit_IP WHERE Date BETWEEN '"+start+"' AND '"+end+"'";
+			_query += " FROM diggit_hist.Diggit_IP WHERE Date BETWEEN '"+start+"' AND '"+end+"'";
 			bigquery.query(_query, function(e,r){
 				if(e) console.log(e);
 				console.log(r);
