@@ -116,13 +116,14 @@ var exportDataMng = {
 		_query = _query.substring(0, _query.length - 1);
 		var start = req.body.startDate.replace(/T/, ' ').replace(/\..+/, '');
 		var end = req.body.endDate.replace(/T/, ' ').replace(/\..+/, '');
+		var file_name = process.env.DATAEXPORT_CSV_SAVE_PATH + req.body.table + "-" + Math.floor(new Date() / 1000) + ".csv";
 		if(req.body.table == 'ip'){
 			_query += " FROM diggit_hist.Diggit_IP WHERE Date BETWEEN '"+start+"' AND '"+end+"'";
 			bigquery.query(_query, function(e,r){
 				if(e) console.log(e);
-				console.log(r);
+				saveDateRemort(file_name, r);
 				res.json({
-					values: r
+					values: "SUCCESS"
 				});
 			});
 		}
@@ -134,7 +135,6 @@ var exportDataMng = {
 					console.log(err);
 				}
 				else {
-					var file_name = process.env.DATAEXPORT_CSV_SAVE_PATH + req.body.table + "-" + Math.floor(new Date() / 1000) + ".csv";
 					var cols = req.body.columns;
 					var writer = csvWriter({ headers: headers });
 					writer.pipe(fs.createWriteStream( file_name ));
@@ -153,9 +153,9 @@ var exportDataMng = {
 					console.log("FULL - " + JSON.stringify(resultRow));
 					writer.write(resultRow)
 					res.json({
-						values: rows
+						values: "SUCCESS"
 					});
-					//saveDateRemort(file_name, rows);
+					saveDateRemort(file_name, rows);
 				}
 			});
 		}
