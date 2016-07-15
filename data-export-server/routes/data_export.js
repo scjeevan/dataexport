@@ -44,7 +44,7 @@ function saveDateRemort(file_name, headers, rows, callback) {
 			//console.log("ROW_DATA - " + JSON.stringify(rowData));
 		}
 	});
-	console.log("FULL - " + JSON.stringify(resultRow));
+	//console.log("FULL - " + JSON.stringify(resultRow));
 	writer.write(resultRow);
 	writer.end();
 				
@@ -82,7 +82,7 @@ function saveDateRemort(file_name, headers, rows, callback) {
 			}
 			console.log( "- SFTP started" );
 			var readStream = fs.createReadStream(act_file);
-			var writeStream = sftp.createWriteStream(ftl_loc + fileName);
+			var writeStream = sftp.createWriteStream(ftl_loc + file_name);
 			writeStream.on(
 				'close',
 				function () {
