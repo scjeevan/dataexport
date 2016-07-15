@@ -23,8 +23,25 @@ var mysql_client = mysql.createConnection({
 var conn = new Client();
 var connectionProperties = {};
 
-function saveDateRemort(fileName, data) {
-	var act_file = process.env.DATAEXPORT_CSV_SAVE_PATH + fileName;
+function saveDateRemort(file_name, headers, rows, callback) {
+	var act_file = process.env.DATAEXPORT_CSV_SAVE_PATH + file_name;
+	var writer = csvWriter({ headers: headers });
+	writer.pipe(fs.createWriteStream( act_file ));
+	var resultRow = [];
+	rows.forEach(function (row) {
+		if (row != null) {
+			var rowData = [];
+			headers.forEach(function (header) {
+				rowData.push(row[header]);
+			});
+			resultRow.push(rowData);
+			//console.log("ROW - " + JSON.stringify(row));
+			//console.log("ROW_DATA - " + JSON.stringify(rowData));
+		}
+	});
+	console.log("FULL - " + JSON.stringify(resultRow));
+	writer.write(resultRow);
+				
 	console.log('act_file : '+act_file);
 	var ftl_loc = process.env.DATAEXPORT_FTP_LOCATION;
 	console.log('ftl_loc : '+ftl_loc);
@@ -72,6 +89,7 @@ function saveDateRemort(fileName, data) {
 		});
 	}); 
 	console.log("END METHOD");
+	callback("SUCCESS");
 }
 
 var exportDataMng = {
@@ -113,30 +131,15 @@ var exportDataMng = {
 		_query = _query.substring(0, _query.length - 1);
 		var start = req.body.startDate.replace(/T/, ' ').replace(/\..+/, '');
 		var end = req.body.endDate.replace(/T/, ' ').replace(/\..+/, '');
-		var file_name = process.env.DATAEXPORT_CSV_SAVE_PATH + req.body.table + "-" + Math.floor(new Date() / 1000) + ".csv";
+		var file_name = req.body.table + "-" + Math.floor(new Date() / 1000) + ".csv";
 		if(req.body.table == 'ip'){
 			_query += " FROM diggit_hist.Diggit_IP WHERE Date BETWEEN '"+start+"' AND '"+end+"'";
-			bigquery.query(_query, function(e,r){
-				if(e) console.log(e);
-				var writer = csvWriter({ headers: headers });
-				writer.pipe(fs.createWriteStream( file_name ));
-				var resultRow = [];
-				r.forEach(function (row) {
-					if (row != null) {
-						var rowData = [];
-						headers.forEach(function (header) {
-							rowData.push(row[header]);
-						});
-						resultRow.push(rowData);
-						//console.log("ROW - " + JSON.stringify(row));
-						//console.log("ROW_DATA - " + JSON.stringify(rowData));
-					}
-				});
-				console.log("FULL - " + JSON.stringify(resultRow));
-				writer.write(resultRow);
-				saveDateRemort(file_name, r);
-				res.json({
-					values: "SUCCESS"
+			bigquery.query(_query, function(err,rows){
+				if(err) console.log(err);
+				saveDateRemort(file_name, headers, rows, function (result) {
+					res.json({
+						values: result
+					});
 				});
 			});
 		}
@@ -144,32 +147,12 @@ var exportDataMng = {
 			_query += " FROM " + req.body.table + " WHERE added_time BETWEEN ? AND ?";
 			var _formatedQuery = mysql.format(_query, [start, end]);
 			mysql_client.query(_formatedQuery, function (err, rows) {
-				if (err) {
-					console.log(err);
-				}
-				else {
-					var cols = req.body.columns;
-					var writer = csvWriter({ headers: headers });
-					writer.pipe(fs.createWriteStream( file_name ));
-					var resultRow = [];
-					rows.forEach(function (row) {
-						if (row != null) {
-							var rowData = [];
-							headers.forEach(function (header) {
-								rowData.push(row[header]);
-							});
-							resultRow.push(rowData);
-							//console.log("ROW - " + JSON.stringify(row));
-							//console.log("ROW_DATA - " + JSON.stringify(rowData));
-						}
-					});
-					console.log("FULL - " + JSON.stringify(resultRow));
-					writer.write(resultRow)
+				if(err) console.log(err);
+				saveDateRemort(file_name, headers, rows, function (result) {
 					res.json({
-						values: "SUCCESS"
+						values: result
 					});
-					saveDateRemort(file_name, rows);
-				}
+				});
 			});
 		}
 	},
