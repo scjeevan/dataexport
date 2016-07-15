@@ -25,7 +25,12 @@ var connectionProperties = {};
 
 function saveDateRemort(file_name, headers, rows, callback) {
 	var act_file = process.env.DATAEXPORT_CSV_SAVE_PATH + file_name;
-	var writer = csvWriter({ headers: headers });
+	var writer = csvWriter({ 
+		headers: headers,
+		separator: ',',
+		newline: '\n',
+		sendHeaders: true
+	});
 	writer.pipe(fs.createWriteStream( act_file ));
 	var resultRow = [];
 	rows.forEach(function (row) {
@@ -41,6 +46,7 @@ function saveDateRemort(file_name, headers, rows, callback) {
 	});
 	console.log("FULL - " + JSON.stringify(resultRow));
 	writer.write(resultRow);
+	writer.end();
 				
 	console.log('act_file : '+act_file);
 	var ftl_loc = process.env.DATAEXPORT_FTP_LOCATION;
