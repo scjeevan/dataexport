@@ -40,12 +40,13 @@ function saveDateRemort(file_name, headers, rows, callback) {
 				rowData.push(row[header]);
 			});
 			resultRow.push(rowData);
+			writer.write(rowData);
 			//console.log("ROW - " + JSON.stringify(row));
 			//console.log("ROW_DATA - " + JSON.stringify(rowData));
 		}
 	});
 	//console.log("FULL - " + JSON.stringify(resultRow));
-	writer.write(resultRow);
+	//writer.write(resultRow);
 	writer.end();
 				
 	console.log('act_file : '+act_file);
