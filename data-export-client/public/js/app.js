@@ -190,6 +190,8 @@ mvpApp.controller('ftpAccountManager', ['$window', '$scope', '$location', '$http
 			alert("Please enter a Host");
 		} else if (typeof $scope.ftp.port == 'undefined') {
 			alert("Please enter a Port");
+		} else if (typeof $scope.ftp.location == 'undefined') {
+			alert("Please enter Location");
 		} else if (typeof $scope.ftp.protocol == 'undefined') {
 			alert("Please enter a Protocol");
 		} else {

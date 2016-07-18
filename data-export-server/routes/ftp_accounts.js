@@ -39,11 +39,11 @@ var ftpAccountsData = {
 		var query = "";
 		var params = [];
 		if (typeof req.body.ftp_account_id == 'undefined'){
-			query = "INSERT INTO `ftp_accounts` (`title`,`username`,`password`,`ip`,`port`,`protocol`) VALUES (?,?,?,?,?,?)";
-			params = [req.body.title, req.body.username, req.body.password, req.body.ip, req.body.port, req.body.protocol];
+			query = "INSERT INTO `ftp_accounts` (`title`,`username`,`password`,`ip`,`port`,`location`,`protocol`) VALUES (?,?,?,?,?,?,?)";
+			params = [req.body.title, req.body.username, req.body.password, req.body.ip, req.body.port, req.body.location, req.body.protocol];
 		} else {
-			query = "UPDATE `ftp_accounts` SET `title` = ?, `username` = ?, `password` = ?, `ip` = ?, `port` = ?,`protocol` = ?  WHERE `ftp_account_id` = ?";
-			params = [req.body.title, req.body.username, req.body.password, req.body.ip, req.body.port, req.body.protocol, parseInt(req.body.ftp_account_id)];
+			query = "UPDATE `ftp_accounts` SET `title` = ?, `username` = ?, `password` = ?, `ip` = ?, `port` = ?, `location` = ?, `protocol` = ?  WHERE `ftp_account_id` = ?";
+			params = [req.body.title, req.body.username, req.body.password, req.body.ip, req.body.port, req.body.location, req.body.protocol, parseInt(req.body.ftp_account_id)];
 		}
 		var formatedQuery = mysql.format(query, params);
 		mysql_client.query(formatedQuery, function (err, result) {
