@@ -22,6 +22,7 @@ var mysql_client = mysql.createConnection({
 
 var conn = new Client();
 var connectionProperties = {};
+var ftl_loc = "";
 
 function saveDateRemort(file_name, headers, rows, callback) {
 	var act_file = process.env.DATAEXPORT_CSV_SAVE_PATH + file_name;
@@ -50,7 +51,7 @@ function saveDateRemort(file_name, headers, rows, callback) {
 	writer.end();
 				
 	console.log('act_file : '+act_file);
-	var ftl_loc = process.env.DATAEXPORT_FTP_LOCATION;
+	//var ftl_loc = process.env.DATAEXPORT_FTP_LOCATION;
 	console.log('ftl_loc : '+ftl_loc);
 	conn.connect(connectionProperties);
 
@@ -119,13 +120,13 @@ var exportDataMng = {
 			}
 			else {
 				console.log("title : " + rows[0].title+", ip : " + rows[0].ip);
+				ftl_loc = rows[0].location;
 				connectionProperties = {
 					host: rows[0].ip,
 					user: rows[0].username,
 					port: rows[0].port,
 					password: rows[0].password
 				};
-				
 			}
 		});
 		

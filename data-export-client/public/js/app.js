@@ -174,7 +174,7 @@ mvpApp.controller('ftpAccountManager', ['$window', '$scope', '$location', '$http
 			if (deleteFtpAcc) {
 				$window.alert('Going to delete the FTP account');
 			}
-			ngToast.create('Data deleted successfully');
+			ngToast.create('FTP account has been deleted');
 		}
 	}
 	
@@ -197,7 +197,7 @@ mvpApp.controller('ftpAccountManager', ['$window', '$scope', '$location', '$http
 		} else {
 			$http.post(Api.root_url+ "api/saveftpaccount", $scope.ftp).
 			success(function (data, status, headers, config) {
-				alert("FTP account has been saved");
+				//alert("FTP account has been saved");
 				$scope.ftp_data = [];
 				$http.get(Api.root_url+ "api/listftpaccounts").
 				success(function (response, status, headers, config) {
@@ -212,7 +212,7 @@ mvpApp.controller('ftpAccountManager', ['$window', '$scope', '$location', '$http
 			error(function (data, status, headers, config) {
 				alert("Error while saving data");
 			});
-			ngToast.create('Data saved successfully');
+			ngToast.create('FTP account has been saved');
 		}
 	}
 }]);
