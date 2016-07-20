@@ -153,6 +153,7 @@ var exportDataMng = {
 		}
 		else{
 			_query += " FROM " + req.body.table + " WHERE added_time BETWEEN ? AND ?";
+			console.log(_query);
 			var _formatedQuery = mysql.format(_query, [start, end]);
 			mysql_client.query(_formatedQuery, function (err, rows) {
 				if(err) console.log(err);
