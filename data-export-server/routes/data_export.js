@@ -43,7 +43,7 @@ function saveDateRemort(file_name, headers, rows, callback) {
 			resultRow.push(rowData);
 			writer.write(rowData);
 			//console.log("ROW - " + JSON.stringify(row));
-			//console.log("ROW_DATA - " + JSON.stringify(rowData));
+			console.log("ROW_DATA - " + JSON.stringify(rowData));
 		}
 	});
 	//console.log("FULL - " + JSON.stringify(resultRow));
