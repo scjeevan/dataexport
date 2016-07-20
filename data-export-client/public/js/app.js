@@ -13,8 +13,8 @@ mvpApp.config(function($routeProvider, $httpProvider) {
 			templateUrl: 'views/bulkdata.html',
 			controller: 'MainCtrl'
 		})
-		.when('/thematic', {
-			templateUrl: 'views/thematicdata.html',
+		.when('/schedule', {
+			templateUrl: 'views/schedule.html',
 			controller: 'MainCtrl'
 		})
 		.when('/credentials', {

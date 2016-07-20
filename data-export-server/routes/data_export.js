@@ -5,12 +5,12 @@ var csvWriter = require('csv-write-stream');
 var writer = csvWriter();
 
 var gcloud = require('gcloud')({
-  projectId: 'diggit-1266',
-  keyFilename: '/home/dileepa/gcloud.key/Diggit-ffb0bd215a66.json'
+	projectId: process.env.DATAEXPORT_GQ_PROJECT_ID,
+	keyFilename: process.env.DATAEXPORT_GQ_KEY_PATH
 });
 var bigquery = gcloud.bigquery({
-  projectId: 'diggit-1266',
-  keyFilename: '/home/dileepa/gcloud.key/Diggit-ffb0bd215a66.json'
+	projectId: process.env.DATAEXPORT_GQ_PROJECT_ID,
+	keyFilename: process.env.DATAEXPORT_GQ_KEY_PATH
 });
 
 var mysql_client = mysql.createConnection({
