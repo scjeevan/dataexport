@@ -152,7 +152,7 @@ var exportDataMng = {
 			});
 		}
 		else{
-			var tableName = (req.body.table == 'title')?'mm_titles':'infohashes';
+			var tableName = (req.body.table === 'title')?'mm_titles':'infohashes';
 			_query += " FROM " + tableName + " WHERE added_time BETWEEN ? AND ?";
 			console.log(_query);
 			var _formatedQuery = mysql.format(_query, [start, end]);
