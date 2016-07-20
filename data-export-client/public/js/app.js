@@ -3,6 +3,11 @@ var server_path = 'http://146.148.110.133:4142/';
 
 var mvpApp = angular.module('dataExportApp', ['ngCookies', 'ngAnimate', 'ngRoute', 'googlechart', 'ui.bootstrap', 'infinite-scroll', 'smart-table', 'ngToast', 'angularSpinner', 'checklist-model', 'ui.date']);
 
+var titleColumns = ["title", "season", "episode", "studio", "content-type", "genre", "mpaa_rating"];
+var infohashesColumns = ["infohash", "file_name", "created_by", "created_time", "added_time", "updated_time", "episode_title", "added_by", "languages", "verified"];
+var ipColumns = ["Infohash", "TitleID", "Date", "IP", "Port", "Continent", "Country", "Region", "State", "City", "Latitude", "Longitude", "ISP", "OrganizationType", "NameofProtocol", "UniqueDownloads", "source"];
+
+
 mvpApp.constant('root_url', server_path).service('Api', function(root_url) {
 	this.root_url = root_url;
 });
@@ -53,11 +58,11 @@ mvpApp.controller('dataExportForm', ['$window', '$scope', '$location', '$http', 
 	$scope.columns = [];
 	$scope.loadColumns = function(value) {
 		if(value=='title'){
-			$scope.columns = ["title", "season", "episode", "studio", "content-type", "genre", "mpaa_rating"]; //mm_titles
-		} else if(value=='infohashes1'){
-			$scope.columns = ["infohash", "file_name", "created_by", "created_time", "added_time", "updated_time", "episode_title", "added_by", "languages", "verified"]; // infohashes
+			$scope.columns = titleColumns; //mm_titles
+		} else if(value=='infohashes'){
+			$scope.columns = infohashesColumns; // infohashes
 		} else if(value=='ip'){
-			$scope.columns = ["Infohash", "TitleID", "Date", "IP", "Port", "Continent", "Country", "Region", "State", "City", "Latitude", "Longitude", "ISP", "OrganizationType", "NameofProtocol", "UniqueDownloads", "source"];
+			$scope.columns = ipColumns;
 		}
 	};
 	$scope.exportData = function() {
@@ -106,11 +111,11 @@ mvpApp.controller('scheduleDataExport', ['$window', '$scope', '$location', '$htt
 	$scope.columns = [];
 	$scope.loadColumns = function(value) {
 		if(value=='title'){
-			$scope.columns = ["title", "season", "episode", "studio", "content-type", "genre", "mpaa_rating"]; //mm_titles
-		} else if(value=='infohashes1'){
-			$scope.columns = ["infohash", "file_name", "created_by", "created_time", "added_time", "updated_time", "episode_title", "added_by", "languages", "verified"]; // infohashes
+			$scope.columns = titleColumns; //mm_titles
+		} else if(value=='infohashes'){
+			$scope.columns = infohashesColumns; // infohashes
 		} else if(value=='ip'){
-			$scope.columns = ["Infohash", "TitleID", "Date", "IP", "Port", "Continent", "Country", "Region", "State", "City", "Latitude", "Longitude", "ISP", "OrganizationType", "NameofProtocol", "UniqueDownloads", "source"];
+			$scope.columns = ipColumns;
 		}
 	};
 	$scope.createSchedule = function() {
