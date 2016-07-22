@@ -111,7 +111,7 @@ mvpApp.controller('scheduleDataExport', ['$window', '$scope', '$location', '$htt
 	$scope.exp = {};
 	$scope.columns = [];
 	$scope.loadColumns = function(value) {
-		$scope.columns = [];
+		$scope.exp.columns = [];
 		if(value=='title'){
 			$scope.columns = titleColumns; //mm_titles
 		} else if(value=='infohashes'){
