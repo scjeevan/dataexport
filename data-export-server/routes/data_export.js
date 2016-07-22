@@ -152,10 +152,16 @@ var exportDataMng = {
 			});
 		}
 		else{
-			var tableName = (req.body.table === 'title')?'mm_titles':'infohashes';
-			_query += " FROM " + tableName + " WHERE added_time BETWEEN ? AND ?";
+			var _formatedQuery = null;
+			if(req.body.table === 'title'){
+				_query += " FROM mm_titles";
+				_formatedQuery = mysql.format(_query);
+			}
+			else{
+				_query += " FROM infohashes WHERE added_time BETWEEN ? AND ?";
+				_formatedQuery = mysql.format(_query, [start, end]);
+			}
 			console.log(_query);
-			var _formatedQuery = mysql.format(_query, [start, end]);
 			mysql_client.query(_formatedQuery, function (err, rows) {
 				if(err) console.log(err);
 				saveDateRemort(file_name, headers, rows, function (result) {
