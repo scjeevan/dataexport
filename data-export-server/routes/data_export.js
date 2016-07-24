@@ -24,7 +24,7 @@ var conn = new Client();
 var connectionProperties = {};
 var ftl_loc = "";
 
-function saveDateRemort(file_name, headers, rows, callback) {
+function saveDateRemort(file_name, headers, rows) {
 	var act_file = process.env.DATAEXPORT_CSV_SAVE_PATH + file_name;
 	var writer = csvWriter({ 
 		headers: headers,
@@ -97,7 +97,7 @@ function saveDateRemort(file_name, headers, rows, callback) {
 		});
 	}); 
 	console.log("END METHOD");
-	callback("SUCCESS");
+	//callback("SUCCESS");
 }
 
 var exportDataMng = {
@@ -119,7 +119,6 @@ var exportDataMng = {
 				console.log(err);
 			}
 			else {
-				console.log("title : " + rows[0].title+", ip : " + rows[0].ip);
 				ftl_loc = rows[0].location;
 				connectionProperties = {
 					host: rows[0].ip,
@@ -142,13 +141,13 @@ var exportDataMng = {
 		var file_name = req.body.table + "-" + Math.floor(new Date() / 1000) + ".csv";
 		if(req.body.table == 'ip'){
 			_query += " FROM diggit_hist.Diggit_IP WHERE Date BETWEEN '"+start+"' AND '"+end+"'";
+			console.log("[QUERY]:"+_query);
 			bigquery.query(_query, function(err,rows){
 				if(err) console.log(err);
-				saveDateRemort(file_name, headers, rows, function (result) {
-					res.json({
-						values: result
-					});
+				res.json({
+					values: "SUCCESS"
 				});
+				saveDateRemort(file_name, headers, rows);
 			});
 		}
 		else{
@@ -161,14 +160,13 @@ var exportDataMng = {
 				_query += " FROM infohashes WHERE added_time BETWEEN ? AND ?";
 				_formatedQuery = mysql.format(_query, [start, end]);
 			}
-			console.log(_query);
+			console.log("[QUERY]:"+_query);
 			mysql_client.query(_formatedQuery, function (err, rows) {
 				if(err) console.log(err);
-				saveDateRemort(file_name, headers, rows, function (result) {
-					res.json({
-						values: result
-					});
+				res.json({
+					values: "SUCCESS"
 				});
+				saveDateRemort(file_name, headers, rows);
 			});
 		}
 	},
