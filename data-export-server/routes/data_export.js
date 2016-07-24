@@ -132,7 +132,7 @@ var exportDataMng = {
 			bigquery.query(_query, function(err,rows){
 				if(err) console.log(err);
 				res.json({
-					values: "SUCCESS"+rows.count;
+					values: "SUCCESS"+rows.count
 				});
 				saveDateRemort(file_name, headers, rows);
 			});
@@ -151,7 +151,7 @@ var exportDataMng = {
 			mysql_client.query(_formatedQuery, function (err, rows) {
 				if(err) console.log(err);
 				res.json({
-					values: "SUCCESS"+rows.length;
+					values: "SUCCESS"+rows.length
 				});
 				saveDateRemort(file_name, headers, rows);
 			});
