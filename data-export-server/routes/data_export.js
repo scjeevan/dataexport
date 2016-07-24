@@ -33,28 +33,17 @@ function saveDateRemort(file_name, headers, rows) {
 		sendHeaders: true
 	});
 	writer.pipe(fs.createWriteStream( act_file ));
-	var resultRow = [];
 	rows.forEach(function (row) {
 		if (row != null) {
 			var rowData = [];
 			headers.forEach(function (header) {
 				rowData.push(row[header]);
 			});
-			resultRow.push(rowData);
 			writer.write(rowData);
-			//console.log("ROW - " + JSON.stringify(row));
-			//console.log("ROW_DATA - " + JSON.stringify(rowData));
 		}
 	});
-	//console.log("FULL - " + JSON.stringify(resultRow));
-	//writer.write(resultRow);
 	writer.end();
-				
-	console.log('act_file : '+act_file);
-	//var ftl_loc = process.env.DATAEXPORT_FTP_LOCATION;
-	console.log('ftl_loc : '+ftl_loc);
 	conn.connect(connectionProperties);
-
 	conn.on(
 		'connect',
 		function () {
@@ -68,7 +57,6 @@ function saveDateRemort(file_name, headers, rows) {
 			process.exit( 1 );
 		}
 	);
-	 
 	conn.on(
 		'end',
 		function () {
@@ -97,7 +85,6 @@ function saveDateRemort(file_name, headers, rows) {
 		});
 	}); 
 	console.log("END METHOD");
-	//callback("SUCCESS");
 }
 
 var exportDataMng = {
@@ -145,7 +132,7 @@ var exportDataMng = {
 			bigquery.query(_query, function(err,rows){
 				if(err) console.log(err);
 				res.json({
-					values: "SUCCESS"
+					values: "SUCCESS"+rows.length;
 				});
 				saveDateRemort(file_name, headers, rows);
 			});
@@ -164,7 +151,7 @@ var exportDataMng = {
 			mysql_client.query(_formatedQuery, function (err, rows) {
 				if(err) console.log(err);
 				res.json({
-					values: "SUCCESS"
+					values: "SUCCESS"+rows.length;
 				});
 				saveDateRemort(file_name, headers, rows);
 			});
