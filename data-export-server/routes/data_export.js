@@ -131,8 +131,9 @@ var exportDataMng = {
 			console.log("[QUERY]:"+_query);
 			bigquery.query(_query, function(err,rows){
 				if(err) console.log(err);
+				var status = (rows.length==0)?"NO_DATA":"SUCCESS";
 				res.json({
-					values: "SUCCESS"+rows.count
+					values: status
 				});
 				saveDateRemort(file_name, headers, rows);
 			});
@@ -150,8 +151,9 @@ var exportDataMng = {
 			console.log("[QUERY]:"+_query);
 			mysql_client.query(_formatedQuery, function (err, rows) {
 				if(err) console.log(err);
+				var status = (rows.length==0)?"NO_DATA":"SUCCESS";
 				res.json({
-					values: "SUCCESS"+rows.length
+					values: status
 				});
 				saveDateRemort(file_name, headers, rows);
 			});
