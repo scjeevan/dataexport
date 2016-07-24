@@ -82,7 +82,7 @@ mvpApp.controller('dataExportForm', ['$window', '$scope', '$location', '$http', 
 		else{
 			$http.post(Api.root_url+ "api/export", $scope.exp).
 			success(function (data, status, headers, config) {
-				console.log(data);
+				console.log(data.values);
 				ngToast.create('Data saved successfully');
 			}).
 			error(function (data, status, headers, config) {
