@@ -6,12 +6,12 @@ var connection = mysql.createConnection({
     password: process.env.DATAEXPORT_MYSQL_PASSWORD,
     database: process.env.DATAEXPORT_MYSQL_DBNAME
 });
-
+/*
 console.log('MYSQL_HOST: ', process.env.DATAEXPORT_MYSQL_HOST);
 console.log('MYSQL_USER: ', process.env.DATAEXPORT_MYSQL_USER);
 console.log('MYSQL_PASSWORD: ', process.env.DATAEXPORT_MYSQL_PASSWORD);
 console.log('MYSQL_DBNAME: ', process.env.DATAEXPORT_MYSQL_DBNAME);
-
+*/
 //connection.connect();
  
 

@@ -127,7 +127,7 @@ var exportDataMng = {
 		var end = req.body.endDate.replace(/T/, ' ').replace(/\..+/, '');
 		var file_name = req.body.table + "-" + Math.floor(new Date() / 1000) + ".csv";
 		if(req.body.table == 'ip'){
-			_query += " FROM diggit_hist.Diggit_IP WHERE Date BETWEEN '"+start+"' AND '"+end+"'";
+			_query += " FROM DevDiggit_Hist.Diggit_IP WHERE Date BETWEEN '"+start+"' AND '"+end+"'";
 			console.log("[QUERY]:"+_query);
 			bigquery.query(_query, function(err,rows){
 				if(err) console.log(err);

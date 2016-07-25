@@ -12,8 +12,8 @@ DATAEXPORT_MYSQL_PASSWORD=torrentsadmin@77654
 DATAEXPORT_MYSQL_DBNAME=torrents
 DATAEXPORT_CSV_SAVE_PATH=/home/jeevan/data/
 DATAEXPORT_FTP_LOCATION=/dataexport_sftp/
-DATAEXPORT_GQ_PROJECT_ID=diggit-1266
-DATAEXPORT_GQ_KEY_PATH=/home/dileepa/gcloud.key/Diggit-ffb0bd215a66.json
+DATAEXPORT_GQ_PROJECT_ID=devdiggit-1
+DATAEXPORT_GQ_KEY_PATH=/home/jeevan/gcloud.key/DevDiggit-2f271ead8f6e.json
 #MANAGEMENT_API_URL=http://dev.management.diggit.com/public/api/
 #AUTH_API_BASE_URL=http://dev.management.diggit.com/
 
