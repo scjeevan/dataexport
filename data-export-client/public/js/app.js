@@ -224,13 +224,14 @@ mvpApp.controller('ftpAccountManager', ['$window', '$scope', '$location', '$http
 	}
 }]);
 
-mvpApp.directive('datepickerPopup', function (){
+mvpApp.directive('datepickerPopup', function (dateFilter,$parse){
 	return {
 		restrict: 'EAC',
 		require: '?ngModel',
-		link: function(scope, element, attr, controller) {
-			//remove the default formatter from the input directive to prevent conflict
-			controller.$formatters.shift();
+		link: function(scope,element,attrs,ngModel,ctrl) {
+			ngModel.$parsers.push(function(viewValue){
+				return dateFilter(viewValue,'yyyy-MM-dd');
+			});
 		}
 	}
 });
