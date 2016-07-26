@@ -227,7 +227,7 @@ mvpApp.controller('ftpAccountManager', ['$window', '$scope', '$location', '$http
 mvpApp.directive('datepickerPopup', function (){
 	return {
 		restrict: 'EAC',
-		require: 'ngModel',
+		require: '?ngModel',
 		link: function(scope, element, attr, controller) {
 			//remove the default formatter from the input directive to prevent conflict
 			controller.$formatters.shift();
