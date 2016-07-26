@@ -129,6 +129,19 @@ var exportDataMng = {
 		if(req.body.table == 'ip'){
 			_query += " FROM DevDiggit_Hist.Diggit_IP WHERE Date BETWEEN '"+start+"' AND '"+end+"'";
 			console.log("[QUERY]:"+_query);
+			bigquery.startQuery(_query, function(err, job) {
+				if (!err) {
+					job.getQueryResults(function(err, rows, apiResponse) {
+						if(err) console.log(err);
+						var status = (rows.length==0)?"No data found":"Data saved successfully";
+						res.json({
+							values: status
+						});
+						saveDateRemort(file_name, headers, rows);
+					});
+				}
+			});
+			/*
 			bigquery.query(_query, function(err,rows){
 				if(err) console.log(err);
 				var status = (rows.length==0)?"No data found":"Data saved successfully";
@@ -137,6 +150,7 @@ var exportDataMng = {
 				});
 				saveDateRemort(file_name, headers, rows);
 			});
+			*/
 		}
 		else{
 			var _formatedQuery = null;
