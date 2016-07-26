@@ -230,7 +230,7 @@ mvpApp.directive('datepickerPopup', function (dateFilter,$parse){
 		require: '?ngModel',
 		link: function(scope,element,attrs,ngModel,ctrl) {
 			ngModel.$parsers.push(function(viewValue){
-				return dateFilter(viewValue,'yyyy-MM-dd');
+				return dateFilter(viewValue,'yyyy-MM-dd 23:59:59');
 			});
 		}
 	}
