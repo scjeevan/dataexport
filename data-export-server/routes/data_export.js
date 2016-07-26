@@ -129,10 +129,7 @@ var exportDataMng = {
 		if(req.body.table == 'ip'){
 			_query += " FROM DevDiggit_Hist.Diggit_IP WHERE Date BETWEEN '"+start+"' AND '"+end+"'";
 			console.log("[QUERY]:"+_query);
-			bigquery.startQuery({
-				'query':_query,
-				'allowLargeResults':true
-			}, function(err, job) {
+			bigquery.startQuery(_query, function(err, job) {
 				if (!err) {
 					job.getQueryResults(function(err, rows, apiResponse) {
 						if(err) console.log(err);
