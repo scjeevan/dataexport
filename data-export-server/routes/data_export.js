@@ -2,7 +2,7 @@ var mysql = require("mysql");
 var fs = require("file-system");
 var Client = require('ssh2').Client;
 var csvWriter = require('csv-write-stream');
-//var schedule = require('node-schedule');
+var schedule = require('node-schedule');
 var writer = csvWriter();
 
 var gcloud = require('gcloud')({
@@ -25,9 +25,6 @@ var conn = new Client();
 var connectionProperties = {};
 var ftl_loc = "";
 
-function printVal(txt) {
-	console.log( "txt - ", txt );
-}
 function saveDateRemort(file_name, headers, rows) {
 	var act_file = process.env.DATAEXPORT_CSV_SAVE_PATH + file_name;
 	var writer = csvWriter({ 
@@ -204,26 +201,117 @@ var exportDataMng = {
         });
 	}
 };
-/*
+
 var j = schedule.scheduleJob('0 * * * * *', function(){
 	var date = new Date();
 
 	var month = date.getMonth() + 1;
 	var day  = date.getDate();
 	var weekDay = date.getDay();
-
+	var query = "SELECT `table_name`, `selected_columns`, `title`, `username`, `password`, `ip`, `port`, `location` ,`protocol` FROM `data_export_schedules`,`ftp_accounts` WHERE `data_export_schedules`.`ftp_account_id` = `ftp_accounts`.`ftp_account_id` AND `data_export_schedules`.`frequency`=?";
+	var params = [];
 	console.log('Data Export Job Runnig at ' + date);
-	if((month == 1 || month == 5 || month == 9) && day == 1){
-		
+	//if((month == 1 || month == 5 || month == 9) && day == 1){
+		params = ['quarterly'];
+		var formatedQuery = mysql.format(query, params);
+		mysql_client.query(formatedQuery, function (err, rows) {
+			if (err) {
+				console.log(err);
+			}
+			else {
+				var tableName = rows[0].table_name;
+				var selected_columns = rows[0].selected_columns;
+				var ftpLocation = rows[0].location;
+				var connProps = {
+					host: rows[0].ip,
+					user: rows[0].username,
+					port: rows[0].port,
+					password: rows[0].password
+				};
+				var d = new Date();
+				d.setMonth(month - 4);
+				var start = d.toISOString().replace(/T/, ' ').replace(/\..+/, '')
+				var end = new Date().toISOString().replace(/T/, ' ').replace(/\..+/, '');
+				var columns = selected_columns.split(",");
+				console.log('start ' + start);
+				console.log('end ' + end);
+				//prepareToExport(tableName, columns, connProps, start, end, ftpLocation);
+			}
+		});
+		/*
 	}
 	else if(day == 1){
-		
+		params = ['monthly'];
+
 	}
-	else if(weekDay == 1){
-		
+	if(weekDay == 1){
+		params = ['weekly'];
+
 	}
+	*/
 	console.log('Data Export Job Ended at ' + date);	
 });
-*/
+
+function prepareToExport(tableName, columns, connProps, startDate, endDate, ftpLocation) {
+	connectionProperties = connProps;
+	ftl_loc = ftpLocation;
+	var file_name = tableName + "-" + Math.floor(new Date() / 1000) + ".csv";
+	var _query = "SELECT ";
+	var headers = [];
+	for (var i in columns) {
+		_query += columns[i] + ",";
+		headers.push(columns[i]);
+	}
+	_query = _query.substring(0, _query.length - 1);
+	
+	if(table_name == 'ip'){
+		_query += " FROM DevDiggit_Hist.Diggit_IP WHERE Date BETWEEN '"+startDate+"' AND '"+endDate+"'";
+		console.log("[QUERY]:"+_query);
+		bigquery.startQuery(_query, function(err, job) {
+			if (!err) {
+				job.getQueryResults(function(err, rows, apiResponse) {
+					if(err) console.log(err);
+					var status = (rows.length==0)?"No data found":"Data saved successfully";
+					res.json({
+						values: status
+					});
+					saveDateRemort(file_name, headers, rows);
+				});
+			}
+		});
+		/*
+		bigquery.query(_query, function(err,rows){
+			if(err) console.log(err);
+			var status = (rows.length==0)?"No data found":"Data saved successfully";
+			res.json({
+				values: status
+			});
+			saveDateRemort(file_name, headers, rows);
+		});
+		*/
+	}
+	else{
+		var _formatedQuery = null;
+		if(table_name === 'title'){
+			_query += " FROM mm_titles";
+			_formatedQuery = mysql.format(_query);
+		}
+		else{
+			_query += " FROM infohashes WHERE added_time BETWEEN ? AND ?";
+			_formatedQuery = mysql.format(_query, [startDate, endDate]);
+		}
+		console.log("[QUERY]:"+_query);
+		mysql_client.query(_formatedQuery, function (err, rows) {
+			if(err) console.log(err);
+			var status = (rows.length==0)?"No data found":"Data saved successfully";
+			res.json({
+				values: status
+			});
+			saveDateRemort(file_name, headers, rows);
+		});
+	}
+	
+}
+
 module.exports = exportDataMng;
 
