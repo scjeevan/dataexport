@@ -1,9 +1,9 @@
 var express = require('express');
 var router = express.Router();
 
-var schedular = require('./schedular.js');
 var ftpDetailsManager = require('./ftp_accounts.js');
 var dataExportManager = require('./data_export.js');
+var schedular = require('./schedular.js');
 var auth = require('../middlewares/authService');
 
 var TITLE_MAMAGEMENT_PRIVILEGE = 'TITLE MANAGEMENT';
