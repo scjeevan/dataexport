@@ -2,7 +2,7 @@ var mysql = require("mysql");
 var fs = require("file-system");
 var Client = require('ssh2').Client;
 var csvWriter = require('csv-write-stream');
-var schedule = require('node-schedule');
+//var schedule = require('node-schedule');
 var writer = csvWriter();
 
 var gcloud = require('gcloud')({
@@ -25,6 +25,9 @@ var conn = new Client();
 var connectionProperties = {};
 var ftl_loc = "";
 
+function printVal(txt) {
+	console.log( "txt - ", txt );
+}
 function saveDateRemort(file_name, headers, rows) {
 	var act_file = process.env.DATAEXPORT_CSV_SAVE_PATH + file_name;
 	var writer = csvWriter({ 
@@ -201,7 +204,7 @@ var exportDataMng = {
         });
 	}
 };
-
+/*
 var j = schedule.scheduleJob('0 * * * * *', function(){
 	var date = new Date();
 
@@ -221,6 +224,6 @@ var j = schedule.scheduleJob('0 * * * * *', function(){
 	}
 	console.log('Data Export Job Ended at ' + date);	
 });
-
+*/
 module.exports = exportDataMng;
 

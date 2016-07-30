@@ -12,6 +12,7 @@ var j = schedule.scheduleJob('0 * * * * *', function(){
 	var weekDay = date.getDay();
 
 	console.log('Data Export Job Runnig at ' + date);
+	printVal("WORKING");
 	if((month == 1 || month == 5 || month == 9) && day == 1){
 		
 	}
