@@ -2,6 +2,7 @@ var mysql = require("mysql");
 var fs = require("file-system");
 var Client = require('ssh2').Client;
 var csvWriter = require('csv-write-stream');
+var schedule = require('node-schedule');
 var writer = csvWriter();
 
 var gcloud = require('gcloud')({
@@ -200,6 +201,26 @@ var exportDataMng = {
         });
 	}
 };
+
+var j = schedule.scheduleJob('0 * * * * *', function(){
+	var date = new Date();
+
+	var month = date.getMonth() + 1;
+	var day  = date.getDate();
+	var weekDay = date.getDay();
+
+	console.log('Data Export Job Runnig at ' + date);
+	if((month == 1 || month == 5 || month == 9) && day == 1){
+		
+	}
+	else if(day == 1){
+		
+	}
+	else if(weekDay == 1){
+		
+	}
+	console.log('Data Export Job Ended at ' + date);	
+});
 
 module.exports = exportDataMng;
 
