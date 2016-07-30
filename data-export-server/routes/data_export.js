@@ -187,17 +187,9 @@ var exportDataMng = {
 			_columns += req.body.columns[i] + ",";
 		}
 		_columns = _columns.substring(0, _columns.length - 1);
-		var _cron = "0 * * * * *";
-		if(req.body.switch_3 == "weekly"){
-			_cron = "0 0 0 * * 0";
-		} else if(req.body.switch_3 == "monthly"){
-			_cron = "0 0 0 1 * *";
-		} else if(req.body.switch_3 == "quarterly"){
-			_cron = "0 0 0 1 0/4 *";
-		}
 		var now = new Date();
-		var _query = "INSERT INTO data_export_schedules (cron_expression,table_name,selected_columns,added_date,ftp_account_id) VALUES (?, ?, ?, ?, ?)";
-		var _formatedQuery = mysql.format(_query, [_cron, req.body.table, _columns, now, ftp_account_id]);
+		var _query = "INSERT INTO data_export_schedules (frequency,table_name,selected_columns,added_date,ftp_account_id) VALUES (?, ?, ?, ?, ?)";
+		var _formatedQuery = mysql.format(_query, [req.body.switch_3, req.body.table, _columns, now, ftp_account_id]);
 		mysql_client.query(_formatedQuery, function (err, rows) {
 			console.log("SAVED");
 		});
