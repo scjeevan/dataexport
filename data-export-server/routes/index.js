@@ -1,9 +1,7 @@
 var express = require('express');
 var router = express.Router();
 
-var test = require('./dbtest.js');
-var gqtest = require('./gqtest.js');
-var testftp = require('./ftptest2.js');
+var schedular = require('./schedular.js');
 var ftpDetailsManager = require('./ftp_accounts.js');
 var dataExportManager = require('./data_export.js');
 var auth = require('../middlewares/authService');
@@ -19,9 +17,6 @@ router.get('/api/login', auth.checkAuthenticity());
 /*
  * Routes that can be accessed only by autheticated users
  */
-router.get('/api/test', test.testDB);
-router.get('/api/gqtest', gqtest.testBigQuery);
-router.get('/api/testftp', testftp.testFTP2);
 router.get('/api/listftpaccounts', ftpDetailsManager.listFtpAccounts);
 router.post('/api/saveftpaccount', ftpDetailsManager.saveFtpAccount);
 router.post('/api/export', dataExportManager.exportData);
