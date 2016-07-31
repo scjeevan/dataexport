@@ -266,7 +266,7 @@ function processToExport(tableName, columns, connProps, startDate, endDate, ftpL
 	}
 	_query = _query.substring(0, _query.length - 1);
 	
-	if(table_name == 'ip'){
+	if(tableName == 'ip'){
 		_query += " FROM DevDiggit_Hist.Diggit_IP WHERE Date BETWEEN '"+startDate+"' AND '"+endDate+"'";
 		console.log("[QUERY]:"+_query);
 		bigquery.startQuery(_query, function(err, job) {
@@ -294,7 +294,7 @@ function processToExport(tableName, columns, connProps, startDate, endDate, ftpL
 	}
 	else{
 		var _formatedQuery = null;
-		if(table_name === 'title'){
+		if(tableName === 'title'){
 			_query += " FROM mm_titles";
 			_formatedQuery = mysql.format(_query);
 		}
