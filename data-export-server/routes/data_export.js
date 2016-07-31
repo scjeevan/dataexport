@@ -235,7 +235,11 @@ var j = schedule.scheduleJob('0 * * * * *', function(){
 						var start = d.toISOString().replace(/T/, ' ').replace(/\..+/, '')
 						var end = new Date().toISOString().replace(/T/, ' ').replace(/\..+/, '');
 						var columns = selected_columns.split(",");
-						processToExport(tableName, columns, connProps, start, end, ftpLocation);
+						processToExport(tableName, columns, connProps, start, end, ftpLocation, , function (result) {
+							res.json({
+								values: result
+							});
+						});
 					}
 				});
 				
@@ -256,7 +260,7 @@ var j = schedule.scheduleJob('0 * * * * *', function(){
 	console.log('Data Export Job Ended at ' + date);	
 });
 
-function processToExport(tableName, columns, connProps, startDate, endDate, ftpLocation) {
+function processToExport(tableName, columns, connProps, startDate, endDate, ftpLocation, callback) {
 	var file_name = tableName + "-" + Math.floor(new Date() / 1000) + ".csv";
 	var _query = "SELECT ";
 	var headers = [];
@@ -274,9 +278,7 @@ function processToExport(tableName, columns, connProps, startDate, endDate, ftpL
 				job.getQueryResults(function(err, rows, apiResponse) {
 					if(err) console.log(err);
 					var status = (rows.length==0)?"No data found":"Data saved successfully";
-					res.json({
-						values: status
-					});
+					callback(status);
 					saveDateRemort(file_name, headers, rows, connProps, ftpLocation);
 				});
 			}
@@ -306,9 +308,7 @@ function processToExport(tableName, columns, connProps, startDate, endDate, ftpL
 		mysql_client.query(_formatedQuery, function (err, rows) {
 			if(err) console.log(err);
 			var status = (rows.length==0)?"No data found":"Data saved successfully";
-			res.json({
-				values: status
-			});
+			callback(status);
 			saveDateRemort(file_name, headers, rows);
 		});
 	}
