@@ -202,7 +202,7 @@ var exportDataMng = {
 	}
 };
 
-var j = schedule.scheduleJob('0 * * * * *', function(){
+var j = schedule.scheduleJob('0 0 0 * * *', function(){
 	var date = new Date();
 	console.log('Data Export Job Runnig at ' + date);
 	var month = date.getMonth() + 1;
