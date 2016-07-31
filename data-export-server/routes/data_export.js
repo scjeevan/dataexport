@@ -307,7 +307,7 @@ function processToExport(tableName, columns, connProps, startDate, endDate, ftpL
 			if(err) console.log(err);
 			var status = (rows.length==0)?"No data found":"Data saved successfully";
 			callback(status);
-			saveDateRemort(file_name, headers, rows);
+			saveDateRemort(file_name, headers, rows, connProps, ftpLocation);
 		});
 	}
 	
