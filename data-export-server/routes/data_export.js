@@ -212,7 +212,7 @@ var j = schedule.scheduleJob('0 * * * * *', function(){
 	var params = [];
 	console.log('Data Export Job Runnig at ' + date);
 	//if((month == 1 || month == 5 || month == 9) && day == 1){
-		params = ['quarterly'];
+		params = ['weekly'];
 		var formatedQuery = mysql.format(query, params);
 		mysql_client.query(formatedQuery, function (err, rows) {
 			if (err) {
