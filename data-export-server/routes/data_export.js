@@ -99,7 +99,7 @@ var exportDataMng = {
 		if (typeof req.body.ftp_account_id != 'undefined'){
 			ftp_account_id = parseInt(req.body.ftp_account_id);
 		}
-		query = "SELECT `title`, `username`, `password`, `ip`, `port`, `location` ,`protocol` FROM `ftp_accounts` WHERE `ftp_account_id`=?";
+		query = "SELECT `title`, `username`, `password`, `ip`, `port`, `location` ,`protocol` FROM `ftp_accounts` WHERE `ftp_account_id`=? LIMIT 10000";
 		params = [ftp_account_id];
 		var formatedQuery = mysql.format(query, params);
 		mysql_client.query(formatedQuery, function (err, rows) {
@@ -202,7 +202,7 @@ var exportDataMng = {
 	}
 };
 
-var j = schedule.scheduleJob('0 0 0 * * *', function(){
+var j = schedule.scheduleJob('0 0 0 1 * *', function(){
 	var date = new Date();
 	console.log('Data Export Job Runnig at ' + date);
 	var month = date.getMonth() + 1;
@@ -248,11 +248,71 @@ var j = schedule.scheduleJob('0 0 0 * * *', function(){
 	}
 	else if(day == 1){
 		params = ['monthly'];
-
+		var formatedQuery = mysql.format(query, params);
+		mysql_client.query(formatedQuery, function (err, rows) {
+			if (err) {
+				console.log(err);
+			}
+			else {
+				rows.forEach(function (row) {
+					if (row != null) {
+						var tableName = row.table_name;
+						var selected_columns = row.selected_columns;
+						var ftpLocation = row.location;
+						var connProps = {
+							host: row.ip,
+							user: row.username,
+							port: row.port,
+							password: row.password
+						};
+						var d = new Date();
+						d.setMonth(month - 1);
+						var start = d.toISOString().replace(/T/, ' ').replace(/\..+/, '')
+						var end = new Date().toISOString().replace(/T/, ' ').replace(/\..+/, '');
+						var columns = selected_columns.split(",");
+						processToExport(tableName, columns, connProps, start, end, ftpLocation, function (result) {
+							console.log(result);
+						});
+					}
+				});
+				
+				
+			}
+		});
 	}
 	if(weekDay == 1){
 		params = ['weekly'];
-
+		var formatedQuery = mysql.format(query, params);
+		mysql_client.query(formatedQuery, function (err, rows) {
+			if (err) {
+				console.log(err);
+			}
+			else {
+				rows.forEach(function (row) {
+					if (row != null) {
+						var tableName = row.table_name;
+						var selected_columns = row.selected_columns;
+						var ftpLocation = row.location;
+						var connProps = {
+							host: row.ip,
+							user: row.username,
+							port: row.port,
+							password: row.password
+						};
+						var d = new Date();
+						d.setDate(day - 7);
+						var start = d.toISOString().replace(/T/, ' ').replace(/\..+/, '')
+						var end = new Date().toISOString().replace(/T/, ' ').replace(/\..+/, '');
+						var columns = selected_columns.split(",");
+						processToExport(tableName, columns, connProps, start, end, ftpLocation, function (result) {
+							console.log(result);
+						});
+					}
+				});
+				
+				
+			}
+		});
 	}
 	*/
 	console.log('Data Export Job Ended at ' + date);	
