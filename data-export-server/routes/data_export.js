@@ -22,10 +22,8 @@ var mysql_client = mysql.createConnection({
 });
 
 var conn = new Client();
-var connectionProperties = {};
-var ftl_loc = "";
 
-function saveDateRemort(file_name, headers, rows) {
+function saveDateRemort(file_name, headers, rows, connectionProperties, ftl_loc) {
 	var act_file = process.env.DATAEXPORT_CSV_SAVE_PATH + file_name;
 	var writer = csvWriter({ 
 		headers: headers,
@@ -94,7 +92,9 @@ var exportDataMng = {
 		
 		var query = "";
 		var params = [];
-		
+		var connectionProperties = {};
+		var ftp_loc = "";
+
 		var ftp_account_id = 1;
 		if (typeof req.body.ftp_account_id != 'undefined'){
 			ftp_account_id = parseInt(req.body.ftp_account_id);
@@ -107,7 +107,7 @@ var exportDataMng = {
 				console.log(err);
 			}
 			else {
-				ftl_loc = rows[0].location;
+				ftp_loc = rows[0].location;
 				connectionProperties = {
 					host: rows[0].ip,
 					user: rows[0].username,
@@ -138,7 +138,7 @@ var exportDataMng = {
 						res.json({
 							values: status
 						});
-						saveDateRemort(file_name, headers, rows);
+						saveDateRemort(file_name, headers, rows, connectionProperties, ftp_loc);
 					});
 				}
 			});
@@ -170,7 +170,7 @@ var exportDataMng = {
 				res.json({
 					values: status
 				});
-				saveDateRemort(file_name, headers, rows);
+				saveDateRemort(file_name, headers, rows, connectionProperties, ftp_loc);
 			});
 		}
 	},
@@ -204,13 +204,13 @@ var exportDataMng = {
 
 var j = schedule.scheduleJob('0 * * * * *', function(){
 	var date = new Date();
-
+	console.log('Data Export Job Runnig at ' + date);
 	var month = date.getMonth() + 1;
 	var day  = date.getDate();
 	var weekDay = date.getDay();
 	var query = "SELECT `table_name`, `selected_columns`, `title`, `username`, `password`, `ip`, `port`, `location` ,`protocol` FROM `data_export_schedules`,`ftp_accounts` WHERE `data_export_schedules`.`ftp_account_id` = `ftp_accounts`.`ftp_account_id` AND `data_export_schedules`.`frequency`=?";
 	var params = [];
-	console.log('Data Export Job Runnig at ' + date);
+	
 	//if((month == 1 || month == 5 || month == 9) && day == 1){
 		params = ['weekly'];
 		var formatedQuery = mysql.format(query, params);
@@ -235,12 +235,11 @@ var j = schedule.scheduleJob('0 * * * * *', function(){
 						var start = d.toISOString().replace(/T/, ' ').replace(/\..+/, '')
 						var end = new Date().toISOString().replace(/T/, ' ').replace(/\..+/, '');
 						var columns = selected_columns.split(",");
-						console.log('start ' + start);
-						console.log('end ' + end);
+						processToExport(tableName, columns, connProps, start, end, ftpLocation);
 					}
 				});
 				
-				//prepareToExport(tableName, columns, connProps, start, end, ftpLocation);
+				
 			}
 		});
 		/*
@@ -257,9 +256,7 @@ var j = schedule.scheduleJob('0 * * * * *', function(){
 	console.log('Data Export Job Ended at ' + date);	
 });
 
-function prepareToExport(tableName, columns, connProps, startDate, endDate, ftpLocation) {
-	connectionProperties = connProps;
-	ftl_loc = ftpLocation;
+function processToExport(tableName, columns, connProps, startDate, endDate, ftpLocation) {
 	var file_name = tableName + "-" + Math.floor(new Date() / 1000) + ".csv";
 	var _query = "SELECT ";
 	var headers = [];
@@ -280,7 +277,7 @@ function prepareToExport(tableName, columns, connProps, startDate, endDate, ftpL
 					res.json({
 						values: status
 					});
-					saveDateRemort(file_name, headers, rows);
+					saveDateRemort(file_name, headers, rows, connProps, ftpLocation);
 				});
 			}
 		});
