@@ -219,22 +219,27 @@ var j = schedule.scheduleJob('0 * * * * *', function(){
 				console.log(err);
 			}
 			else {
-				var tableName = rows[0].table_name;
-				var selected_columns = rows[0].selected_columns;
-				var ftpLocation = rows[0].location;
-				var connProps = {
-					host: rows[0].ip,
-					user: rows[0].username,
-					port: rows[0].port,
-					password: rows[0].password
-				};
-				var d = new Date();
-				d.setMonth(month - 4);
-				var start = d.toISOString().replace(/T/, ' ').replace(/\..+/, '')
-				var end = new Date().toISOString().replace(/T/, ' ').replace(/\..+/, '');
-				var columns = selected_columns.split(",");
-				console.log('start ' + start);
-				console.log('end ' + end);
+				rows.forEach(function (row) {
+					if (row != null) {
+						var tableName = row.table_name;
+						var selected_columns = row.selected_columns;
+						var ftpLocation = row.location;
+						var connProps = {
+							host: row.ip,
+							user: row.username,
+							port: row.port,
+							password: row.password
+						};
+						var d = new Date();
+						d.setMonth(month - 4);
+						var start = d.toISOString().replace(/T/, ' ').replace(/\..+/, '')
+						var end = new Date().toISOString().replace(/T/, ' ').replace(/\..+/, '');
+						var columns = selected_columns.split(",");
+						console.log('start ' + start);
+						console.log('end ' + end);
+					}
+				});
+				
 				//prepareToExport(tableName, columns, connProps, start, end, ftpLocation);
 			}
 		});
