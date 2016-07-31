@@ -235,7 +235,7 @@ var j = schedule.scheduleJob('0 * * * * *', function(){
 						var start = d.toISOString().replace(/T/, ' ').replace(/\..+/, '')
 						var end = new Date().toISOString().replace(/T/, ' ').replace(/\..+/, '');
 						var columns = selected_columns.split(",");
-						processToExport(tableName, columns, connProps, start, end, ftpLocation, , function (result) {
+						processToExport(tableName, columns, connProps, start, end, ftpLocation, function (result) {
 							console.log(result);
 						});
 					}
