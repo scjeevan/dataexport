@@ -7,6 +7,7 @@ var app = express();
 
 app.use(logger('dev'));
 app.use(bodyParser.json({ limit: '50mb' }));
+app.use(bodyParser.urlencoded({limit: '50mb', extended: true}));
 app.use(cookieParser());
 
 app.all('/*', function (req, res, next) {
