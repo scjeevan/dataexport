@@ -117,7 +117,7 @@ var exportDataMng = {
 			}
 		});
 		
-		var _query = "SELECT ";
+		var _query = "";
 		var headers = [];
 		for (var i in req.body.columns) {
 			_query += req.body.columns[i] + ",";
@@ -128,9 +128,9 @@ var exportDataMng = {
 		var end = req.body.endDate.replace(/T/, ' ').replace(/\..+/, '');
 		var file_name = req.body.table + "-" + Math.floor(new Date() / 1000) + ".csv";
 		if(req.body.table == 'ip'){
-			_query += " FROM DevDiggit_Hist.Diggit_IP WHERE Date BETWEEN '"+start+"' AND '"+end+"' GROUP EACH BY " + _query + " ORDER BY log_time "; //LIMIT 100000
-			console.log("[QUERY]:"+_query);
-			bigquery.startQuery(_query, function(err, job) {
+			var fQuery = "SELECT " + _query +" FROM DevDiggit_Hist.Diggit_IP WHERE Date BETWEEN '"+start+"' AND '"+end+"' GROUP EACH BY " + _query + " ORDER BY log_time "; //LIMIT 100000
+			console.log("[QUERY]:"+fQuery);
+			bigquery.startQuery(fQuery, function(err, job) {
 				if (!err) {
 					job.getQueryResults(function(err, rows, apiResponse) {
 						if(err) console.log(err);
