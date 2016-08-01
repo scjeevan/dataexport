@@ -6,7 +6,7 @@ var cookieParser = require('cookie-parser');
 var app = express();
 
 app.use(logger('dev'));
-app.use(bodyParser.json({ limit: '50mb' }));
+app.use(bodyParser.json({ limit: '50mb' , extended: true}));
 app.use(cookieParser());
 
 app.all('/*', function (req, res, next) {
