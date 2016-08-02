@@ -130,7 +130,12 @@ var exportDataMng = {
 		if(req.body.table == 'ip'){
 			_query += " FROM DevDiggit_Hist.Diggit_IP WHERE Date BETWEEN '"+start+"' AND '"+end+"' "; // LIMIT 10000
 			console.log("[QUERY]:"+_query);
-			bigquery.startQuery(_query, function(err, job) {
+			bigquery.startQuery({
+				'configuration':{
+					'query':_query,
+					'allowLargeResults':true
+				}
+			}, function(err, job) {
 				if (!err) {
 					job.getQueryResults(function(err, rows, apiResponse) {
 						if(err) console.log(err);
@@ -166,7 +171,7 @@ var exportDataMng = {
 			console.log("[QUERY]:"+_query);
 			mysql_client.query(_formatedQuery, function (err, rows) {
 				if(err) console.log(err);
-				var status = (rows.length==0)?"No data found":"Data saved successfully";
+				var status = (rows.length==0)?"No data found":"Data exported successfully";
 				res.json({
 					values: status
 				});
