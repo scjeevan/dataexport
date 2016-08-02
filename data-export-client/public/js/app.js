@@ -167,11 +167,11 @@ mvpApp.controller('ftpAccountManager', ['$window', '$scope', '$location', '$http
 	$scope.selectedRow = null;
 	$scope.setClickedRow = function(index){
 		$scope.selectedRow = index;
-		$scope.ftp = $scope.ftp_data[index];
+		angular.copy($scope.ftp_data[index], $scope.ftp);
 	}
 	
 	$scope.resetForm = function(){
-		$scope.ftp = [];
+		angular.copy({},$scope.ftp);
 		$scope.selectedRow = null;
 	}
 	
@@ -179,9 +179,37 @@ mvpApp.controller('ftpAccountManager', ['$window', '$scope', '$location', '$http
 		if (typeof $scope.ftp.ftp_account_id != 'undefined') {
 			var deleteFtpAcc = $window.confirm('Are you absolutely sure you want to delete?');
 			if (deleteFtpAcc) {
-				$window.alert('Going to delete the FTP account');
+				$http.post(Api.root_url+ "api/deleteftpaccount", $scope.ftp).
+				success(function (data, status, headers, config) {
+					ngToast.create({
+						dismissOnTimeout:true,
+						timeout:4000,
+						content:'FTP account has been deleted',
+						dismissButton:true
+					});
+					$scope.ftp_data = [];
+					$http.get(Api.root_url+ "api/listftpaccounts").
+					success(function (response, status, headers, config) {
+						angular.forEach(response.values, function (v, k) {
+							this.push(v);
+						}, $scope.ftp_data);
+					}).
+					error(function (data, status, headers, config) {
+						ngToast.create({
+							className: 'danger',
+							dismissButton:true,
+							content: 'Error while retrieving data'
+						});
+					});
+				}).
+				error(function (data, status, headers, config) {
+					ngToast.create({
+						className: 'danger',
+						dismissButton:true,
+						content: 'Error while saving data'
+					});
+				});
 			}
-			ngToast.create('FTP account has been deleted');
 		}
 	}
 	
@@ -204,7 +232,12 @@ mvpApp.controller('ftpAccountManager', ['$window', '$scope', '$location', '$http
 		} else {
 			$http.post(Api.root_url+ "api/saveftpaccount", $scope.ftp).
 			success(function (data, status, headers, config) {
-				//alert("FTP account has been saved");
+				ngToast.create({
+					dismissOnTimeout:true,
+					timeout:4000,
+					content:'FTP account has been saved',
+					dismissButton:true
+				});
 				$scope.ftp_data = [];
 				$http.get(Api.root_url+ "api/listftpaccounts").
 				success(function (response, status, headers, config) {
@@ -213,13 +246,20 @@ mvpApp.controller('ftpAccountManager', ['$window', '$scope', '$location', '$http
 					}, $scope.ftp_data);
 				}).
 				error(function (data, status, headers, config) {
-					alert("Error while retrieving data");
+					ngToast.create({
+						className: 'danger',
+						dismissButton:true,
+						content: 'Error while retrieving data'
+					});
 				});
 			}).
 			error(function (data, status, headers, config) {
-				alert("Error while saving data");
+				ngToast.create({
+					className: 'danger',
+					dismissButton:true,
+					content: 'Error while saving data'
+				});
 			});
-			ngToast.create('FTP account has been saved');
 		}
 	}
 }]);

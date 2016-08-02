@@ -19,6 +19,7 @@ router.get('/api/login', auth.checkAuthenticity());
  */
 router.get('/api/listftpaccounts', ftpDetailsManager.listFtpAccounts);
 router.post('/api/saveftpaccount', ftpDetailsManager.saveFtpAccount);
+router.post('/api/deleteftpaccount', ftpDetailsManager.deleteFtpAccount);
 router.post('/api/export', dataExportManager.exportData);
 router.post('/api/schedule', dataExportManager.scheduleExportData);
 

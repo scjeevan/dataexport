@@ -56,6 +56,26 @@ var ftpAccountsData = {
 				});
 			}
 		});
+	},
+	
+	deleteFtpAccount: function (req, res) {
+		var query = "";
+		var params = [];
+		if (typeof req.body.ftp_account_id != 'undefined'){
+			query = "DELETE FROM `ftp_accounts` WHERE `ftp_account_id` = ?";
+			params = [parseInt(req.body.ftp_account_id)];
+			var formatedQuery = mysql.format(query, params);
+			mysql_client.query(formatedQuery, function (err, result) {
+				if (err) {
+					console.log(err);
+				}
+				else {
+					res.json({
+						values: result
+					});
+				}
+			});
+		}
 	}
 
 };
