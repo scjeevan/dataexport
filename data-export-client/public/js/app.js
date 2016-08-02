@@ -51,7 +51,11 @@ mvpApp.controller('dataExportForm', ['$window', '$scope', '$location', '$http', 
 		}, $scope.ftp_acc_list);
 	}).
 	error(function (data, status, headers, config) {
-		alert("Error while retrieving data");
+		ngToast.create({
+			className: 'danger',
+			dismissButton:true,
+			content: 'Error while retrieving data'
+		});
 	});
 	
 	$scope.exp = {};
@@ -83,10 +87,19 @@ mvpApp.controller('dataExportForm', ['$window', '$scope', '$location', '$http', 
 		else{
 			$http.post(Api.root_url+ "api/export", $scope.exp).
 			success(function (data, status, headers, config) {
-				ngToast.create(data.values);
+				ngToast.create({
+					dismissOnTimeout:true,
+					timeout:4000,
+					content:data.values,
+					dismissButton:true
+				});
 			}).
 			error(function (data, status, headers, config) {
-				alert("Error while saving data");
+				ngToast.create({
+					className: 'danger',
+					dismissButton:true,
+					content: 'Error while saving data'
+				});
 			});
 		}
 	};
@@ -105,7 +118,11 @@ mvpApp.controller('scheduleDataExport', ['$window', '$scope', '$location', '$htt
 		}, $scope.ftp_acc_list);
 	}).
 	error(function (data, status, headers, config) {
-		alert("Error while retrieving data");
+		ngToast.create({
+			className: 'danger',
+			dismissButton:true,
+			content: 'Error while retrieving data'
+		});
 	});
 	
 	$scope.exp = {};
@@ -137,10 +154,19 @@ mvpApp.controller('scheduleDataExport', ['$window', '$scope', '$location', '$htt
 			$http.post(Api.root_url+ "api/schedule", $scope.exp).
 			success(function (data, status, headers, config) {
 				console.log(data);
-				ngToast.create('Data Exported to FTP location successfully');
+				ngToast.create({
+					dismissOnTimeout:true,
+					timeout:4000,
+					content:'Data Export schedule has been saved successfully',
+					dismissButton:true
+				});
 			}).
 			error(function (data, status, headers, config) {
-				alert("Error while saving data");
+				ngToast.create({
+					className: 'danger',
+					dismissButton:true,
+					content: 'Error while saving data'
+				});
 			});
 		}
 	};
@@ -161,7 +187,11 @@ mvpApp.controller('ftpAccountManager', ['$window', '$scope', '$location', '$http
 		}, $scope.ftp_data);
 	}).
 	error(function (data, status, headers, config) {
-		alert("Error while retrieving data");
+		ngToast.create({
+			className: 'danger',
+			dismissButton:true,
+			content: 'Error while retrieving data'
+		});
 	});
 	
 	$scope.selectedRow = null;
