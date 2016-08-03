@@ -117,7 +117,7 @@ var exportDataMng = {
 			}
 		});
 		
-		var _query = "SELECT ";
+		var _query = "--nosync --allow_large_results --destination_table=misc.may_ip_aggregation SELECT ";
 		var headers = [];
 		for (var i in req.body.columns) {
 			_query += req.body.columns[i] + ",";
