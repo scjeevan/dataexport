@@ -117,7 +117,7 @@ var exportDataMng = {
 			}
 		});
 		
-		var _query = "--nosync --allow_large_results --destination_table=misc.may_ip_aggregation SELECT ";
+		var _query = "SELECT ";
 		var headers = [];
 		for (var i in req.body.columns) {
 			_query += req.body.columns[i] + ",";
@@ -199,6 +199,23 @@ var exportDataMng = {
                 "status": 'done'
             }
         });
+	},
+	
+	genresList: function (req, res) {
+		var query = 'SELECT * FROM genres';
+		var formatedQuery = mysql.format(query, []);
+		mysql_client.query(formatedQuery, function (err, result) {
+			if (err) {
+				console.log(err);
+			}
+			else {
+				res.json({
+					data: {
+						values: result
+					}
+				});
+			}
+		});
 	}
 };
 
