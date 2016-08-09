@@ -22,6 +22,6 @@ router.post('/api/saveftpaccount', ftpDetailsManager.saveFtpAccount);
 router.post('/api/deleteftpaccount', ftpDetailsManager.deleteFtpAccount);
 router.post('/api/export', dataExportManager.exportData);
 router.post('/api/schedule', dataExportManager.scheduleExportData);
-router.post('/api/genres', dataExportManager.genresList);
+router.get('/api/genres', dataExportManager.genresList);
 
 module.exports = router;
