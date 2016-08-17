@@ -78,11 +78,14 @@ mvpApp.controller('dataExportForm', ['$window', '$scope', '$location', '$http', 
 		else if(typeof $scope.exp.table == 'undefined'){
 			alert("Please select table");
 		}
-		else if(typeof $scope.exp.columns == 'undefined'){
+		else if(typeof $scope.exp.columns == 'undefined' || $scope.exp.columns.length == 0){
 			alert("Please select atleast one column");
 		}
 		else if(typeof $scope.exp.ftp_account_id == 'undefined'){
 			alert("Please select FTP account");
+		}
+		else if($scope.exp.isGenre && (typeof $scope.exp.genres == 'undefined' || $scope.exp.genres.length == 0)){
+			alert("Please select atleast one genre");
 		}
 		else{
 			$http.post(Api.root_url+ "api/export", $scope.exp).
@@ -106,6 +109,27 @@ mvpApp.controller('dataExportForm', ['$window', '$scope', '$location', '$http', 
 	$scope.dateOptions = {
 		dateFormat:'dd-mm-yy',
     };
+	$scope.genreList = [];
+	$scope.isFilterByGenre = function() {
+		if($scope.exp.isGenre){
+			$http.get(Api.root_url+ "api/genres").
+			success(function (response, status, headers, config) {
+				angular.forEach(response.data.values, function (v, k) {
+					this.push(v);
+				}, $scope.genreList);
+			}).
+			error(function (data, status, headers, config) {
+				ngToast.create({
+					className: 'danger',
+					dismissButton:true,
+					content: 'Error while retrieving data'
+				});
+			});
+		}
+		else{
+			$scope.genreList = [];
+		}
+	};
 }
 ]);
 
@@ -144,11 +168,14 @@ mvpApp.controller('scheduleDataExport', ['$window', '$scope', '$location', '$htt
 		else if(typeof $scope.exp.table == 'undefined'){
 			alert("Please select table");
 		}
-		else if(typeof $scope.exp.columns == 'undefined'){
+		else if(typeof $scope.exp.columns == 'undefined' || $scope.exp.columns.length == 0){
 			alert("Please select atleast one column");
 		}
 		else if(typeof $scope.exp.ftp_account_id == 'undefined'){
 			alert("Please select FTP account");
+		}
+		else if($scope.exp.isGenre && (typeof $scope.exp.genres == 'undefined' || $scope.exp.genres.length == 0)){
+			alert("Please select atleast one genre");
 		}
 		else{
 			$http.post(Api.root_url+ "api/schedule", $scope.exp).
@@ -173,6 +200,27 @@ mvpApp.controller('scheduleDataExport', ['$window', '$scope', '$location', '$htt
 	$scope.dateOptions = {
 		dateFormat:'dd-mm-yy',
     };
+	$scope.genreList = [];
+	$scope.isFilterByGenre = function() {
+		if($scope.exp.isGenre){
+			$http.get(Api.root_url+ "api/genres").
+			success(function (response, status, headers, config) {
+				angular.forEach(response.data.values, function (v, k) {
+					this.push(v);
+				}, $scope.genreList);
+			}).
+			error(function (data, status, headers, config) {
+				ngToast.create({
+					className: 'danger',
+					dismissButton:true,
+					content: 'Error while retrieving data'
+				});
+			});
+		}
+		else{
+			$scope.genreList = [];
+		}
+	};
 }
 ]);
 

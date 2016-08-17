@@ -99,6 +99,12 @@ var exportDataMng = {
 		if (typeof req.body.ftp_account_id != 'undefined'){
 			ftp_account_id = parseInt(req.body.ftp_account_id);
 		}
+		var genreQ = "(";
+		for (var i in req.body.genres) {
+			genreQ += req.body.genres[i] + ",";
+		}
+		genreQ = genreQ.substring(0, genreQ.length - 1) + ")";
+		console.log("genreQ : " + genreQ);
 		query = "SELECT `title`, `username`, `password`, `ip`, `port`, `location` ,`protocol` FROM `ftp_accounts` WHERE `ftp_account_id`=?";
 		params = [ftp_account_id];
 		var formatedQuery = mysql.format(query, params);
