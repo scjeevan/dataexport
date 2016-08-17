@@ -104,7 +104,6 @@ var exportDataMng = {
 			genreQ += req.body.genres[i] + ",";
 		}
 		genreQ = genreQ.substring(0, genreQ.length - 1) + ")";
-		console.log("genreQ : " + genreQ);
 		query = "SELECT `title`, `username`, `password`, `ip`, `port`, `location` ,`protocol` FROM `ftp_accounts` WHERE `ftp_account_id`=?";
 		params = [ftp_account_id];
 		var formatedQuery = mysql.format(query, params);
@@ -162,7 +161,12 @@ var exportDataMng = {
 		else{
 			var _formatedQuery = null;
 			if(req.body.table === 'title'){
-				_query += " FROM mm_titles";
+				if(req.body.isGenre){
+					_query += " FROM mm_titles, mm_title_genres WHERE mm_titles.title_id = mm_title_genres.title_id AND mm_title_genres.genre_id IN "+genreQ;
+				}
+				else{
+					_query += " FROM mm_titles";
+				}
 				_formatedQuery = mysql.format(_query);
 			}
 			else{
