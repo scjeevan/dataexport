@@ -125,7 +125,7 @@ var exportDataMng = {
 		var _query = "SELECT ";
 		var headers = [];
 		for (var i in req.body.columns) {
-			_query += req.body.columns[i] + ",";
+			_query += "t."+req.body.columns[i] + ",";
 			headers.push(req.body.columns[i]);
 		}
 		_query = _query.substring(0, _query.length - 1);
@@ -162,10 +162,10 @@ var exportDataMng = {
 			var _formatedQuery = null;
 			if(req.body.table === 'title'){
 				if(req.body.isGenre){
-					_query += " FROM mm_titles, mm_title_genres WHERE mm_titles.title_id = mm_title_genres.title_id AND mm_title_genres.genre_id IN "+genreQ;
+					_query += " FROM mm_titles t, mm_title_genres g WHERE mm_titles.title_id = mm_title_genres.title_id AND mm_title_genres.genre_id IN "+genreQ;
 				}
 				else{
-					_query += " FROM mm_titles";
+					_query += " FROM mm_titles t";
 				}
 				_formatedQuery = mysql.format(_query);
 			}
