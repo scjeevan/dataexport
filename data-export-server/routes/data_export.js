@@ -162,7 +162,7 @@ var exportDataMng = {
 			var _formatedQuery = null;
 			if(req.body.table === 'title'){
 				if(req.body.isGenre){
-					_query += " FROM mm_titles t, mm_title_genres g WHERE mm_titles.title_id = mm_title_genres.title_id AND mm_title_genres.genre_id IN "+genreQ;
+					_query += " FROM mm_titles t, mm_title_genres g WHERE t.title_id = g.title_id AND g.genre_id IN "+genreQ;
 				}
 				else{
 					_query += " FROM mm_titles t";
