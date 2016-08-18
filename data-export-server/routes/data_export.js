@@ -163,14 +163,17 @@ var exportDataMng = {
 			if(req.body.table === 'title'){
 				if(req.body.isGenre){
 					_query += " FROM mm_titles t, mm_title_genres g WHERE t.title_id = g.title_id AND g.genre_id IN "+genreQ;
-				}
-				else{
+				} else {
 					_query += " FROM mm_titles t";
 				}
 				_formatedQuery = mysql.format(_query);
 			}
 			else{
-				_query += " FROM infohashes WHERE added_time BETWEEN ? AND ?";
+				if(req.body.isGenre){
+					_query += " FROM infohashes t, mm_title_genres g WHERE t.mm_title_id = g.title_id AND t.added_time BETWEEN ? AND ? AND g.genre_id IN "+genreQ";
+				} else {
+					_query += " FROM infohashes t WHERE t.added_time BETWEEN ? AND ?";
+				}
 				_formatedQuery = mysql.format(_query, [start, end]);
 			}
 			console.log("[QUERY]:"+_query);
