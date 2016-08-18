@@ -191,13 +191,15 @@ var exportDataMng = {
 	scheduleExportData: function (req, res) {
 		var query = "";
 		var params = [];
-		
-		var genreQ = "(";
-		for (var i in req.body.genres) {
-			genreQ += req.body.genres[i] + ",";
+		var genreQ = "";
+		if(req.body.isGenre){
+			genreQ = "(";
+			for (var i in req.body.genres) {
+				genreQ += req.body.genres[i] + ",";
+			}
+			genreQ = genreQ.substring(0, genreQ.length - 1) + ")";
 		}
-		genreQ = genreQ.substring(0, genreQ.length - 1) + ")";
-		
+
 		var ftp_account_id = 1;
 		if (typeof req.body.ftp_account_id != 'undefined'){
 			ftp_account_id = parseInt(req.body.ftp_account_id);
