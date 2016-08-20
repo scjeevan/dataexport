@@ -2,7 +2,7 @@
 # Setting Up Environment Variables for imdb
 #
 #LOG_PATH=/opt/data-export/logs
-DATAEXPORT_CLIENT_PORT=22
+DATAEXPORT_CLIENT_PORT=80
 DATAEXPORT_SERVER_PORT=80
 
 #DATAEXPORT_CLIENT_PORT=4141
