@@ -144,6 +144,7 @@ var exportDataMng = {
 					}
 				});
 				titleIdQ = titleIdQ.substring(0, titleIdQ.length - 1) + ")";
+				console.log("[titleIdQ]:"+titleIdQ);
 			});
 			if(req.body.isGenre){
 				_query += " FROM DevDiggit_Hist.Diggit_IP WHERE Date BETWEEN '"+start+"' AND '"+end+"' AND TitleID IN "+titleIdQ; // LIMIT 10000
