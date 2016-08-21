@@ -140,7 +140,7 @@ var exportDataMng = {
 				if(err) console.log(err);
 				rows.forEach(function (row) {
 					if (row != null) {
-						titleIdQ += row['title_id'] + ",";
+						titleIdQ += row.title_id + ",";
 					}
 				});
 				titleIdQ = titleIdQ.substring(0, titleIdQ.length - 1) + ")";
