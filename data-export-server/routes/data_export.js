@@ -133,8 +133,25 @@ var exportDataMng = {
 		var end = req.body.endDate.replace(/T/, ' ').replace(/\..+/, '');
 		var file_name = req.body.table + "-" + Math.floor(new Date() / 1000) + ".csv";
 		if(req.body.table == 'ip'){
-			_query += " FROM DevDiggit_Hist.Diggit_IP WHERE Date BETWEEN '"+start+"' AND '"+end+"' "; // LIMIT 10000
+			var titleIdQ = "(";
+			var titleQuery = "SELECT title_id FROM mm_title_genres WHERE genre_id IN "+genreQ
+			var _formatedQuery = mysql.format(titleQuery);
+			mysql_client.query(_formatedQuery, function (err, rows) {
+				if(err) console.log(err);
+				rows.forEach(function (row) {
+					if (row != null) {
+						titleIdQ += row['title_id'] + ",";
+					}
+				});
+				titleIdQ = titleIdQ.substring(0, titleIdQ.length - 1) + ")";
+			});
+			if(req.body.isGenre){
+				_query += " FROM DevDiggit_Hist.Diggit_IP WHERE Date BETWEEN '"+start+"' AND '"+end+"' AND TitleID IN "+titleIdQ; // LIMIT 10000
+			} else {
+				_query += " FROM DevDiggit_Hist.Diggit_IP WHERE Date BETWEEN '"+start+"' AND '"+end+"' "; // LIMIT 10000
+			}
 			console.log("[QUERY]:"+_query);
+			/*
 			bigquery.startQuery(_query, function(err, job) {
 				if (!err) {
 					job.getQueryResults(function(err, rows, apiResponse) {
@@ -147,7 +164,7 @@ var exportDataMng = {
 					});
 				}
 			});
-			/*
+			
 			bigquery.query(_query, function(err,rows){
 				if(err) console.log(err);
 				var status = (rows.length==0)?"No data found":"Data saved successfully";
