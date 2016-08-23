@@ -133,21 +133,8 @@ var exportDataMng = {
 		var end = req.body.endDate.replace(/T/, ' ').replace(/\..+/, '');
 		var file_name = req.body.table + "-" + Math.floor(new Date() / 1000) + ".csv";
 		if(req.body.table == 'ip'){
-			var titleIdQ = "(";
-			var titleQuery = "SELECT title_id FROM mm_title_genres WHERE genre_id IN "+genreQ
-			var _formatedQuery = mysql.format(titleQuery);
-			mysql_client.query(_formatedQuery, function (err, rows) {
-				if(err) console.log(err);
-				rows.forEach(function (row) {
-					if (row != null) {
-						titleIdQ += row.title_id + ",";
-					}
-				});
-				titleIdQ = titleIdQ.substring(0, titleIdQ.length - 1) + ")";
-				console.log("[titleIdQ]:"+titleIdQ);
-			});
 			if(req.body.isGenre){
-				_query += " FROM DevDiggit_Hist.Diggit_IP WHERE Date BETWEEN '"+start+"' AND '"+end+"' AND TitleID IN "+titleIdQ; // LIMIT 10000
+				_query += " FROM DevDiggit_Hist.Diggit_IP, DevDiggit_Hist.mm_title_genres, DevDiggit_Hist.genres WHERE Date BETWEEN '"+start+"' AND '"+end+"' AND Diggit_IP.TitleID = mm_title_genres.title_id AND mm_title_genres.genre_id IN "+genreQ; // LIMIT 10000
 			} else {
 				_query += " FROM DevDiggit_Hist.Diggit_IP WHERE Date BETWEEN '"+start+"' AND '"+end+"' "; // LIMIT 10000
 			}
