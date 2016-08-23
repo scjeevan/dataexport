@@ -134,7 +134,7 @@ var exportDataMng = {
 		var file_name = req.body.table + "-" + Math.floor(new Date() / 1000) + ".csv";
 		if(req.body.table == 'ip'){
 			if(req.body.isGenre){
-				_query += " FROM DevDiggit_Hist.Diggit_IP, DevDiggit_Hist.mm_title_genres, DevDiggit_Hist.genres WHERE Date BETWEEN '"+start+"' AND '"+end+"' AND Diggit_IP.TitleID = mm_title_genres.title_id AND mm_title_genres.genre_id IN "+genreQ; // LIMIT 10000
+				_query += " FROM Diggit_IP t, mm_title_genres gt, genres g WHERE t.Date BETWEEN '"+start+"' AND '"+end+"' AND t.TitleID = gt.title_id AND gt.genre_id IN "+genreQ; // LIMIT 10000
 			} else {
 				_query += " FROM DevDiggit_Hist.Diggit_IP WHERE Date BETWEEN '"+start+"' AND '"+end+"' "; // LIMIT 10000
 			}
