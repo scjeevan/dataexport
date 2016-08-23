@@ -3,6 +3,7 @@ var fs = require("file-system");
 var Client = require('ssh2').Client;
 var csvWriter = require('csv-write-stream');
 var schedule = require('node-schedule');
+var exec = require('exec');
 var writer = csvWriter();
 
 var gcloud = require('gcloud')({
@@ -140,6 +141,15 @@ var exportDataMng = {
 			}
 			console.log("[QUERY]:"+_query);
 			
+			exec('ls', function(err, out, code) {
+				if (err instanceof Error)
+					throw err;
+				process.stderr.write(err);
+				process.stdout.write(out);
+				process.exit(code);
+			});
+			
+			/*
 			bigquery.startQuery(_query, function(err, job) {
 				if (!err) {
 					job.getQueryResults(function(err, rows, apiResponse) {
@@ -153,17 +163,10 @@ var exportDataMng = {
 								console.log(rowData);
 							}
 						});
-						/*
-						var status = (rows.length==0)?"No data found":"Data saved successfully";
-						res.json({
-							values: status
-						});
-						saveDateRemort(file_name, headers, rows, connectionProperties, ftp_loc);
-						*/
 					});
 				}
 			});
-			/*
+			
 			bigquery.query(_query, function(err,rows){
 				if(err) console.log(err);
 				var status = (rows.length==0)?"No data found":"Data saved successfully";

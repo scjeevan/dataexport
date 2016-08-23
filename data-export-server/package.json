@@ -19,6 +19,7 @@
     "composable-middleware": "^0.3.0",
     "cookie-parser": "^1.4.0",
     "csv-write-stream": "^2.0.0",
+    "exec": "^0.2.1",
     "express": "^4.9.4",
     "fast-csv": "^2.0.1",
     "file-system": "^2.2.1",
