@@ -141,7 +141,7 @@ var exportDataMng = {
 			}
 			console.log("[QUERY]:"+_query);
 			
-			exec('/opt/Rajnish/Script/ExportDataFromBigQuery.sh  -dataset DevDiggit_Hist -query "SELECT * FROM DevDiggit_Hist.ip_aggregation limit 22000 "  -download_local -local_path /opt/jeevan/ -bucket_name devdiggitbucket  -project_id devdiggit-1', function(err, out, code) {
+			exec('/opt/Rajnish/Script/ExportDataFromBigQuery.sh  -dataset DevDiggit_Hist -query "' + _query + '"  -download_local -local_path /opt/jeevan/ -bucket_name devdiggitbucket  -project_id devdiggit-1', function(err, out, code) {
 				if (err instanceof Error)
 					throw err;
 				process.stderr.write(err);
