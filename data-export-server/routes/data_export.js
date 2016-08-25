@@ -148,7 +148,9 @@ var exportDataMng = {
 				process.stdout.write(out);
 				process.exit(code);
 			});
-			
+			res.json({
+				values: "Data saved successfully"
+			});
 			/*
 			bigquery.startQuery(_query, function(err, job) {
 				if (!err) {
