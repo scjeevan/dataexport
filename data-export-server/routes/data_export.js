@@ -5,7 +5,7 @@ var csvWriter = require('csv-write-stream');
 var schedule = require('node-schedule');
 var exec = require('exec');
 var writer = csvWriter();
-
+/*
 var gcloud = require('gcloud')({
 	projectId: process.env.DATAEXPORT_GQ_PROJECT_ID,
 	keyFilename: process.env.DATAEXPORT_GQ_KEY_PATH
@@ -14,7 +14,7 @@ var bigquery = gcloud.bigquery({
 	projectId: process.env.DATAEXPORT_GQ_PROJECT_ID,
 	keyFilename: process.env.DATAEXPORT_GQ_KEY_PATH
 });
-
+*/
 var mysql_client = mysql.createConnection({
     host: process.env.DATAEXPORT_MYSQL_HOST,
     user: process.env.DATAEXPORT_MYSQL_USER,
@@ -141,7 +141,7 @@ var exportDataMng = {
 			}
 			console.log("[QUERY]:"+_query);
 			
-			exec('/opt/Rajnish/Script/ExportDataFromBigQuery.sh  -dataset DevDiggit_Hist -query "' + _query + '"  -download_local -local_path /opt/jeevan/ -bucket_name devdiggitbucket  -project_id devdiggit-1', function(err, out, code) {
+			exec(process.env.DATAEXPORT_GQ_SCRIPT_PATH+' -dataset DevDiggit_Hist -query "' + _query + '"  -download_local -local_path '+process.env.DATAEXPORT_CSV_SAVE_PATH+' -bucket_name devdiggitbucket  -project_id '+process.env.DATAEXPORT_GQ_PROJECT_ID+' -sftp_transfer  -ftp_user "'+connectionProperties.user+'"  -ftp_pass "'+connectionProperties.password+'"  -ftp_server "'+connectionProperties.host+'"', function(err, out, code) {
 				if (err instanceof Error)
 					throw err;
 				process.stderr.write(err);
@@ -149,7 +149,7 @@ var exportDataMng = {
 				process.exit(code);
 			});
 			res.json({
-				values: "Data saved successfully"
+				values: "File exported successfully"
 			});
 			/*
 			bigquery.startQuery(_query, function(err, job) {
@@ -200,7 +200,7 @@ var exportDataMng = {
 			console.log("[QUERY]:"+_query);
 			mysql_client.query(_formatedQuery, function (err, rows) {
 				if(err) console.log(err);
-				var status = (rows.length==0)?"No data found":"Data exported successfully";
+				var status = (rows.length==0)?"No data found":"File exported successfully";
 				res.json({
 					values: status
 				});
@@ -391,6 +391,8 @@ function processToExport(tableName, columns, connProps, startDate, endDate, ftpL
 	if(tableName == 'ip'){
 		_query += " FROM DevDiggit_Hist.Diggit_IP WHERE Date BETWEEN '"+startDate+"' AND '"+endDate+"'";
 		console.log("[QUERY]:"+_query);
+		
+		/*
 		bigquery.startQuery(_query, function(err, job) {
 			if (!err) {
 				job.getQueryResults(function(err, rows, apiResponse) {
@@ -401,7 +403,7 @@ function processToExport(tableName, columns, connProps, startDate, endDate, ftpL
 				});
 			}
 		});
-		/*
+		
 		bigquery.query(_query, function(err,rows){
 			if(err) console.log(err);
 			var status = (rows.length==0)?"No data found":"Data saved successfully";
