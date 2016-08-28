@@ -1,6 +1,6 @@
 'use strict';
 //var server_path = 'http://146.148.110.133:4142/';
-var server_path = 'http://104.197.10.155/';
+var server_path = 'http://104.197.10.155:' + process.env.DATAEXPORT_SERVER_PORT + '/';
 
 
 var mvpApp = angular.module('dataExportApp', ['ngCookies', 'ngAnimate', 'ngRoute', 'googlechart', 'ui.bootstrap', 'infinite-scroll', 'smart-table', 'ngToast', 'angularSpinner', 'checklist-model', 'ui.date']);
