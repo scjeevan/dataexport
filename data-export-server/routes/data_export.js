@@ -105,6 +105,7 @@ var exportDataMng = {
 			genreQ += req.body.genres[i] + ",";
 		}
 		genreQ = genreQ.substring(0, genreQ.length - 1) + ")";
+		
 		query = "SELECT `title`, `username`, `password`, `ip`, `port`, `location` ,`protocol` FROM `ftp_accounts` WHERE `ftp_account_id`=?";
 		params = [ftp_account_id];
 		var formatedQuery = mysql.format(query, params);
@@ -120,10 +121,7 @@ var exportDataMng = {
 					port: rows[0].port,
 					password: rows[0].password
 				};
-			}
-		});
-		
-		var _query = "SELECT ";
+				var _query = "SELECT ";
 		var headers = [];
 		for (var i in req.body.columns) {
 			_query += "t."+req.body.columns[i] + ",";
@@ -152,33 +150,6 @@ var exportDataMng = {
 			res.json({
 				values: "File exported successfully"
 			});
-			/*
-			bigquery.startQuery(_query, function(err, job) {
-				if (!err) {
-					job.getQueryResults(function(err, rows, apiResponse) {
-						if(err) console.log(err);
-						rows.forEach(function (row) {
-							if (row != null) {
-								var rowData = [];
-								headers.forEach(function (header) {
-									rowData.push(row[header]);
-								});
-								console.log(rowData);
-							}
-						});
-					});
-				}
-			});
-			
-			bigquery.query(_query, function(err,rows){
-				if(err) console.log(err);
-				var status = (rows.length==0)?"No data found":"Data saved successfully";
-				res.json({
-					values: status
-				});
-				saveDateRemort(file_name, headers, rows);
-			});
-			*/
 		}
 		else{
 			var _formatedQuery = null;
@@ -208,6 +179,12 @@ var exportDataMng = {
 				saveDateRemort(file_name, headers, rows, connectionProperties, ftp_loc);
 			});
 		}
+				
+				
+			}
+		});
+		
+		
 	},
 	
 	scheduleExportData: function (req, res) {
