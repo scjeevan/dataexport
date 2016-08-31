@@ -251,7 +251,7 @@ var j = schedule.scheduleJob('0 0 0 1 * *', function(){
 	var query = "SELECT `table_name`, `selected_columns`, `title`, `username`, `password`, `ip`, `port`, `location` ,`protocol`, `is_genre`, `genres` FROM `data_export_schedules`,`ftp_accounts` WHERE `data_export_schedules`.`ftp_account_id` = `ftp_accounts`.`ftp_account_id` AND `data_export_schedules`.`frequency`=?";
 	var params = [];
 	
-	//if((month == 1 || month == 5 || month == 9) && day == 1){
+	if((month == 1 || month == 5 || month == 9) && day == 1){
 		params = ['weekly'];
 		var formatedQuery = mysql.format(query, params);
 		mysql_client.query(formatedQuery, function (err, rows) {
@@ -284,7 +284,6 @@ var j = schedule.scheduleJob('0 0 0 1 * *', function(){
 				
 			}
 		});
-		/*
 	}
 	else if(day == 1){
 		params = ['monthly'];
@@ -354,7 +353,6 @@ var j = schedule.scheduleJob('0 0 0 1 * *', function(){
 			}
 		});
 	}
-	*/
 	console.log('Data Export Job Ended at ' + date);	
 });
 
