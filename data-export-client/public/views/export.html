@@ -1,0 +1,37 @@
+<div ng-controller="dataExportFilter" class="container">
+<div class="col-md-3 col-sm-12">
+    <div class="panel panel-default">
+		<div class="panel-heading">Filters</div>
+		<div class="panel-body">
+			<b>Genres</b>
+			<div style="max-height:150px; padding:5px; overflow:auto;" class="">
+				<label><input type="checkbox" ng-click="toggleAll()" ng-model="isAllSelected"> Select All</label>
+				<div class="checkbox" ng-repeat="g in genreList">
+					<label><input type="checkbox" checklist-model="exp.genres" checklist-value="g.genre_id"> {{g.genre}}</label>
+				</div>
+			</div>
+			<hr/>
+			<b>Columns</b>
+			<div style="max-height:150px; padding:5px; overflow:auto;" class="">
+				<label><input type="checkbox" ng-click="toggleAllColumns()" ng-model="isAllSelectedColumns"> Select All</label>
+				<div class="checkbox" ng-repeat="column in columns">
+					<label><input type="checkbox" checklist-model="exp.columns" checklist-value="column"> {{column}}</label>
+				</div>
+			</div>
+			<hr/>
+			<input type="text" ng-model="exp.titles" placeholder="Titles" class="form-control">
+			<br/>
+			<input type="button" ng-model="exp.refresh" class="btn btn-primary" value="Filter Results">
+		</div>
+    </div>
+</div>
+<div class="col-md-9 col-sm-12">
+    <div class="panel panel-default">
+		<div class="panel-heading">Results</div>
+		<div class="panel-body">
+		</div>
+    </div>
+</div>
+</div>
+
+

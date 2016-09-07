@@ -130,7 +130,7 @@ var exportDataMng = {
 				_query = _query.substring(0, _query.length - 1);
 				var start = req.body.startDate.replace(/T/, ' ').replace(/\..+/, '');
 				var end = req.body.endDate.replace(/T/, ' ').replace(/\..+/, '');
-				var file_name = req.body.table + "-" + Math.floor(new Date() / 1000) + ".csv";
+				var file_name = req.body.fileName + "-" + Math.floor(new Date() / 1000) + ".csv";
 				if(req.body.table == 'ip'){
 					if(req.body.isGenre){
 						_query += " FROM [DevDiggit_Hist.Diggit_IP] AS t JOIN [DevDiggit_Hist.mm_title_genres] AS gt ON t.TitleID = gt.title_id WHERE t.Date BETWEEN '"+start+"' AND '"+end+"' AND gt.genre_id IN "+genreQ; // LIMIT 10000
@@ -138,7 +138,7 @@ var exportDataMng = {
 						_query += " FROM DevDiggit_Hist.Diggit_IP WHERE Date BETWEEN '"+start+"' AND '"+end+"' "; // LIMIT 10000
 					}
 					
-					var exportCommand = process.env.DATAEXPORT_GQ_SCRIPT_PATH+' -dataset DevDiggit_Hist -query "' + _query + '"  -download_local -local_path '+process.env.DATAEXPORT_CSV_SAVE_PATH+' -bucket_name devdiggitbucket  -project_id '+process.env.DATAEXPORT_GQ_PROJECT_ID+' -sftp_transfer  -ftp_user "'+connectionProperties.user+'"  -ftp_pass "'+connectionProperties.password+'"  -ftp_server "'+connectionProperties.host+'"';
+					var exportCommand = process.env.DATAEXPORT_GQ_SCRIPT_PATH+' -dataset DevDiggit_Hist -query "' + _query + '"  -download_local -local_path '+process.env.DATAEXPORT_CSV_SAVE_PATH+' -bucket_name devdiggitbucket  -project_id '+process.env.DATAEXPORT_GQ_PROJECT_ID+' -sftp_transfer  -ftp_user "'+connectionProperties.user+'"  -ftp_pass "'+connectionProperties.password+'"  -ftp_server "'+connectionProperties.host+'" -export_file_name="'+req.body.fileName+'"';
 					console.log("[COMMAND]:"+exportCommand);
 					exec(exportCommand, function(err, out, code) {
 						if (err instanceof Error)

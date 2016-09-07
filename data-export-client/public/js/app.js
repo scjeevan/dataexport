@@ -28,6 +28,10 @@ mvpApp.config(function($routeProvider, $httpProvider) {
 			templateUrl: 'views/credentials.html',
 			controller: 'MainCtrl'
 		})
+		.when('/export', {
+			templateUrl: 'views/export.html',
+			controller: 'MainCtrl'
+		})
 		.otherwise({
 			redirectTo: '/login'
 		});
@@ -132,6 +136,13 @@ mvpApp.controller('dataExportForm', ['$window', '$scope', '$location', '$http', 
 			$scope.genreList = [];
 		}
 	};
+	$scope.toggleAll = function() {
+		var toggleStatus = !$scope.isAllSelected;
+		angular.forEach($scope.genreList, function(itm){ 
+			$scope.exp.genres = toggleStatus;
+			console.log(toggleStatus);
+		});
+	}
 }
 ]);
 
@@ -343,6 +354,102 @@ mvpApp.controller('ftpAccountManager', ['$window', '$scope', '$location', '$http
 		}
 	}
 }]);
+
+mvpApp.controller('dataExportFilter', ['$window', '$scope', '$location', '$http', 'Api', 'ngToast', function($window, $scope, $location, $http, Api, ngToast) {
+	$scope.ftp_acc_list = [];
+	$http.get(Api.root_url+ "api/listftpaccounts").
+	success(function (response, status, headers, config) {
+		angular.forEach(response.values, function (v, k) {
+			this.push(v);
+		}, $scope.ftp_acc_list);
+	}).
+	error(function (data, status, headers, config) {
+		ngToast.create({
+			className: 'danger',
+			dismissButton:true,
+			content: 'Error while retrieving data'
+		});
+	});
+	
+	$scope.exp = {};
+	$scope.columns = ipColumns;
+	$scope.loadColumns = function(value) {
+		$scope.columns = [];
+		$scope.exp.columns = [];
+		if(value=='title'){
+			$scope.columns = titleColumns; //mm_titles
+		} else if(value=='infohashes'){
+			$scope.columns = infohashesColumns; // infohashes
+		} else if(value=='ip'){
+			$scope.columns = ipColumns;
+		}
+	};
+	$scope.exportData = function() {
+		if((typeof $scope.exp.startDate == 'undefined') || (typeof $scope.exp.endDate == 'undefined')){
+			alert("Please select date range");
+		}
+		else if(typeof $scope.exp.table == 'undefined'){
+			alert("Please select table");
+		}
+		else if(typeof $scope.exp.columns == 'undefined' || $scope.exp.columns.length == 0){
+			alert("Please select atleast one column");
+		}
+		else if(typeof $scope.exp.ftp_account_id == 'undefined'){
+			alert("Please select FTP account");
+		}
+		else if($scope.exp.isGenre && (typeof $scope.exp.genres == 'undefined' || $scope.exp.genres.length == 0)){
+			alert("Please select atleast one genre");
+		}
+		else{
+			$http.post(Api.root_url+ "api/export", $scope.exp).
+			success(function (data, status, headers, config) {
+				ngToast.create({
+					dismissOnTimeout:true,
+					timeout:4000,
+					content:data.values,
+					dismissButton:true
+				});
+			}).
+			error(function (data, status, headers, config) {
+				ngToast.create({
+					className: 'danger',
+					dismissButton:true,
+					content: 'Error while saving data'
+				});
+			});
+		}
+	};
+	$scope.dateOptions = {
+		dateFormat:'dd-mm-yy',
+    };
+	$scope.genreList = [];
+	$http.get(Api.root_url+ "api/genres").
+	success(function (response, status, headers, config) {
+		angular.forEach(response.data.values, function (v, k) {
+			this.push(v);
+		}, $scope.genreList);
+	}).
+	error(function (data, status, headers, config) {
+		ngToast.create({
+			className: 'danger',
+			dismissButton:true,
+			content: 'Error while retrieving data'
+		});
+	});
+	$scope.toggleAll = function() {
+		var toggleStatus = $scope.isAllSelected;
+		angular.forEach($scope.genreList, function(itm){ 
+			$scope.exp.genres = toggleStatus;
+		});
+	};
+	$scope.toggleAllColumns = function() {
+		var toggleStatus = $scope.isAllSelectedColumns;
+		angular.forEach($scope.genreList, function(itm){ 
+			$scope.exp.columns = toggleStatus;
+		});
+	}
+}
+]);
 
 mvpApp.directive('datepickerPopup', function (dateFilter,$parse){
 	return {

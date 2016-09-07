@@ -61,19 +61,29 @@
 				</div>
 			</div>
 		</div>
-		<div class="form-group">
+		<div class="form-group" ng-if="exp.isGenre">
 			<label for="inputttl" class="col-sm-3 control-label"></label>
 			<div class="col-sm-9">
+				<table class="table table-striped">
+					<tr>
+						<th><input type="checkbox" ng-click="toggleAll()" ng-model="isAllSelected"></th><th>Select All</th>
+					</tr>
+					<tr ng-repeat="g in genreList">
+						<td><input type="checkbox" checklist-model="exp.genres" checklist-value="g.genre_id"></td><td>{{g.genre}}</td>
+					</tr>
+				</table>
+				<!--
 				<div class="checkbox" ng-repeat="g in genreList">
 					<label><input type="checkbox" checklist-model="exp.genres" checklist-value="g.genre_id"> {{g.genre}}</label>
 				</div>
+				-->
 			</div>
 		</div>
 		<div class="form-group">
 			<label for="inputttl" class="col-sm-3 control-label">File Name</label>
 			<div class="col-sm-9">
 				<div class="col-sm-6">
-					<input type="text" ng-model="exp.fileName" >
+					<input type="text" ng-model="exp.fileName" class="form-control"/>
 				</div>
 			</div>
 		</div>
