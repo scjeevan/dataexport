@@ -15,6 +15,7 @@ DATAEXPORT_MYSQL_USER=torrentsappusr
 DATAEXPORT_MYSQL_PASSWORD=torrentsadmin@77654
 DATAEXPORT_MYSQL_DBNAME=torrents
 DATAEXPORT_CSV_SAVE_PATH=/home/jeevan/data/
+DATAEXPORT_LOG_PATH=/opt/jeevan/logs/
 DATAEXPORT_FTP_LOCATION=/dataexport_sftp/
 DATAEXPORT_GQ_PROJECT_ID=devdiggit-1
 DATAEXPORT_GQ_KEY_PATH=/home/jeevan/gcloud.key/DevDiggit-2f271ead8f6e.json
