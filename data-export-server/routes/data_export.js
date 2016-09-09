@@ -28,13 +28,14 @@ var mysql_client = mysql.createConnection({
 var conn = new Client();
 
 function executeGoogleBigQueryAllRows(query, callback){
+	console.log("OK")
     bigquery.query(query, function(err, rows) {
         if (!err) {
             callback(rows);
         }
         else{console.log(err);}
     });
-};
+}
 
 function saveDateRemort(file_name, headers, rows, connectionProperties, ftl_loc) {
 	var act_file = process.env.DATAEXPORT_CSV_SAVE_PATH + file_name;
