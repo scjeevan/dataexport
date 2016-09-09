@@ -11,15 +11,26 @@
 				</div>
 			</div>
 			<hr/>
-			<b>Columns</b>
-			<div style="max-height:150px; padding:5px; overflow:auto;" class="">
-				<label><input type="checkbox" ng-click="toggleAllColumns()" ng-model="isAllSelectedColumns"> Select All</label>
-				<div class="checkbox" ng-repeat="column in columns">
-					<label><input type="checkbox" checklist-model="exp.columns" checklist-value="column"> {{column}}</label>
+			<div class="row-fluid">
+				<div class="input">
+					<angucomplete-alt id="ex1"
+						placeholder="Enter movie title"
+						pause="100"
+						selected-object="selectedMovie"
+						local-data="movies"
+						search-fields="name"
+						title-field="name"
+						minlength="1"
+						clear-selected="true"
+						input-class="form-control form-control-small"/>
 				</div>
 			</div>
-			<hr/>
-			<input type="text" ng-model="exp.titles" placeholder="Titles" class="form-control">
+			<div class="checkbox" ng-repeat="movie in selectedMovies">
+				<label>
+					<input type="checkbox"
+					ng-click="updateTitleSelection(movie.title)">{{movie.title}}
+				</label>
+			</div>
 			<br/>
 			<input type="button" ng-model="exp.refresh" class="btn btn-primary" value="Filter Results">
 		</div>

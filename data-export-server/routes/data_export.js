@@ -5,16 +5,19 @@ var csvWriter = require('csv-write-stream');
 var schedule = require('node-schedule');
 var exec = require('exec');
 var writer = csvWriter();
-/*
+
+
+var BIGQUERY_DATASET_HIST = process.env.DATAEXPORT_GQ_PROJECT_ID.trim();
+
 var gcloud = require('gcloud')({
-	projectId: process.env.DATAEXPORT_GQ_PROJECT_ID,
+	projectId: BIGQUERY_DATASET_HIST,
 	keyFilename: process.env.DATAEXPORT_GQ_KEY_PATH
 });
 var bigquery = gcloud.bigquery({
-	projectId: process.env.DATAEXPORT_GQ_PROJECT_ID,
+	projectId: BIGQUERY_DATASET_HIST,
 	keyFilename: process.env.DATAEXPORT_GQ_KEY_PATH
 });
-*/
+
 var mysql_client = mysql.createConnection({
     host: process.env.DATAEXPORT_MYSQL_HOST,
     user: process.env.DATAEXPORT_MYSQL_USER,
@@ -23,6 +26,15 @@ var mysql_client = mysql.createConnection({
 });
 
 var conn = new Client();
+
+function executeGoogleBigQueryAllRows(query, callback){
+    bigquery.query(query, function(err, rows) {
+        if (!err) {
+            callback(rows);
+        }
+        else{console.log(err);}
+    });
+};
 
 function saveDateRemort(file_name, headers, rows, connectionProperties, ftl_loc) {
 	var act_file = process.env.DATAEXPORT_CSV_SAVE_PATH + file_name;
@@ -88,6 +100,22 @@ function saveDateRemort(file_name, headers, rows, connectionProperties, ftl_loc)
 }
 
 var exportDataMng = {
+	
+	getMovies : function(req, res){
+        var movieQuery = "select title from "+BIGQUERY_DATASET_HIST+".title_title_id group by title";
+        var movieArray = [];
+        executeGoogleBigQueryAllRows(movieQuery,function(rows){
+            console.log(movieQuery);
+            console.log(rows);
+            rows.forEach(function(movie){
+                if(movie != null && movie.title != '') 
+                    movieArray.push({
+                        name: movie.title
+                    });
+            });
+            res.json(movieArray);
+        });  
+    },
 	
 	exportData: function (req, res) {
 		

@@ -3,7 +3,7 @@
 var server_path = 'http://104.197.10.155:80/';
 
 
-var mvpApp = angular.module('dataExportApp', ['ngCookies', 'ngAnimate', 'ngRoute', 'googlechart', 'ui.bootstrap', 'infinite-scroll', 'smart-table', 'ngToast', 'angularSpinner', 'checklist-model', 'ui.date']);
+var mvpApp = angular.module('dataExportApp', ['ngCookies', 'ngAnimate', 'ngRoute', 'googlechart', 'ui.bootstrap', 'infinite-scroll', 'smart-table', 'ngToast', 'angularSpinner', 'checklist-model', 'ui.date', 'angucomplete-alt']);
 
 var titleColumns = ["title_id", "title", "season", "episode", "studio", "content_type", "genre", "mpaa_rating", "imdb_id", "episode_imdb_id", "diggit_id"];
 var infohashesColumns = ["infohash", "file_name", "created_by", "created_time", "added_time", "updated_time", "episode_title", "added_by", "languages", "verified", "media_format", "resolution", "aspect_ratio", "frame_rate", "subtitles", "bitrate", "quality", "no_of_files", "episode_id", "episode_airdate", "season", "source", "category", "torrent_url", "mm_hash_id", "mm_title_id", "file_size", "audio_language", "subtitle_language", "network", "metadata_source", "is_tracked"];
@@ -356,7 +356,12 @@ mvpApp.controller('ftpAccountManager', ['$window', '$scope', '$location', '$http
 }]);
 
 mvpApp.controller('dataExportFilter', ['$window', '$scope', '$location', '$http', 'Api', 'ngToast', function($window, $scope, $location, $http, Api, ngToast) {
+	$scope.selectedMovies = [];
 	$scope.ftp_acc_list = [];
+	$scope.movies = [];
+	getMovies(function(data){
+        $scope.movies = data;
+    });
 	$http.get(Api.root_url+ "api/listftpaccounts").
 	success(function (response, status, headers, config) {
 		angular.forEach(response.values, function (v, k) {
@@ -371,19 +376,13 @@ mvpApp.controller('dataExportFilter', ['$window', '$scope', '$location', '$http'
 		});
 	});
 	
-	$scope.exp = {};
-	$scope.columns = ipColumns;
-	$scope.loadColumns = function(value) {
-		$scope.columns = [];
-		$scope.exp.columns = [];
-		if(value=='title'){
-			$scope.columns = titleColumns; //mm_titles
-		} else if(value=='infohashes'){
-			$scope.columns = infohashesColumns; // infohashes
-		} else if(value=='ip'){
-			$scope.columns = ipColumns;
-		}
-	};
+	$scope.selectedMovie = function ($item) {
+        $scope.selectedMovies.push($item);
+        console.log($item);
+        $item.title // or description, or image - from your angucomplete attribute configuration
+        $item.originalObject // the actual object which was selected
+        this.$parent // the control which caused the change, contains useful things like $index for use in ng-repeat.
+    }
 	$scope.exportData = function() {
 		if((typeof $scope.exp.startDate == 'undefined') || (typeof $scope.exp.endDate == 'undefined')){
 			alert("Please select date range");
@@ -442,12 +441,16 @@ mvpApp.controller('dataExportFilter', ['$window', '$scope', '$location', '$http'
 			$scope.exp.genres = toggleStatus;
 		});
 	};
-	$scope.toggleAllColumns = function() {
-		var toggleStatus = $scope.isAllSelectedColumns;
-		angular.forEach($scope.genreList, function(itm){ 
-			$scope.exp.columns = toggleStatus;
+	function getMovies(callback){
+        $http.get(Api.root_url + "api/getMovies").
+		success(function (data) {                
+			console.log(data);
+			callback(data);
+		}).
+		error(function (data) {
+			console.log('error');
 		});
-	}
+    }
 }
 ]);
 
