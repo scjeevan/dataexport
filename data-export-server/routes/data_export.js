@@ -28,7 +28,6 @@ var mysql_client = mysql.createConnection({
 var conn = new Client();
 
 function executeGoogleBigQueryAllRows(query, callback){
-	console.log("OK")
     bigquery.query(query, function(err, rows) {
         if (!err) {
             callback(rows);
@@ -104,6 +103,7 @@ var exportDataMng = {
 	
 	getMovies : function(req, res){
         var movieQuery = "select title from "+BIGQUERY_DATASET_HIST+".title_title_id group by title";
+		console.log(movieQuery);
         var movieArray = [];
         executeGoogleBigQueryAllRows(movieQuery,function(rows){
             console.log(movieQuery);
