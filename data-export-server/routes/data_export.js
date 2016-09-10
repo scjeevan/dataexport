@@ -102,8 +102,15 @@ function saveDateRemort(file_name, headers, rows, connectionProperties, ftl_loc)
 var exportDataMng = {
 	
 	getMovies : function(req, res){
-        var movieQuery = "SELECT  FROM [devdiggit-1:DevDiggit_Hist.title_title_id] LIMIT 1000";
+        var movieQuery = "SELECT title FROM [devdiggit-1:DevDiggit_Hist.title_title_id] GROUP BY title";
 		console.log(movieQuery);
+		bigquery.query(movieQuery, function(e,r){
+		if(e) console.log(e);
+			//console.log(JSON.stringify(d));
+			console.log(r);
+			res.json(r);
+		});
+		/*
         var movieArray = [];
 		executeGoogleBigQueryAllRows(movieQuery,function(rows){
             console.log(movieQuery);
@@ -116,6 +123,7 @@ var exportDataMng = {
             });
             res.json(movieArray);
         });
+		*/
     },
 	
 	exportData: function (req, res) {
