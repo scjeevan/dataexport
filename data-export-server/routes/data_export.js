@@ -104,8 +104,11 @@ var exportDataMng = {
 	getMovies : function(req, res){
         var movieQuery = "select title from "+BIGQUERY_DATASET_HIST+".title_title_id group by title";
 		console.log(movieQuery);
+		
         var movieArray = [];
-        executeGoogleBigQueryAllRows(movieQuery,function(rows){
+		res.json(movieArray);
+        /*
+		executeGoogleBigQueryAllRows(movieQuery,function(rows){
             console.log(movieQuery);
             console.log(rows);
             rows.forEach(function(movie){
@@ -115,7 +118,8 @@ var exportDataMng = {
                     });
             });
             res.json(movieArray);
-        });  
+        });
+		*/
     },
 	
 	exportData: function (req, res) {
