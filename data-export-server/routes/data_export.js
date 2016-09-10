@@ -104,7 +104,7 @@ var exportDataMng = {
 	getMovies : function(req, res){
         var movieQuery = "SELECT title FROM [devdiggit-1:DevDiggit_Hist.title_title_id] GROUP BY title";
 		console.log(movieQuery);
-		bigquery.query(movieQuery, function(e,r){
+		bigquery.query('select count(*) from diggit_hist.Diggit_IP', function(e,r){
 		if(e) console.log(e);
 			//console.log(JSON.stringify(d));
 			console.log(r);
