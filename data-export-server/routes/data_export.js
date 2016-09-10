@@ -102,7 +102,7 @@ function saveDateRemort(file_name, headers, rows, connectionProperties, ftl_loc)
 var exportDataMng = {
 	
 	getMovies : function(req, res){
-        var movieQuery = "SELECT title FROM [devdiggit-1:DevDiggit_Hist.title_title_id] GROUP BY title";
+        var movieQuery = "SELECT title FROM [devdiggit-1:DevDiggit_Hist.title_title_id]";
 		console.log(movieQuery);
         var movieArray = [];
 		executeGoogleBigQueryAllRows(movieQuery,function(rows){
