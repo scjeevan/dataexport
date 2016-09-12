@@ -103,16 +103,11 @@ var exportDataMng = {
 	
 	getMovies : function(req, res){
         var movieQuery = "SELECT title FROM [devdiggit-1:DevDiggit_Hist.title_title_id] GROUP BY title";
-		console.log(movieQuery);
-        var movieArray = [];
+		var movieArray = [];
 		executeGoogleBigQueryAllRows(movieQuery,function(rows){
-            console.log(movieQuery);
-            console.log(rows);
             rows.forEach(function(movie){
                 if(movie != null && movie.title != '') 
-                    movieArray.push({
-                        name: movie.title
-                    });
+					movieArray.push({name: movie.title});
             });
             res.json(movieArray);
         });

@@ -177,3 +177,8 @@ a:hover{
 #dynamic-elem select{
     padding:5px;
 }
+.filter_titles {
+    border-bottom: 1px solid #eeeeee;
+    font-size: 11px;
+    padding: 5px;
+}

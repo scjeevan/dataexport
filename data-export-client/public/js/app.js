@@ -3,7 +3,7 @@
 var server_path = 'http://104.197.10.155:80/';
 
 
-var mvpApp = angular.module('dataExportApp', ['ngCookies', 'ngAnimate', 'ngRoute', 'googlechart', 'ui.bootstrap', 'infinite-scroll', 'smart-table', 'ngToast', 'angularSpinner', 'checklist-model', 'ui.date', 'angucomplete-alt']);
+var mvpApp = angular.module('dataExportApp', ['ngCookies', 'ngAnimate', 'ngRoute', 'googlechart', 'ui.bootstrap', 'infinite-scroll', 'smart-table', 'ngToast', 'angularSpinner', 'checklist-model', 'ui.date', 'angucomplete-alt', 'angular-json-tree']);
 
 var titleColumns = ["title_id", "title", "season", "episode", "studio", "content_type", "genre", "mpaa_rating", "imdb_id", "episode_imdb_id", "diggit_id"];
 var infohashesColumns = ["infohash", "file_name", "created_by", "created_time", "added_time", "updated_time", "episode_title", "added_by", "languages", "verified", "media_format", "resolution", "aspect_ratio", "frame_rate", "subtitles", "bitrate", "quality", "no_of_files", "episode_id", "episode_airdate", "season", "source", "category", "torrent_url", "mm_hash_id", "mm_title_id", "file_size", "audio_language", "subtitle_language", "network", "metadata_source", "is_tracked"];
@@ -359,6 +359,14 @@ mvpApp.controller('dataExportFilter', ['$window', '$scope', '$location', '$http'
 	$scope.selectedMovies = [];
 	$scope.ftp_acc_list = [];
 	$scope.movies = [];
+	$scope.someobj = {
+		'Africa': ['Algeria', 'Angola', 'Benin', 'Botswana', 'Burkina faso', 'Burundi', 'Cameroon', 'Cape verde', ],
+		'Asia': ['Afghanistan', 'Antarctica', 'Armenia', 'Azerbaijan', 'Bahrain', 'Bangladesh', 'Bermuda', 'Bhutan', ],
+		'Europe': ['Aland islands', 'Albania', 'Andorra', 'Armenia', 'Austria', 'Azerbaijan', 'Belarus', 'Belgium', ],
+		'North America': ['Aland islands', 'Albania', 'Andorra', 'Armenia', 'Austria', 'Azerbaijan', 'Belarus', 'Belgium', ],
+		'Oceania': ['Aland islands', 'Albania', 'Andorra', 'Armenia', 'Austria', 'Azerbaijan', 'Belarus', 'Belgium', ],
+		'Other': ['Aland islands', 'Albania', 'Andorra', 'Armenia', 'Austria', 'Azerbaijan', 'Belarus', 'Belgium', ]
+	};
 	getMovies(function(data){
         $scope.movies = data;
     });
@@ -383,6 +391,10 @@ mvpApp.controller('dataExportFilter', ['$window', '$scope', '$location', '$http'
         $item.originalObject // the actual object which was selected
         this.$parent // the control which caused the change, contains useful things like $index for use in ng-repeat.
     }
+	$scope.removeTitle = function ($item){
+		var idx = $scope.selectedMovies.indexOf($item);
+		$scope.selectedMovies.splice(idx, 1);
+	}
 	$scope.exportData = function() {
 		if((typeof $scope.exp.startDate == 'undefined') || (typeof $scope.exp.endDate == 'undefined')){
 			alert("Please select date range");
@@ -442,9 +454,8 @@ mvpApp.controller('dataExportFilter', ['$window', '$scope', '$location', '$http'
 		});
 	};
 	function getMovies(callback){
-        $http.get(Api.root_url + "api/getMovies").
+        $http.get(Api.root_url + "api/getmovies").
 		success(function (data) {                
-			console.log(data);
 			callback(data);
 		}).
 		error(function (data) {
