@@ -356,6 +356,7 @@ mvpApp.controller('ftpAccountManager', ['$window', '$scope', '$location', '$http
 }]);
 
 mvpApp.controller('dataExportFilter', ['$window', '$scope', '$location', '$http', 'Api', 'ngToast', function($window, $scope, $location, $http, Api, ngToast) {
+	$scope.columns = infohashesColumns;
 	$scope.selectedMovies = [];
 	$scope.ftp_acc_list = [];
 	$scope.movies = [];
@@ -367,9 +368,49 @@ mvpApp.controller('dataExportFilter', ['$window', '$scope', '$location', '$http'
 		'Oceania': ['Aland islands', 'Albania', 'Andorra', 'Armenia', 'Austria', 'Azerbaijan', 'Belarus', 'Belgium', ],
 		'Other': ['Aland islands', 'Albania', 'Andorra', 'Armenia', 'Austria', 'Azerbaijan', 'Belarus', 'Belgium', ]
 	};
+	$scope.genreList = [];
+	$http.get(Api.root_url+ "api/genres").
+	success(function (response, status, headers, config) {
+		angular.forEach(response.data.values, function (v, k) {
+			this.push(v);
+		}, $scope.genreList);
+	}).
+	error(function (data, status, headers, config) {
+		ngToast.create({
+			className: 'danger',
+			dismissButton:true,
+			content: 'Error while retrieving data'
+		});
+	});
+	$scope.toggleAll = function() {
+		var toggleStatus = $scope.isAllSelected;
+		angular.forEach($scope.genreList, function(itm){ 
+			$scope.exp.genres = toggleStatus;
+		});
+	};
 	getMovies(function(data){
         $scope.movies = data;
     });
+	function getMovies(callback){
+        $http.get(Api.root_url + "api/getmovies").
+		success(function (data) {                
+			callback(data);
+		}).
+		error(function (data) {
+			console.log('error');
+		});
+    }
+	$scope.selectedMovie = function ($item) {
+        $scope.selectedMovies.push($item);
+        console.log($item);
+        $item.title // or description, or image - from your angucomplete attribute configuration
+        $item.originalObject // the actual object which was selected
+        this.$parent // the control which caused the change, contains useful things like $index for use in ng-repeat.
+    }
+	$scope.removeTitle = function ($item){
+		var idx = $scope.selectedMovies.indexOf($item);
+		$scope.selectedMovies.splice(idx, 1);
+	}
 	$http.get(Api.root_url+ "api/listftpaccounts").
 	success(function (response, status, headers, config) {
 		angular.forEach(response.values, function (v, k) {
@@ -384,17 +425,12 @@ mvpApp.controller('dataExportFilter', ['$window', '$scope', '$location', '$http'
 		});
 	});
 	
-	$scope.selectedMovie = function ($item) {
-        $scope.selectedMovies.push($item);
-        console.log($item);
-        $item.title // or description, or image - from your angucomplete attribute configuration
-        $item.originalObject // the actual object which was selected
-        this.$parent // the control which caused the change, contains useful things like $index for use in ng-repeat.
-    }
-	$scope.removeTitle = function ($item){
-		var idx = $scope.selectedMovies.indexOf($item);
-		$scope.selectedMovies.splice(idx, 1);
-	}
+	/*
+	
+	
+	
+	
+	
 	$scope.exportData = function() {
 		if((typeof $scope.exp.startDate == 'undefined') || (typeof $scope.exp.endDate == 'undefined')){
 			alert("Please select date range");
@@ -433,35 +469,9 @@ mvpApp.controller('dataExportFilter', ['$window', '$scope', '$location', '$http'
 	$scope.dateOptions = {
 		dateFormat:'dd-mm-yy',
     };
-	$scope.genreList = [];
-	$http.get(Api.root_url+ "api/genres").
-	success(function (response, status, headers, config) {
-		angular.forEach(response.data.values, function (v, k) {
-			this.push(v);
-		}, $scope.genreList);
-	}).
-	error(function (data, status, headers, config) {
-		ngToast.create({
-			className: 'danger',
-			dismissButton:true,
-			content: 'Error while retrieving data'
-		});
-	});
-	$scope.toggleAll = function() {
-		var toggleStatus = $scope.isAllSelected;
-		angular.forEach($scope.genreList, function(itm){ 
-			$scope.exp.genres = toggleStatus;
-		});
-	};
-	function getMovies(callback){
-        $http.get(Api.root_url + "api/getmovies").
-		success(function (data) {                
-			callback(data);
-		}).
-		error(function (data) {
-			console.log('error');
-		});
-    }
+	
+	
+	*/
 }
 ]);
 
