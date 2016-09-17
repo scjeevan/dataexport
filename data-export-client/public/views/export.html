@@ -52,8 +52,8 @@
 		<div class="panel-body" style="padding: 10px 10px 10px 10px;">
 			<b>FIle Format</b>
 			<div style="max-height:150px; padding:5px; overflow:auto;" class="">
-				<label><input type="checkbox" ng-click="" ng-model=""> Seperate IP and Title Files</label>
-				<label><input type="checkbox" ng-click="" ng-model=""> Merged IP and Title Files</label>
+				<label><input type="radio" ng-model="exp.file_format" name="file_format"> Seperate IP and Title Files</label>
+				<label><input type="radio" ng-model="exp.file_format" name="file_format"> Merged IP and Title Files</label>
 			</div>
 			<br/>
 			<b>Fields</b>
@@ -65,23 +65,17 @@
 			</div>
 		</div>
 		<div class="panel-heading section"><h4><b>Export Settings</b></h4></div>
-		<div class="panel-body" style="padding: 0px 0px 10px 0px;">
-			<accordion close-others="true">
-				<accordion-group is-open="false">
-					<accordion-heading>One time download</accordion-heading>
-					One time download
-				</accordion-group>
-				<accordion-group is-open="false">
-					<accordion-heading>Schedule</accordion-heading>
-					One time download
-				</accordion-group>
-				<accordion-group is-open="false">
-					<accordion-heading>FTP Location</accordion-heading>
-					<select class="form-control" ng-model="exp.ftp_account_id">
-						<option ng-repeat="option in ftp_acc_list" value="{{option.ftp_account_id}}">{{option.title}}</option>
-					</select>
-				</accordion-group>
-			</accordion>
+		<div class="panel-body" style="padding: 10px 10px 10px 10px;">
+			<b>Export Type</b>
+			<div style="max-height:150px; padding:5px; overflow:auto;" class="">
+				<label><input type="radio" ng-model="exp.export_type" name="export_type"> One time download</label><br/>
+				<label><input type="radio" ng-model="exp.export_type" name="export_type"> Schedule</label>
+			</div>
+			<br/>
+			<b>FTP Location</b>
+			<select class="form-control" ng-model="exp.ftp_account_id">
+				<option ng-repeat="option in ftp_acc_list" value="{{option.ftp_account_id}}">{{option.title}}</option>
+			</select>
 		</div>
     </div>
 	<div style="padding:5px; overflow:auto;" class="">

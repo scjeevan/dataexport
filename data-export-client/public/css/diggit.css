@@ -7,7 +7,7 @@ a:hover a:focus{
 	text-decoration:none;
 }
 label {
-    font-weight: 0;
+    font-weight: normal;
 }
 .tab-content{
 	border: 1px solid #cccccc;
