@@ -2,10 +2,13 @@ body {
   background-color: #ebf0f4;
 }
 
-a:hover{
+a:hover a:focus{
 	cursor:pointer;
+	text-decoration:none;
 }
-
+label {
+    font-weight: 0;
+}
 .tab-content{
 	border: 1px solid #cccccc;
 	border-top: none;
