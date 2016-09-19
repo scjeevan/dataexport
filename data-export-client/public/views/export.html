@@ -15,7 +15,26 @@
 				</accordion-group>
 				<accordion-group is-open="false">
 				  <accordion-heading>Groups</accordion-heading>
-				  This is just some content to illustrate fancy headings.
+				  <div class="row-fluid">
+						<div class="input">
+							<angucomplete-alt id="ex1"
+								placeholder="Enter Group name"
+								pause="100"
+								selected-object="selectedMovie"
+								local-data="movies"
+								search-fields="name"
+								title-field="name"
+								minlength="1"
+								clear-selected="true"
+								input-class="form-control form-control-small"/>
+						</div>
+					</div>
+					<div style="max-height:150px; padding:5px; overflow:auto;" >
+						<div class="filter_titles ng-binding ng-scope" ng-repeat="movie in selectedMovies" style="">
+							{{movie.title}}
+							<a class="pull-right small text-danger" ng-click="removeTitle(movie)"><i class="fa fa-times"><b>X</b></i></a>
+						</div>
+					</div>
 				</accordion-group>
 				<accordion-group is-open="false">
 					<accordion-heading>Titles</accordion-heading>
@@ -68,8 +87,13 @@
 		<div class="panel-body" style="padding: 10px 10px 10px 10px;">
 			<b>Export Type</b>
 			<div style="max-height:150px; padding:5px; overflow:auto;" class="">
-				<label><input type="radio" ng-model="exp.export_type" name="export_type"> One time download</label><br/>
-				<label><input type="radio" ng-model="exp.export_type" name="export_type"> Schedule</label>
+				<label><input type="radio" ng-model="exp.export_type" name="export_type" value="1"> One time download</label><br/>
+				<label><input type="radio" ng-model="exp.export_type" name="export_type" value="0"> Schedule</label>
+			</div>
+			<div style="max-height:150px; padding:5px; overflow:auto;" class="" ng-show="exp.export_type == '0'">
+				<b>Frequency</b><br/>
+				<label><input type="radio" ng-model="exp.frequency" name="frequency"> Weekly</label><br/>
+				<label><input type="radio" ng-model="exp.frequency" name="frequency"> Monthly</label>
 			</div>
 			<br/>
 			<b>FTP Location</b>
@@ -79,14 +103,107 @@
 		</div>
     </div>
 	<div style="padding:5px; overflow:auto;" class="">
-		<input type="button" ng-model="exp.refresh" class="btn btn-primary" value="Reload Results">
+		<input type="button" ng-model="exp.refresh" class="btn btn-primary" value="Submit">
 	</div>
 </div>
 <div class="maindiv col-md-9 col-sm-12">
     <div class="panel panel-default">
 		<div class="panel-heading section"><h4><b>Results</b></h4></div>
 		<div class="panel-body">
-			gdfgdfgs
+			<table id="example" class="table table-striped" cellspacing="0" width="100%">
+				<thead>
+					<tr>
+						<th>Infohash</th>
+						<th>TitleID</th>
+						<th>Date</th>
+						<th>IP</th>
+						<th>Port</th>
+						<th>Continent</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+						<td>E1B5853AC9EC52E6975F34C3BC6D2FC2130B18A8</td>
+						<td>34523</td>
+						<td>2016-02-29 12:31:46.09</td>
+						<td>196.36.153.134</td>
+						<td>18433</td>
+						<td>Africa</td>
+					</tr>
+					<tr>
+						<td>206164122E1D8C441CE22B52B0FB5C839B3A22EC</td>
+						<td>34516</td>
+						<td>2016-02-27 15:31:16.60</td>
+						<td>196.210.9.192</td>
+						<td>55706</td>
+						<td>Africa</td>
+					</tr>
+					<tr>
+						<td>7458F29CC16C15A5153B4867BB309F2B0276033E</td>
+						<td>34510</td>
+						<td>2016-02-28 06:05:24.64</td>
+						<td>196.210.38.132</td>
+						<td>56709</td>
+						<td>Africa</td>
+					</tr>
+					<tr>
+						<td>9B17E9F5981B28577C3F3D06E2A589535287012B</td>
+						<td>34459</td>
+						<td>2016-03-04 18:16:44.86</td>
+						<td>196.34.18.253</td>
+						<td>1</td>
+						<td>Africa</td>
+					</tr>
+					<tr>
+						<td>C64D43A6E39D5E8933C56C1D9877913448A554CD</td>
+						<td>34557</td>
+						<td>2016-02-27 20:26:54.59</td>
+						<td>196.210.13.146</td>
+						<td>1500</td>
+						<td>Africa</td>
+					</tr>
+					<tr>
+						<td>E1B5853AC9EC52E6975F34C3BC6D2FC2130B18A8</td>
+						<td>34523</td>
+						<td>2016-02-29 12:31:46.09</td>
+						<td>196.36.153.134</td>
+						<td>18433</td>
+						<td>Africa</td>
+					</tr>
+					<tr>
+						<td>206164122E1D8C441CE22B52B0FB5C839B3A22EC</td>
+						<td>34516</td>
+						<td>2016-02-27 15:31:16.60</td>
+						<td>196.210.9.192</td>
+						<td>55706</td>
+						<td>Africa</td>
+					</tr>
+					<tr>
+						<td>7458F29CC16C15A5153B4867BB309F2B0276033E</td>
+						<td>34510</td>
+						<td>2016-02-28 06:05:24.64</td>
+						<td>196.210.38.132</td>
+						<td>56709</td>
+						<td>Africa</td>
+					</tr>
+					<tr>
+						<td>9B17E9F5981B28577C3F3D06E2A589535287012B</td>
+						<td>34459</td>
+						<td>2016-03-04 18:16:44.86</td>
+						<td>196.34.18.253</td>
+						<td>1</td>
+						<td>Africa</td>
+					</tr>
+					<tr>
+						<td>C64D43A6E39D5E8933C56C1D9877913448A554CD</td>
+						<td>34557</td>
+						<td>2016-02-27 20:26:54.59</td>
+						<td>196.210.13.146</td>
+						<td>1500</td>
+						<td>Africa</td>
+					</tr>
+				</tbody>
+			</table>
 		</div>
     </div>
 </div>

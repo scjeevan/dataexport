@@ -360,6 +360,7 @@ mvpApp.controller('dataExportFilter', ['$window', '$scope', '$location', '$http'
 	$scope.selectedMovies = [];
 	$scope.ftp_acc_list = [];
 	$scope.movies = [];
+	
 	$scope.someobj = {
 		'Africa': ['Algeria', 'Angola', 'Benin', 'Botswana', 'Burkina faso', 'Burundi', 'Cameroon', 'Cape verde', ],
 		'Asia': ['Afghanistan', 'Antarctica', 'Armenia', 'Azerbaijan', 'Bahrain', 'Bangladesh', 'Bermuda', 'Bhutan', ],

@@ -113,6 +113,25 @@ var exportDataMng = {
         });
     },
 	
+	getGroups : function(req, res){
+		var query = "SELECT `group_name` FROM `groups` GROUP BY `group_name`";
+		var formatedQuery = mysql.format(query);
+		mysql_client.query(formatedQuery, function (err, rows) {
+			res.json(rows);
+		});
+		/*
+        var movieQuery = "SELECT title FROM [devdiggit-1:DevDiggit_Hist.title_title_id] GROUP BY title";
+		var movieArray = [];
+		executeGoogleBigQueryAllRows(movieQuery,function(rows){
+            rows.forEach(function(movie){
+                if(movie != null && movie.title != '') 
+					movieArray.push({name: movie.title});
+            });
+            res.json(movieArray);
+        });
+		*/
+    },
+	
 	exportData: function (req, res) {
 		
 		var query = "";
