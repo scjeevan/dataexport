@@ -25,5 +25,6 @@ router.post('/api/schedule', dataExportManager.scheduleExportData);
 router.get('/api/genres', dataExportManager.genresList);
 router.get('/api/getmovies', dataExportManager.getMovies);
 router.get('/api/getgroups', dataExportManager.getGroups);
+router.get('/api/getlocations', dataExportManager.getLocations);
 
 module.exports = router;

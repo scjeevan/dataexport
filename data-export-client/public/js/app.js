@@ -3,7 +3,7 @@
 var server_path = 'http://104.197.10.155:80/';
 
 
-var mvpApp = angular.module('dataExportApp', ['ngCookies', 'ngAnimate', 'ngRoute', 'googlechart', 'ui.bootstrap', 'infinite-scroll', 'smart-table', 'ngToast', 'angularSpinner', 'checklist-model', 'ui.date', 'angucomplete-alt', 'angular-json-tree']);
+var mvpApp = angular.module('dataExportApp', ['ngCookies', 'ngAnimate', 'ngRoute', 'googlechart', 'ui.bootstrap', 'infinite-scroll', 'smart-table', 'ngToast', 'angularSpinner', 'checklist-model', 'ui.date', 'angucomplete-alt', 'ivh.treeview']);
 
 var titleColumns = ["title_id", "title", "season", "episode", "studio", "content_type", "genre", "mpaa_rating", "imdb_id", "episode_imdb_id", "diggit_id"];
 var infohashesColumns = ["infohash", "file_name", "created_by", "created_time", "added_time", "updated_time", "episode_title", "added_by", "languages", "verified", "media_format", "resolution", "aspect_ratio", "frame_rate", "subtitles", "bitrate", "quality", "no_of_files", "episode_id", "episode_airdate", "season", "source", "category", "torrent_url", "mm_hash_id", "mm_title_id", "file_size", "audio_language", "subtitle_language", "network", "metadata_source", "is_tracked"];
@@ -362,14 +362,15 @@ mvpApp.controller('dataExportFilter', ['$window', '$scope', '$location', '$http'
 	$scope.ftp_acc_list = [];
 	$scope.movies = [];
 	$scope.groups = [];
-	$scope.someobj = {
-		'Africa': ['Algeria', 'Angola', 'Benin', 'Botswana', 'Burkina faso', 'Burundi', 'Cameroon', 'Cape verde', ],
-		'Asia': ['Afghanistan', 'Antarctica', 'Armenia', 'Azerbaijan', 'Bahrain', 'Bangladesh', 'Bermuda', 'Bhutan', ],
-		'Europe': ['Aland islands', 'Albania', 'Andorra', 'Armenia', 'Austria', 'Azerbaijan', 'Belarus', 'Belgium', ],
-		'North America': ['Aland islands', 'Albania', 'Andorra', 'Armenia', 'Austria', 'Azerbaijan', 'Belarus', 'Belgium', ],
-		'Oceania': ['Aland islands', 'Albania', 'Andorra', 'Armenia', 'Austria', 'Azerbaijan', 'Belarus', 'Belgium', ],
-		'Other': ['Aland islands', 'Albania', 'Andorra', 'Armenia', 'Austria', 'Azerbaijan', 'Belarus', 'Belgium', ]
+	var someobj = {
+		'Africa': ['Algeria', 'Angola', 'Benin', 'Botswana', 'Burkina faso', 'Burundi', 'Cameroon', 'Cape verde'],
+		'Asia': ['Afghanistan', 'Antarctica', 'Armenia', 'Azerbaijan', 'Bahrain', 'Bangladesh', 'Bermuda', 'Bhutan'],
+		'Europe': ['Aland islands', 'Albania', 'Andorra', 'Armenia', 'Austria', 'Azerbaijan', 'Belarus', 'Belgium'],
+		'North America': ['Aland islands', 'Albania', 'Andorra', 'Armenia', 'Austria', 'Azerbaijan', 'Belarus', 'Belgium'],
+		'Oceania': ['Aland islands', 'Albania', 'Andorra', 'Armenia', 'Austria', 'Azerbaijan', 'Belarus', 'Belgium'],
+		'Other': ['Aland islands', 'Albania', 'Andorra', 'Armenia', 'Austria', 'Azerbaijan', 'Belarus', 'Belgium']
 	};
+
 	$scope.genreList = [];
 	$http.get(Api.root_url+ "api/genres").
 	success(function (response, status, headers, config) {
@@ -390,12 +391,43 @@ mvpApp.controller('dataExportFilter', ['$window', '$scope', '$location', '$http'
 			$scope.exp.genres = toggleStatus;
 		});
 	};
+	getLocations(function(data){
+        $scope.locations = data;
+    });
 	getMovies(function(data){
         $scope.movies = data;
     });
 	getGroups(function(data){
         $scope.groups = data;
     });
+	function getLocations(callback){
+		var stuff = [{
+			label: 'Global',
+			value: 'global',
+			children: [{
+				label: 'Top Hat',
+				value: 'top_hat',
+				children: [{
+					label: 'Top Hat',
+					value: 'top_hat'
+				},{
+					label: 'Curly Mustache',
+					value: 'mustachio',
+					children: [{
+						label: 'Top Hat',
+						value: 'top_hat'
+					},{
+						label: 'Curly Mustache',
+						value: 'mustachio'
+					}]
+				}]
+			},{
+				label: 'Curly Mustache',
+				value: 'mustachio'
+			}]
+		}];  
+		callback(stuff);
+    }
 	function getMovies(callback){
         $http.get(Api.root_url + "api/getmovies").
 		success(function (data) {                
@@ -499,6 +531,24 @@ mvpApp.controller('dataExportFilter', ['$window', '$scope', '$location', '$http'
 	*/
 }
 ]);
+
+mvpApp.config(function(ivhTreeviewOptionsProvider) {
+		ivhTreeviewOptionsProvider.set({
+		idAttribute: 'id',
+		labelAttribute: 'label',
+		childrenAttribute: 'children',
+		selectedAttribute: 'selected',
+		useCheckboxes: true,
+		expandToDepth: 0,
+		indeterminateAttribute: '__ivhTreeviewIndeterminate',
+		expandedAttribute: '__ivhTreeviewExpanded',
+		defaultSelectedState: true,
+		validate: true,
+		twistieExpandedTpl: '-',
+		twistieCollapsedTpl: '+',
+		twistieLeafTpl: '&nbsp;&nbsp;'
+	});
+});
 
 mvpApp.directive('datepickerPopup', function (dateFilter,$parse){
 	return {

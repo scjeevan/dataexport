@@ -113,23 +113,27 @@ var exportDataMng = {
         });
     },
 	
+	getLocations : function(req, res){
+        var movieQuery = "select Continent,Country from diggit_hist.unique_ip_count_for_location group by Continent,country";
+		var movieArray = [];
+		executeGoogleBigQueryAllRows(movieQuery,function(rows){
+			res.json(rows);
+			/*
+            rows.forEach(function(movie){
+                if(movie != null && movie.title != '') 
+					movieArray.push({name: movie.title});
+            });
+            res.json(movieArray);
+			*/
+        });
+    },
+	
 	getGroups : function(req, res){
 		var query = "SELECT `group_name` FROM `groups` GROUP BY `group_name`";
 		var formatedQuery = mysql.format(query);
 		mysql_client.query(formatedQuery, function (err, rows) {
 			res.json(rows);
 		});
-		/*
-        var movieQuery = "SELECT title FROM [devdiggit-1:DevDiggit_Hist.title_title_id] GROUP BY title";
-		var movieArray = [];
-		executeGoogleBigQueryAllRows(movieQuery,function(rows){
-            rows.forEach(function(movie){
-                if(movie != null && movie.title != '') 
-					movieArray.push({name: movie.title});
-            });
-            res.json(movieArray);
-        });
-		*/
     },
 	
 	exportData: function (req, res) {
