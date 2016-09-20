@@ -99,17 +99,6 @@ function saveDateRemort(file_name, headers, rows, connectionProperties, ftl_loc)
 	console.log("END METHOD");
 }
 
-function containsObject(obj, list) {
-    var i;
-    for (i = 0; i < list.length; i++) {
-		console.log(list[i].Continent + " | " + obj.Continent + " | " + (list[i] == obj));
-        if (list[i] === obj) {
-            return true;
-        }
-    }
-    return false;
-}
-
 var exportDataMng = {
 	
 	getMovies : function(req, res){
@@ -129,9 +118,8 @@ var exportDataMng = {
 		var locationArray = [];
 		executeGoogleBigQueryAllRows(locationQuery,function(rows){
             rows.forEach(function(loc){
-				var contObj = {Continent:loc.Continent};
-                if(loc != null && !containsObject(contObj, locationArray)){
-					locationArray.push(contObj);
+                if(loc != null && locationArray.indexOf(loc.Continent) == -1){
+					locationArray.push(loc.Continent);
 				}
             });
             res.json(locationArray);
