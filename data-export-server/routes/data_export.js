@@ -102,7 +102,7 @@ function saveDateRemort(file_name, headers, rows, connectionProperties, ftl_loc)
 function containsObject(obj, list) {
     var i;
     for (i = 0; i < list.length; i++) {
-		console.log(list[i] + " | " + obj);
+		console.log(list[i].Continent + " | " + obj.Continent + " | " + (list[i] == obj));
         if (list[i] === obj) {
             return true;
         }
