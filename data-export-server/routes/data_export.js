@@ -99,6 +99,16 @@ function saveDateRemort(file_name, headers, rows, connectionProperties, ftl_loc)
 	console.log("END METHOD");
 }
 
+function containsObject(obj, list) {
+    var i;
+    for (i = 0; i < list.length; i++) {
+        if (list[i] === obj) {
+            return true;
+        }
+    }
+    return false;
+}
+
 var exportDataMng = {
 	
 	getMovies : function(req, res){
@@ -118,8 +128,8 @@ var exportDataMng = {
 		var locationArray = [];
 		executeGoogleBigQueryAllRows(locationQuery,function(rows){
             rows.forEach(function(loc){
-                if(loc != null){
-					locationArray.push({loc.Continent});
+                if(loc != null && !containsObject({Continent:loc.Continent}, locationArray)){
+					locationArray.push({Continent:loc.Continent});
 				}
             });
             res.json(locationArray);
