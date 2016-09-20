@@ -115,11 +115,11 @@ var exportDataMng = {
 	
 	getLocations : function(req, res){
         var locationQuery = "SELECT Continent, Country, Region, State, City FROM [devdiggit-1:DevDiggit_Hist.unique_ip_count_for_location]";
-		var locationArray = [];
+		var locationArray = [][];
 		executeGoogleBigQueryAllRows(locationQuery,function(rows){
             rows.forEach(function(loc){
-                if(loc != null && locationArray.indexOf(loc.Continent) == -1){
-					locationArray.push(loc.Continent);
+                if(loc != null && locationArray[].indexOf(loc.Continent) == -1){
+					locationArray[].push(loc.Continent);
 				}
             });
             res.json(locationArray);
