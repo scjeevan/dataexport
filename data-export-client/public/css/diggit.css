@@ -72,6 +72,7 @@ label {
 
 .table>tbody>tr>td {
     word-break:break-all;
+	font-size: 10px;
 }
 
 .st-sort-ascent:before{

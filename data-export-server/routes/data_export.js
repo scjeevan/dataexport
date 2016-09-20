@@ -114,7 +114,7 @@ var exportDataMng = {
     },
 	
 	getLocations : function(req, res){
-        var movieQuery = "select Continent,Country from diggit_hist.unique_ip_count_for_location group by Continent,country";
+        var movieQuery = "SELECT Continent, Country, Region, State, City FROM [devdiggit-1:DevDiggit_Hist.unique_ip_count_for_location]";
 		var movieArray = [];
 		executeGoogleBigQueryAllRows(movieQuery,function(rows){
 			res.json(rows);
