@@ -118,8 +118,8 @@ var exportDataMng = {
 		var locationArray = [];
 		executeGoogleBigQueryAllRows(locationQuery,function(rows){
             rows.forEach(function(loc){
-                if(loc != null){
-					locationArray.push({loc:loc.Continent});
+                if(loc != null && locationArray.indexOf(loc.Continent) == -1){
+					locationArray.push({Continent:loc.Continent});
 				}
             });
             res.json(locationArray);
