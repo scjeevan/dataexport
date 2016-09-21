@@ -120,6 +120,8 @@ var exportDataMng = {
             rows.forEach(function(loc){
                 if(loc != null && locationArray.indexOf(loc.Continent) == -1){
 					locationArray.push(loc.Continent);
+				} else {
+					locationArray[loc.Continent].push(loc.Country);
 				}
             });
             res.json(locationArray);
@@ -135,7 +137,6 @@ var exportDataMng = {
     },
 	
 	exportData: function (req, res) {
-		
 		var query = "";
 		var params = [];
 		var connectionProperties = {};
