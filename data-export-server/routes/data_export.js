@@ -115,8 +115,33 @@ var exportDataMng = {
 	
 	getLocations : function(req, res){
         var locationQuery = "SELECT Continent, Country, Region, State, City FROM [devdiggit-1:DevDiggit_Hist.unique_ip_count_for_location]";
-		var myArray = [{"asia", ["stuff", "grouped", "together"]}, {"asia", ["stuff", "grouped", "together"]}];
-		res.json(myArray);
+		var stuff = [{
+			label: 'Global',
+			value: 'global',
+			children: [{
+				label: 'Asia',
+				value: 'Asia',
+				children: [{
+					label: 'Top Hat',
+					value: 'top_hat'
+				},{
+					label: 'Curly Mustache',
+					value: 'mustachio',
+					children: [{
+						label: 'Top Hat',
+						value: 'top_hat'
+					},{
+						label: 'Curly Mustache',
+						value: 'mustachio'
+					}]
+				}]
+			},{
+				label: 'Curly Mustache',
+				value: 'mustachio'
+			}]
+		}];
+		
+		res.json(stuff);
 		/*
 		var locationArray = [];
 		executeGoogleBigQueryAllRows(locationQuery,function(rows){
