@@ -115,6 +115,9 @@ var exportDataMng = {
 	
 	getLocations : function(req, res){
         var locationQuery = "SELECT Continent, Country, Region, State, City FROM [devdiggit-1:DevDiggit_Hist.unique_ip_count_for_location]";
+		var myArray = ["hello", ["stuff", "grouped", "together"], "world"];
+		res.json(myArray);
+		/*
 		var locationArray = [];
 		executeGoogleBigQueryAllRows(locationQuery,function(rows){
             rows.forEach(function(loc){
@@ -126,6 +129,7 @@ var exportDataMng = {
             });
             res.json(locationArray);
         });
+		*/
     },
 	
 	getGroups : function(req, res){
