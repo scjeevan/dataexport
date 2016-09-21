@@ -115,7 +115,7 @@ var exportDataMng = {
 	
 	getLocations : function(req, res){
         var locationQuery = "SELECT Continent, Country, Region, State, City FROM [devdiggit-1:DevDiggit_Hist.unique_ip_count_for_location]";
-		var myArray = ["hello", ["stuff", "grouped", "together"], "world"];
+		var myArray = [{"asia", ["stuff", "grouped", "together"]}, {"asia", ["stuff", "grouped", "together"]}];
 		res.json(myArray);
 		/*
 		var locationArray = [];
