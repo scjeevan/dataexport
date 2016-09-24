@@ -180,7 +180,7 @@ var exportDataMng = {
 								else{
 									var e = isExist(locationArray[a].children[b].children[c].children[d].children, loc.City);
 									if(e == -1){
-										var eData = {label: loc.City, value: loc.City, children:[]};
+										var eData = {label: loc.City, value: loc.City};
 										locationArray[a].children[b].children[c].children[d].children.push(eData);
 									}
 								}
