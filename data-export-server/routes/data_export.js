@@ -99,6 +99,15 @@ function saveDateRemort(file_name, headers, rows, connectionProperties, ftl_loc)
 	console.log("END METHOD");
 }
 
+function isExist(array, value){
+	for(var obj in array) {
+		if(obj.label == value){
+			return true;
+		}
+	}
+	return false;
+}
+
 var exportDataMng = {
 	
 	getMovies : function(req, res){
@@ -145,9 +154,13 @@ var exportDataMng = {
 		executeGoogleBigQueryAllRows(locationQuery,function(rows){
             rows.forEach(function(loc){
                 if(loc != null){
-					var data = {label: loc.Continent, value: loc.Continent, children:[]}
-					//console.log(loc.Continent + " | " + foundKeys);
-					locationArray.push(data);
+					if(isExist(locationArray, loc.Continent)){
+						
+					}
+					else{
+						var data = {label: loc.Continent, value: loc.Continent, children:[]}
+						locationArray.push(data);
+					}
 				}
             });
             res.json(locationArray);
