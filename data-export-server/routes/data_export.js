@@ -156,14 +156,35 @@ var exportDataMng = {
                 if(loc != null){
 					var a = isExist(locationArray, loc.Continent);
 					if(a == -1){
-						var data = {label: loc.Continent, value: loc.Continent, children:[]}
-						locationArray.push(data);
+						var aData = {label: loc.Continent, value: loc.Continent, children:[]}
+						locationArray.push(aData);
 					}
 					else{
 						var b = isExist(locationArray[a].children, loc.Country);
 						if(b == -1){
-							var data = {label: loc.Country, value: loc.Country, children:[]};
-							locationArray[a].children.push(data);
+							var bData = {label: loc.Country, value: loc.Country, children:[]};
+							locationArray[a].children.push(bData);
+						}
+						else{
+							var c = isExist(locationArray[a].children[b], loc.Region);
+							if(c == -1){
+								var cData = {label: loc.Region, value: loc.Region, children:[]};
+								locationArray[a].children[b].children.push(cData);
+							}
+							else{
+								var d = isExist(locationArray[a].children[b].children[c], loc.State);
+								if(d == -1){
+									var dData = {label: loc.State, value: loc.State, children:[]};
+									locationArray[a].children[b].children[d].children.push(dData);
+								}
+								else{
+									var e = isExist(locationArray[a].children[b].children[c].children[d], loc.City);
+									if(e == -1){
+										var eData = {label: loc.City, value: loc.City, children:[]};
+										locationArray[a].children[b].children[d].children[e].children.push(eData);
+									}
+								}
+							}
 						}
 					}
 				}
