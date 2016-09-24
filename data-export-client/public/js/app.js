@@ -401,32 +401,19 @@ mvpApp.controller('dataExportFilter', ['$window', '$scope', '$location', '$http'
         $scope.groups = data;
     });
 	function getLocations(callback){
-		var stuff = [{
-			label: 'Global',
-			value: 'global',
-			children: [{
-				label: 'Top Hat',
-				value: 'top_hat',
-				children: [{
-					label: 'Top Hat',
-					value: 'top_hat'
-				},{
-					label: 'Curly Mustache',
-					value: 'mustachio',
-					children: [{
-						label: 'Top Hat',
-						value: 'top_hat'
-					},{
-						label: 'Curly Mustache',
-						value: 'mustachio'
-					}]
-				}]
-			},{
-				label: 'Curly Mustache',
-				value: 'mustachio'
-			}]
-		}];  
-		callback(stuff);
+		var arr = [];
+		$http.get(Api.root_url + "api/getlocations").
+		success(function (data) {
+			arr = [{
+				label: 'Global',
+				value: 'global',
+				children: data
+			}];
+		}).
+		error(function (data) {
+			console.log('error');
+		});
+		callback(arr);
     }
 	function getMovies(callback){
         $http.get(Api.root_url + "api/getmovies").
