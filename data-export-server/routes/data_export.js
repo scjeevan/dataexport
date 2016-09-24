@@ -140,16 +140,29 @@ var exportDataMng = {
 				value: 'mustachio'
 			}]
 		}];
+
+		var locationArray = [];
+		executeGoogleBigQueryAllRows(locationQuery,function(rows){
+            rows.forEach(function(loc){
+                if(loc != null){
+					var data = {label: loc.Continent, value: loc.Continent, children:[]}
+					//console.log(loc.Continent + " | " + foundKeys);
+					locationArray.push(data);
+				}
+            });
+            res.json(locationArray);
+        });
 		
-		res.json(stuff);
 		/*
 		var locationArray = [];
 		executeGoogleBigQueryAllRows(locationQuery,function(rows){
             rows.forEach(function(loc){
-                if(loc != null && locationArray.indexOf(loc.Continent) == -1){
-					locationArray.push(loc.Continent);
-				} else {
-					locationArray[loc.Continent].push(loc.Country);
+                if(loc != null){
+					var foundKeys = Object.keys(locationArray).filter(function(key) {
+						return locationArray[key] == loc.Continent;
+					});
+					console.log(loc.Continent + " | " + foundKeys);
+					locationArray.push({label: loc.Continent, });
 				}
             });
             res.json(locationArray);
