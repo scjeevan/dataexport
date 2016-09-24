@@ -409,11 +409,11 @@ mvpApp.controller('dataExportFilter', ['$window', '$scope', '$location', '$http'
 				value: 'global',
 				children: data
 			}];
+			callback(arr);
 		}).
 		error(function (data) {
 			console.log('error');
 		});
-		callback(arr);
     }
 	function getMovies(callback){
         $http.get(Api.root_url + "api/getmovies").
