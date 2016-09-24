@@ -154,14 +154,17 @@ var exportDataMng = {
 		executeGoogleBigQueryAllRows(locationQuery,function(rows){
             rows.forEach(function(loc){
                 if(loc != null){
-					var e = isExist(locationArray, loc.Continent);
-					if(e == -1){
+					var a = isExist(locationArray, loc.Continent);
+					if(a == -1){
 						var data = {label: loc.Continent, value: loc.Continent, children:[]}
 						locationArray.push(data);
 					}
 					else{
-						//var data = {label: loc.Country, value: loc.Country, children:[]};
-						//locationArray[e].children.push(data);
+						var b = isExist(locationArray[a].children, loc.Country);
+						if(b == -1){
+							var data = {label: loc.Country, value: loc.Country, children:[]};
+							locationArray[a].children.push(data);
+						}
 					}
 				}
             });
