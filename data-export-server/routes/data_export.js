@@ -160,8 +160,8 @@ var exportDataMng = {
 						locationArray.push(data);
 					}
 					else{
-						var data = {label: loc.Country, value: loc.Country, children:[]};
-						locationArray[e].children.push(data);
+						//var data = {label: loc.Country, value: loc.Country, children:[]};
+						//locationArray[e].children.push(data);
 					}
 				}
             });
