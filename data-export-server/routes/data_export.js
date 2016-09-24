@@ -175,13 +175,13 @@ var exportDataMng = {
 								var d = isExist(locationArray[a].children[b].children[c].children, loc.State);
 								if(d == -1){
 									var dData = {label: loc.State, value: loc.State, children:[]};
-									locationArray[a].children[b].children[d].children.push(dData);
+									locationArray[a].children[b].children[c].children.push(dData);
 								}
 								else{
 									var e = isExist(locationArray[a].children[b].children[c].children[d].children, loc.City);
 									if(e == -1){
 										var eData = {label: loc.City, value: loc.City, children:[]};
-										locationArray[a].children[b].children[d].children[e].children.push(eData);
+										locationArray[a].children[b].children[c].children[d].children.push(eData);
 									}
 								}
 							}
