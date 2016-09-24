@@ -102,10 +102,10 @@ function saveDateRemort(file_name, headers, rows, connectionProperties, ftl_loc)
 function isExist(array, value){
 	for (var i = 0; i < array.length; i++) {
 		if(array[i].label === value){
-			return true;
+			return i;
 		}
 	}
-	return false;
+	return -1;
 }
 
 var exportDataMng = {
@@ -154,9 +154,14 @@ var exportDataMng = {
 		executeGoogleBigQueryAllRows(locationQuery,function(rows){
             rows.forEach(function(loc){
                 if(loc != null){
-					if(!isExist(locationArray, loc.Continent)){
+					var e = isExist(locationArray, loc.Continent);
+					if(e == -1){
 						var data = {label: loc.Continent, value: loc.Continent, children:[]}
 						locationArray.push(data);
+					}
+					else{
+						var data = {label: loc.Country, value: loc.Country, children:[]};
+						locationArray[e].children.push(data);
 					}
 				}
             });
