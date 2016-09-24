@@ -124,63 +124,37 @@ var exportDataMng = {
 	
 	getLocations : function(req, res){
         var locationQuery = "SELECT Continent, Country, Region, State, City FROM [devdiggit-1:DevDiggit_Hist.unique_ip_count_for_location]";
-		var stuff = [{
-			label: 'Global',
-			value: 'global',
-			children: [{
-				label: 'Asia',
-				value: 'Asia',
-				children: [{
-					label: 'Top Hat',
-					value: 'top_hat'
-				},{
-					label: 'Curly Mustache',
-					value: 'mustachio',
-					children: [{
-						label: 'Top Hat',
-						value: 'top_hat'
-					},{
-						label: 'Curly Mustache',
-						value: 'mustachio'
-					}]
-				}]
-			},{
-				label: 'Curly Mustache',
-				value: 'mustachio'
-			}]
-		}];
-
 		var locationArray = [];
 		executeGoogleBigQueryAllRows(locationQuery,function(rows){
             rows.forEach(function(loc){
                 if(loc != null){
 					var a = isExist(locationArray, loc.Continent);
 					if(a == -1){
-						var aData = {label: loc.Continent, value: loc.Continent, children:[]}
+						var aData = {label: loc.Continent, children:[]} // , value: loc.Continent
 						locationArray.push(aData);
 					}
 					else{
 						var b = isExist(locationArray[a].children, loc.Country);
 						if(b == -1){
-							var bData = {label: loc.Country, value: loc.Country, children:[]};
+							var bData = {label: loc.Country, children:[]}; // , value: loc.Country
 							locationArray[a].children.push(bData);
 						}
 						else{
 							var c = isExist(locationArray[a].children[b].children, loc.Region);
 							if(c == -1){
-								var cData = {label: loc.Region, value: loc.Region, children:[]};
+								var cData = {label: loc.Region, children:[]}; // , value: loc.Region
 								locationArray[a].children[b].children.push(cData);
 							}
 							else{
 								var d = isExist(locationArray[a].children[b].children[c].children, loc.State);
 								if(d == -1){
-									var dData = {label: loc.State, value: loc.State, children:[]};
+									var dData = {label: loc.State, children:[]}; // , value: loc.State
 									locationArray[a].children[b].children[c].children.push(dData);
 								}
 								else{
 									var e = isExist(locationArray[a].children[b].children[c].children[d].children, loc.City);
 									if(e == -1){
-										var eData = {label: loc.City, value: loc.City};
+										var eData = {label: loc.City}; // , value: loc.City
 										locationArray[a].children[b].children[c].children[d].children.push(eData);
 									}
 								}
