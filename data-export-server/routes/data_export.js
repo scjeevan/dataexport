@@ -100,8 +100,8 @@ function saveDateRemort(file_name, headers, rows, connectionProperties, ftl_loc)
 }
 
 function isExist(array, value){
-	for(var obj in array) {
-		if(obj.label === value){
+	for (var i = 0; i < array.length; i++) {
+		if(array[i].label === value){
 			return true;
 		}
 	}
@@ -154,10 +154,7 @@ var exportDataMng = {
 		executeGoogleBigQueryAllRows(locationQuery,function(rows){
             rows.forEach(function(loc){
                 if(loc != null){
-					if(isExist(locationArray, loc.Continent)){
-						
-					}
-					else{
+					if(!isExist(locationArray, loc.Continent)){
 						var data = {label: loc.Continent, value: loc.Continent, children:[]}
 						locationArray.push(data);
 					}
