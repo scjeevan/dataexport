@@ -392,7 +392,11 @@ mvpApp.controller('dataExportFilter', ['$window', '$scope', '$location', '$http'
 		});
 	};
 	getLocations(function(data){
-        $scope.locations = data;
+        $scope.locations = [{
+			label: 'Global',
+			value: 'global',
+			children: data
+		}];
     });
 	getMovies(function(data){
         $scope.movies = data;
@@ -401,15 +405,9 @@ mvpApp.controller('dataExportFilter', ['$window', '$scope', '$location', '$http'
         $scope.groups = data;
     });
 	function getLocations(callback){
-		var arr = [];
 		$http.get(Api.root_url + "api/getlocations").
 		success(function (data) {
-			arr = [{
-				label: 'Global',
-				value: 'global',
-				children: data
-			}];
-			callback(arr);
+			callback(data);
 		}).
 		error(function (data) {
 			console.log('error');
