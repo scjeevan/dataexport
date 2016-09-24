@@ -101,7 +101,7 @@ function saveDateRemort(file_name, headers, rows, connectionProperties, ftl_loc)
 
 function isExist(array, value){
 	for(var obj in array) {
-		if(obj.label == value){
+		if(obj.label === value){
 			return true;
 		}
 	}
