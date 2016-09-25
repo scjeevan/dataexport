@@ -7,7 +7,7 @@
 				<accordion-group is-open="false">
 				  <accordion-heading>Genres</accordion-heading>
 				  <div style="max-height:150px; padding:5px; overflow:auto;" class="">
-					<label><input type="checkbox" ng-click="toggleAll()" ng-model="isAllSelected"> Select All</label>
+					<label style="font-weight: bold;"><input type="checkbox" checklist-model="exp.genres_all" checklist-value="1" ng-click="toggleAll()"> Select All</label>
 					<div class="checkbox" ng-repeat="g in genreList">
 						<label><input type="checkbox" checklist-model="exp.genres" checklist-value="g.genre_id"> {{g.genre}}</label>
 					</div>
@@ -78,7 +78,7 @@
 			<br/>
 			<b>Fields</b>
 			<div style="max-height:150px; padding:5px; overflow:auto;" class="">
-				<label><input type="checkbox" ng-click="toggleAll()" ng-model="isAllSelected"> Select All</label>
+				<label style="font-weight: bold;"><input type="checkbox" checklist-model="exp.columns_all" checklist-value="1" ng-click="toggleAllColumns()"> Select All</label>
 				<div class="checkbox" ng-repeat="column in columns">
 					<label><input type="checkbox" checklist-model="exp.columns" checklist-value="column"> {{column}}</label>
 				</div>
@@ -104,7 +104,7 @@
 		</div>
     </div>
 	<div style="padding:5px; overflow:auto;" class="">
-		<input type="button" ng-model="exp.refresh" class="btn btn-primary" value="Submit">
+		<button value="Submit" class="btn btn-primary" ng-click="submitForm()">Submit</button>
 	</div>
 </div>
 <div class="maindiv col-md-9 col-sm-12">

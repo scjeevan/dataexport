@@ -136,13 +136,7 @@ mvpApp.controller('dataExportForm', ['$window', '$scope', '$location', '$http', 
 			$scope.genreList = [];
 		}
 	};
-	$scope.toggleAll = function() {
-		var toggleStatus = !$scope.isAllSelected;
-		angular.forEach($scope.genreList, function(itm){ 
-			$scope.exp.genres = toggleStatus;
-			console.log(toggleStatus);
-		});
-	}
+	
 }
 ]);
 
@@ -362,6 +356,8 @@ mvpApp.controller('dataExportFilter', ['$window', '$scope', '$location', '$http'
 	$scope.ftp_acc_list = [];
 	$scope.movies = [];
 	$scope.groups = [];
+	$scope.exp = {};
+	$scope.exp.genres = [];
 	var someobj = {
 		'Africa': ['Algeria', 'Angola', 'Benin', 'Botswana', 'Burkina faso', 'Burundi', 'Cameroon', 'Cape verde'],
 		'Asia': ['Afghanistan', 'Antarctica', 'Armenia', 'Azerbaijan', 'Bahrain', 'Bangladesh', 'Bermuda', 'Bhutan'],
@@ -386,10 +382,20 @@ mvpApp.controller('dataExportFilter', ['$window', '$scope', '$location', '$http'
 		});
 	});
 	$scope.toggleAll = function() {
-		var toggleStatus = $scope.isAllSelected;
-		angular.forEach($scope.genreList, function(itm){ 
-			$scope.exp.genres = toggleStatus;
-		});
+		if($scope.exp.genres_all == '1'){
+			$scope.exp.genres = $scope.genreList.map(function(item) { return item.genre_id; });
+		}
+		else{
+			$scope.exp.genres = [];
+		}
+	};
+	$scope.toggleAllColumns = function() {
+		if($scope.exp.columns_all == '1'){
+			$scope.exp.columns = $scope.columns.map(function(item) { return item; });
+		}
+		else{
+			$scope.exp.columns = [];
+		}
 	};
 	getLocations(function(data){
         $scope.locations = [{
@@ -405,6 +411,19 @@ mvpApp.controller('dataExportFilter', ['$window', '$scope', '$location', '$http'
         $scope.groups = data;
     });
 	function getLocations(callback){
+		var data = [{
+			label: 'Glasses',
+			value: 'glasses',
+			children: [{
+				label: 'Top Hat',
+				value: 'top_hat'
+			},{
+				label: 'Curly Mustache',
+				value: 'mustachio'
+			}]
+		}];
+		callback(data);
+		/*
 		$http.get(Api.root_url + "api/getlocations").
 		success(function (data) {
 			callback(data);
@@ -412,6 +431,7 @@ mvpApp.controller('dataExportFilter', ['$window', '$scope', '$location', '$http'
 		error(function (data) {
 			console.log('error');
 		});
+		*/
     }
 	function getMovies(callback){
         $http.get(Api.root_url + "api/getmovies").
@@ -467,12 +487,10 @@ mvpApp.controller('dataExportFilter', ['$window', '$scope', '$location', '$http'
 		});
 	});
 	
+	$scope.submitForm = function() {
+		console.log("val : " + $scope.exp.genres_all );
+	};
 	/*
-	
-	
-	
-	
-	
 	$scope.exportData = function() {
 		if((typeof $scope.exp.startDate == 'undefined') || (typeof $scope.exp.endDate == 'undefined')){
 			alert("Please select date range");
