@@ -21,6 +21,7 @@ router.get('/api/listftpaccounts', ftpDetailsManager.listFtpAccounts);
 router.post('/api/saveftpaccount', ftpDetailsManager.saveFtpAccount);
 router.post('/api/deleteftpaccount', ftpDetailsManager.deleteFtpAccount);
 router.post('/api/export', dataExportManager.exportData);
+router.post('/api/exportsave', dataExportManager.exportAndSave);
 router.post('/api/schedule', dataExportManager.scheduleExportData);
 router.get('/api/genres', dataExportManager.genresList);
 router.get('/api/getmovies', dataExportManager.getMovies);

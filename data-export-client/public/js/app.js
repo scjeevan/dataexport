@@ -412,16 +412,41 @@ mvpApp.controller('dataExportFilter', ['$window', '$scope', '$location', '$http'
     });
 	function getLocations(callback){
 		var data = [{
-			label: 'Glasses',
-			value: 'glasses',
-			children: [{
-				label: 'Top Hat',
-				value: 'top_hat'
-			},{
-				label: 'Curly Mustache',
-				value: 'mustachio'
-			}]
-		}];
+			label: 'asia',
+			value: 'asia',
+			children: []
+		},
+		{
+			label: 'europe',
+			value: 'europe',
+			children: []
+		},
+		{
+			label: 'north america',
+			value: 'north america',
+			children: []
+		},
+		{
+			label: 'south america',
+			value: 'south america',
+			children: []
+		},
+		{
+			label: 'oceania',
+			value: 'oceania',
+			children: []
+		},
+		{
+			label: 'other',
+			value: 'other',
+			children: []
+		},
+		{
+			label: 'africa',
+			value: 'africa',
+			children: []
+		}
+		];
 		callback(data);
 		/*
 		$http.get(Api.root_url + "api/getlocations").
@@ -488,7 +513,41 @@ mvpApp.controller('dataExportFilter', ['$window', '$scope', '$location', '$http'
 	});
 	
 	$scope.submitForm = function() {
-		console.log("val : " + $scope.exp.genres_all );
+		if(typeof $scope.exp.columns == 'undefined' || $scope.exp.columns.length == 0){
+			alert("Please select atleast one field");
+		}
+		else if(typeof $scope.exp.export_type == 'undefined' || $scope.exp.export_type.length == 0){
+			alert("Please select Export Type");
+		}
+		else if(typeof $scope.exp.ftp_account_id == 'undefined'){
+			alert("Please select FTP account");
+		}
+		else{
+			if($scope.selectedMovies.length > 0){
+				$scope.exp.selected_titles = $scope.selectedMovies;
+			}
+			if($scope.selectedGroups.length > 0){
+				$scope.exp.selected_groups = $scope.selectedGroups;
+			}
+			$http.post(Api.root_url+ "api/exportsave", $scope.exp).
+			success(function (data, status, headers, config) {
+				ngToast.create({
+					dismissOnTimeout:true,
+					timeout:4000,
+					content:data.values,
+					dismissButton:true
+				});
+			}).
+			error(function (data, status, headers, config) {
+				ngToast.create({
+					className: 'danger',
+					dismissButton:true,
+					content: 'Error while saving data'
+				});
+			});
+		}
+		
+		
 	};
 	/*
 	$scope.exportData = function() {

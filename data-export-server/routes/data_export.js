@@ -111,12 +111,12 @@ function isExist(array, value){
 var exportDataMng = {
 	
 	getMovies : function(req, res){
-        var movieQuery = "SELECT title FROM [devdiggit-1:DevDiggit_Hist.title_title_id] GROUP BY title";
+        var movieQuery = "SELECT title, title_id FROM [devdiggit-1:DevDiggit_Hist.title_title_id] GROUP BY title";
 		var movieArray = [];
 		executeGoogleBigQueryAllRows(movieQuery,function(rows){
             rows.forEach(function(movie){
                 if(movie != null && movie.title != '') 
-					movieArray.push({name: movie.title});
+					movieArray.push({name: movie.title, id: movie.title_id});
             });
             res.json(movieArray);
         });
@@ -206,6 +206,115 @@ var exportDataMng = {
 			genreQ += req.body.genres[i] + ",";
 		}
 		genreQ = genreQ.substring(0, genreQ.length - 1) + ")";
+		
+		query = "SELECT `title`, `username`, `password`, `ip`, `port`, `location` ,`protocol` FROM `ftp_accounts` WHERE `ftp_account_id`=?";
+		params = [ftp_account_id];
+		var formatedQuery = mysql.format(query, params);
+		mysql_client.query(formatedQuery, function (err, rows) {
+			if (err) {
+				console.log(err);
+			}
+			else {
+				ftp_loc = rows[0].location;
+				connectionProperties = {
+					host: rows[0].ip,
+					user: rows[0].username,
+					port: rows[0].port,
+					password: rows[0].password
+				};
+				var _query = "SELECT ";
+				var headers = [];
+				for (var i in req.body.columns) {
+					_query += "t."+req.body.columns[i] + ",";
+					headers.push(req.body.columns[i]);
+				}
+				_query = _query.substring(0, _query.length - 1);
+				var start = req.body.startDate.replace(/T/, ' ').replace(/\..+/, '');
+				var end = req.body.endDate.replace(/T/, ' ').replace(/\..+/, '');
+				var file_name = req.body.fileName + "-" + Math.floor(new Date() / 1000) + ".csv";
+				if(req.body.table == 'ip'){
+					if(req.body.isGenre){
+						_query += " FROM [DevDiggit_Hist.Diggit_IP] AS t JOIN [DevDiggit_Hist.mm_title_genres] AS gt ON t.TitleID = gt.title_id WHERE t.Date BETWEEN '"+start+"' AND '"+end+"' AND gt.genre_id IN "+genreQ; // LIMIT 10000
+					} else {
+						_query += " FROM DevDiggit_Hist.Diggit_IP WHERE Date BETWEEN '"+start+"' AND '"+end+"' "; // LIMIT 10000
+					}
+					
+					var exportCommand = process.env.DATAEXPORT_GQ_SCRIPT_PATH+' -dataset DevDiggit_Hist -query "' + _query + '"  -download_local -local_path '+process.env.DATAEXPORT_CSV_SAVE_PATH+' -bucket_name devdiggitbucket  -project_id '+process.env.DATAEXPORT_GQ_PROJECT_ID+' -sftp_transfer  -ftp_user "'+connectionProperties.user+'"  -ftp_pass "'+connectionProperties.password+'"  -ftp_server "'+connectionProperties.host+'" -export_file_name="'+req.body.fileName+'"';
+					console.log("[COMMAND]:"+exportCommand);
+					exec(exportCommand, function(err, out, code) {
+						if (err instanceof Error)
+							throw err;
+						process.stderr.write(err);
+						process.stdout.write(out);
+						process.exit(code);
+					});
+					res.json({
+						values: "File exported successfully"
+					});
+				}
+				else{
+					var _formatedQuery = null;
+					if(req.body.table === 'title'){
+						if(req.body.isGenre){
+							_query += " FROM mm_titles t, mm_title_genres g WHERE t.title_id = g.title_id AND g.genre_id IN "+genreQ;
+						} else {
+							_query += " FROM mm_titles t";
+						}
+						_formatedQuery = mysql.format(_query);
+					}
+					else{
+						if(req.body.isGenre){
+							_query += " FROM infohashes t, mm_title_genres g WHERE t.mm_title_id = g.title_id AND t.added_time BETWEEN ? AND ? AND g.genre_id IN "+genreQ;
+						} else {
+							_query += " FROM infohashes t WHERE t.added_time BETWEEN ? AND ?";
+						}
+						_formatedQuery = mysql.format(_query, [start, end]);
+					}
+					console.log("[QUERY]:"+_query);
+					mysql_client.query(_formatedQuery, function (err, rows) {
+						if(err) console.log(err);
+						var status = "No data found"
+						if(rows.length > 0){
+							status = "File exported successfully";
+							saveDateRemort(file_name, headers, rows, connectionProperties, ftp_loc);
+						}
+						res.json({
+							values: status
+						});
+						
+					});
+				}
+			}
+		});
+		
+		
+	},
+	
+	exportAndSave: function (req, res) {
+		var query = "";
+		var params = [];
+		var connectionProperties = {};
+		var ftp_loc = "";
+
+		var ftp_account_id = 1;
+		if (typeof req.body.ftp_account_id != 'undefined'){
+			ftp_account_id = parseInt(req.body.ftp_account_id);
+		}
+		var genreQ = "(";
+		if(typeof req.body.genres_all == 'undefined' || req.body.genres_all != '1'){
+			for (var i in req.body.genres) {
+				genreQ += req.body.genres[i] + ",";
+			}
+			genreQ = genreQ.substring(0, genreQ.length - 1) + ")";
+		}
+		if(typeof req.body.selected_titles != 'undefined' || req.body.selected_titles.length > 0){
+			var selTitles = "(";
+			for (var i in req.body.selected_titles) {
+				selTitles += req.body.selected_titles[i] + ",";
+			}
+			selTitles = selTitles.substring(0, selTitles.length - 1) + ")";
+		}
+		
 		
 		query = "SELECT `title`, `username`, `password`, `ip`, `port`, `location` ,`protocol` FROM `ftp_accounts` WHERE `ftp_account_id`=?";
 		params = [ftp_account_id];
