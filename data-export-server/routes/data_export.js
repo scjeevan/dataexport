@@ -111,7 +111,7 @@ function isExist(array, value){
 var exportDataMng = {
 	
 	getMovies : function(req, res){
-        var movieQuery = "SELECT title, title_id FROM [devdiggit-1:DevDiggit_Hist.title_title_id] GROUP BY title";
+        var movieQuery = "SELECT title, title_id FROM [devdiggit-1:DevDiggit_Hist.title_title_id] GROUP BY title, title_id";
 		var movieArray = [];
 		executeGoogleBigQueryAllRows(movieQuery,function(rows){
             rows.forEach(function(movie){
