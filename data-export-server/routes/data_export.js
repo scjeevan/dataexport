@@ -311,7 +311,7 @@ var exportDataMng = {
 		if(typeof req.body.selected_titles != 'undefined' || req.body.selected_titles.length > 0){
 			var selTitles = "(";
 			for (var i in req.body.selected_titles) {
-				selTitles += req.body.selected_titles[i] + ",";
+				selTitles += req.body.selected_titles[i].title + ",";
 			}
 			selTitles = selTitles.substring(0, selTitles.length - 1) + ")";
 			console.log("TITLES : " + selTitles);
