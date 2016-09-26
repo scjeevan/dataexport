@@ -111,12 +111,12 @@ function isExist(array, value){
 var exportDataMng = {
 	
 	getMovies : function(req, res){
-        var movieQuery = "SELECT title, title_id FROM [devdiggit-1:DevDiggit_Hist.title_title_id] GROUP BY title, title_id";
+        var movieQuery = "SELECT title FROM [devdiggit-1:DevDiggit_Hist.title_title_id] GROUP BY title";
 		var movieArray = [];
 		executeGoogleBigQueryAllRows(movieQuery,function(rows){
             rows.forEach(function(movie){
                 if(movie != null && movie.title != '') 
-					movieArray.push({name: movie.title, id: movie.title_id});
+					movieArray.push({name: movie.title});
             });
             res.json(movieArray);
         });
@@ -306,6 +306,7 @@ var exportDataMng = {
 				genreQ += req.body.genres[i] + ",";
 			}
 			genreQ = genreQ.substring(0, genreQ.length - 1) + ")";
+			console.log("GENRES : " + genreQ);
 		}
 		if(typeof req.body.selected_titles != 'undefined' || req.body.selected_titles.length > 0){
 			var selTitles = "(";
@@ -313,9 +314,10 @@ var exportDataMng = {
 				selTitles += req.body.selected_titles[i] + ",";
 			}
 			selTitles = selTitles.substring(0, selTitles.length - 1) + ")";
+			console.log("TITLES : " + selTitles);
 		}
 		
-		
+		/*
 		query = "SELECT `title`, `username`, `password`, `ip`, `port`, `location` ,`protocol` FROM `ftp_accounts` WHERE `ftp_account_id`=?";
 		params = [ftp_account_id];
 		var formatedQuery = mysql.format(query, params);
@@ -395,7 +397,7 @@ var exportDataMng = {
 				}
 			}
 		});
-		
+		*/
 		
 	},
 	
