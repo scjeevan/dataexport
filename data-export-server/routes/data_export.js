@@ -300,24 +300,61 @@ var exportDataMng = {
 		if (typeof req.body.ftp_account_id != 'undefined'){
 			ftp_account_id = parseInt(req.body.ftp_account_id);
 		}
-		var genreQ = "(";
-		if(typeof req.body.genres_all == 'undefined' || req.body.genres_all != '1'){
-			for (var i in req.body.genres) {
-				genreQ += req.body.genres[i] + ",";
+		var genreQ = "";
+		if(typeof req.body.genres_all == 'undefined' || req.body.genres_all != '1') {
+			if(typeof req.body.genres != 'undefined' && req.body.genres.length > 0){
+				genreQ += "(";
+				for (var i in req.body.genres) {
+					genreQ += req.body.genres[i] + ",";
+				}
+				genreQ = genreQ.substring(0, genreQ.length - 1) + ")";
 			}
-			genreQ = genreQ.substring(0, genreQ.length - 1) + ")";
-			console.log("GENRES : " + genreQ);
 		}
+		console.log("GENRES : " + genreQ);
+		/*
+		var selTitles = "";
 		if(typeof req.body.selected_titles != 'undefined' || req.body.selected_titles.length > 0){
-			var selTitles = "(";
+			selTitles += "(";
 			for (var i in req.body.selected_titles) {
 				selTitles += req.body.selected_titles[i].title + ",";
 			}
 			selTitles = selTitles.substring(0, selTitles.length - 1) + ")";
 			console.log("TITLES : " + selTitles);
 		}
+		var selGroups = "";
+		if(typeof req.body.selected_groups != 'undefined' || req.body.selected_groups.length > 0){
+			selGroups += "(";
+			for (var i in req.body.selected_groups) {
+				selGroups += req.body.selected_groups[i].title + ",";
+			}
+			selGroups = selGroups.substring(0, selGroups.length - 1) + ")";
+			console.log("GROUPS : " + selGroups);
+		}
+		if(typeof req.body.export_type != 'undefined' && typeof req.body.file_format != 'undefined'){
+			
+			var _query = "SELECT ";
+			for (var i in req.body.columns) {
+				_query += "t."+req.body.columns[i] + ",";
+			}
+			_query = _query.substring(0, _query.length - 1);
+			
+			if(req.body.isGenre){
+				var start = req.body.startDate.replace(/T/, ' ').replace(/\..+/, '');
+				var end = req.body.endDate.replace(/T/, ' ').replace(/\..+/, '');
+				
+						_query += " FROM [DevDiggit_Hist.Diggit_IP] AS t JOIN [DevDiggit_Hist.mm_title_genres] AS gt ON t.TitleID = gt.title_id WHERE t.Date BETWEEN '"+start+"' AND '"+end+"' AND gt.genre_id IN "+genreQ; // LIMIT 10000
+					} else {
+						_query += " FROM DevDiggit_Hist.Diggit_IP WHERE Date BETWEEN '"+start+"' AND '"+end+"' "; // LIMIT 10000
+					}
+			
+			if(req.body.export_type == '1'){
+				
+			}
+			else{
+				
+			}
+		}
 		
-		/*
 		query = "SELECT `title`, `username`, `password`, `ip`, `port`, `location` ,`protocol` FROM `ftp_accounts` WHERE `ftp_account_id`=?";
 		params = [ftp_account_id];
 		var formatedQuery = mysql.format(query, params);

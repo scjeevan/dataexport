@@ -231,6 +231,38 @@ mvpApp.controller('scheduleDataExport', ['$window', '$scope', '$location', '$htt
 }
 ]);
 
+mvpApp.controller('MyCtrl', function(ivhTreeviewMgr) {
+  this.bag = [{
+      label: 'Glasses',
+      value: 'glasses',
+      children: [{
+        label: 'Top Hat',
+        value: 'top_hat'
+      },{
+        label: 'Curly Mustache',
+        value: 'mustachio'
+      }]
+  }];
+ 
+  this.awesomeCallback = function(node, tree) {
+	  console.log("1 : ");
+    // Do something with node or tree 
+  };
+ 
+  this.otherAwesomeCallback = function(node, isSelected, tree) {
+	  console.log("2 : ");
+    // Do soemthing with node or tree based on isSelected 
+  }
+  
+  var  newNodes = [{label: 'Hello'},{label: 'World'}];
+ 
+// Attach new children to parent node 
+parent.children = newNodes;
+ 
+ 
+// Force revalidate on tree given parent node's selected status 
+//ivhTreeviewMgr.select(myTree, parent, parent.selected);
+});
 
 mvpApp.controller('ftpAccountManager', ['$window', '$scope', '$location', '$http', 'Api', 'ngToast', function($window, $scope, $location, $http, Api, ngToast) {
 	$scope.ftp_data = [];
@@ -521,6 +553,9 @@ mvpApp.controller('dataExportFilter', ['$window', '$scope', '$location', '$http'
 		}
 		else if(typeof $scope.exp.ftp_account_id == 'undefined'){
 			alert("Please select FTP account");
+		}
+		else if(typeof $scope.exp.filename == 'undefined'){
+			alert("Please enter file name");
 		}
 		else{
 			if($scope.selectedMovies.length > 0){
