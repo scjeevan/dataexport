@@ -402,7 +402,7 @@ mvpApp.controller('ftpAccountManager', ['$window', '$scope', '$location', '$http
 }]);
 
 mvpApp.controller('dataExportFilter', ['$window', '$scope', '$location', '$http', 'Api', 'ngToast', function($window, $scope, $location, $http, Api, ngToast) {
-	$scope.columns = infohashesColumns;
+	$scope.columns = ipColumns;
 	$scope.selectedMovies = [];
 	$scope.selectedGroups = [];
 	$scope.ftp_acc_list = [];
@@ -577,7 +577,7 @@ mvpApp.controller('dataExportFilter', ['$window', '$scope', '$location', '$http'
 		else if(typeof $scope.exp.ftp_account_id == 'undefined'){
 			alert("Please select FTP account");
 		}
-		else if(typeof $scope.exp.filename == 'undefined'){
+		else if(typeof $scope.exp.fileName == 'undefined'){
 			alert("Please enter file name");
 		}
 		else{
