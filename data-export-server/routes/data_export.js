@@ -353,7 +353,11 @@ var exportDataMng = {
 				});
 			});
 		}
-		res.json([]);
+		else{
+			res.json({
+				values: []
+			});
+		}
 			/*
 			if(req.body.isGenre){
 						_query += " FROM [DevDiggit_Hist.Diggit_IP] AS t JOIN [DevDiggit_Hist.mm_title_genres] AS gt ON t.TitleID = gt.title_id WHERE t.Date BETWEEN '"+start+"' AND '"+end+"' AND gt.genre_id IN "+genreQ; // LIMIT 10000
