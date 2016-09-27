@@ -27,8 +27,15 @@ var mysql_client = mysql.createConnection({
 
 var conn = new Client();
 
-function executeGoogleBigQueryAllRows(query, callback){
-    bigquery.query(query, function(err, rows) {
+function executeGoogleBigQueryAllRows(sqlQuery, callback){
+	var options = {
+		query: sqlQuery,
+		timeoutMs: 10000,
+		useLegacySql: false,
+		allowLargeResults:true
+	};
+
+    bigquery.query(options, function(err, rows) {
         if (!err) {
             callback(rows);
         }
