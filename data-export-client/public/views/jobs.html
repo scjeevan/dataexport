@@ -15,10 +15,11 @@
 						</tr>
 					</thead>
 					<tbody>
-						<tr ng-repeat="item in ftp_data" ng-click="setClickedRow($index)" ng-class="{'selected':$index == selectedRow}">
-							<td>{{item.title}}</td>
-							<td>{{item.ip}}</td>
-							<td>{{item.protocol}}</td>
+						<tr ng-repeat="item in jobs_data" ng-class="{'selected':$index == selectedRow}">
+							<td>{{item.data_export_schedule_id}}</td>
+							<td>{{item.frequency}}</td>
+							<td>{{item.selected_columns}}</td>
+							<td>{{item.ftp_account_id}}</td>
 						</tr>
 					</tbody>
 				</table>

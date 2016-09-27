@@ -450,9 +450,7 @@ var exportDataMng = {
 			}
 			else {
 				res.json({
-					data: {
-						values: result
-					}
+					values: result
 				});
 			}
 		});

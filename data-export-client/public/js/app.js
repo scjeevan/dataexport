@@ -282,7 +282,7 @@ mvpApp.controller('jobsManager', ['$window', '$scope', '$location', '$http', 'Ap
 			content: 'Error while retrieving data'
 		});
 	});
-}
+}]);
 
 mvpApp.controller('ftpAccountManager', ['$window', '$scope', '$location', '$http', 'Api', 'ngToast', function($window, $scope, $location, $http, Api, ngToast) {
 	$scope.ftp_data = [];
