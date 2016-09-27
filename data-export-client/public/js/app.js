@@ -406,6 +406,7 @@ mvpApp.controller('dataExportFilter', ['$window', '$scope', '$location', '$http'
 	$scope.selectedMovies = [];
 	$scope.selectedGroups = [];
 	$scope.ftp_acc_list = [];
+	$scope.ip_values = [];
 	$scope.movies = [];
 	$scope.groups = [];
 	$scope.exp = {};
@@ -589,12 +590,17 @@ mvpApp.controller('dataExportFilter', ['$window', '$scope', '$location', '$http'
 			}
 			$http.post(Api.root_url+ "api/exportsave", $scope.exp).
 			success(function (data, status, headers, config) {
+				angular.forEach(data.values, function (v, k) {
+					this.push(v);
+				}, $scope.ip_values);
+				/*
 				ngToast.create({
 					dismissOnTimeout:true,
 					timeout:4000,
 					content:data.values,
 					dismissButton:true
 				});
+				*/
 			}).
 			error(function (data, status, headers, config) {
 				ngToast.create({
