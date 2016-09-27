@@ -313,7 +313,7 @@ var exportDataMng = {
 		console.log("GENRES : " + genreQ);
 		
 		var selTitles = "";
-		if(typeof req.body.selected_titles != 'undefined' || req.body.selected_titles.length > 0){
+		if(typeof req.body.selected_titles != 'undefined' && req.body.selected_titles.length > 0){
 			selTitles += "(";
 			for (var i in req.body.selected_titles) {
 				selTitles += req.body.selected_titles[i].title + ",";
@@ -324,7 +324,7 @@ var exportDataMng = {
 		console.log("TITLES : " + selTitles);
 		
 		var selGroups = "";
-		if(typeof req.body.selected_groups != 'undefined' || req.body.selected_groups.length > 0){
+		if(typeof req.body.selected_groups != 'undefined' && req.body.selected_groups.length > 0){
 			selGroups += "(";
 			for (var i in req.body.selected_groups) {
 				selGroups += req.body.selected_groups[i].title + ",";
@@ -334,17 +334,26 @@ var exportDataMng = {
 		console.log("GROUPS : " + selGroups);
 		
 		if(typeof req.body.export_type != 'undefined' && typeof req.body.file_format != 'undefined'){
+			var start = req.body.startDate.replace(/T/, ' ').replace(/\..+/, '');
+			var end = req.body.endDate.replace(/T/, ' ').replace(/\..+/, '');
 			var _query = "SELECT ";
 			for (var i in req.body.columns) {
 				_query += "t."+req.body.columns[i] + ",";
 			}
 			_query = _query.substring(0, _query.length - 1);
+			if(genreQ.length > 0){
+				_query += " FROM [DevDiggit_Hist.Diggit_IP] AS t JOIN [DevDiggit_Hist.mm_title_genres] AS gt ON t.TitleID = gt.title_id WHERE t.Date BETWEEN '"+start+"' AND '"+end+"' AND gt.genre_id IN "+genreQ; // LIMIT 10000
+			} else {
+				_query += " FROM DevDiggit_Hist.Diggit_IP WHERE Date BETWEEN '"+start+"' AND '"+end+"' "; // LIMIT 10000
+			}
+			console.log("QUERY : " + _query);
+			executeGoogleBigQueryAllRows(_query,function(rows){
+				res.json(movieArray);
+			});
 		}
+		res.json([]);
 			/*
 			if(req.body.isGenre){
-				var start = req.body.startDate.replace(/T/, ' ').replace(/\..+/, '');
-				var end = req.body.endDate.replace(/T/, ' ').replace(/\..+/, '');
-				
 						_query += " FROM [DevDiggit_Hist.Diggit_IP] AS t JOIN [DevDiggit_Hist.mm_title_genres] AS gt ON t.TitleID = gt.title_id WHERE t.Date BETWEEN '"+start+"' AND '"+end+"' AND gt.genre_id IN "+genreQ; // LIMIT 10000
 					} else {
 						_query += " FROM DevDiggit_Hist.Diggit_IP WHERE Date BETWEEN '"+start+"' AND '"+end+"' "; // LIMIT 10000

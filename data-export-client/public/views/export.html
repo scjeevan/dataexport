@@ -62,24 +62,35 @@
 				<accordion-group is-open="false">
 					<accordion-heading>Locations</accordion-heading>
 					<div style="max-height:150px; padding:5px; overflow:auto;" class="">
+						<!-- 
 						<div ng-controller="MyCtrl as fancy">
 						<div ivh-treeview="fancy.bag" ></div>
-						</div>
-						<!-- <div ivh-treeview="locations"></div> -->
+						</div> 
+						-->
+						<div ivh-treeview="locations"></div>
 						<!-- <json-tree object="someobj" root-name="'Global'"></json-tree> -->
 					</div>
 				</accordion-group>
 			</accordion>
+			<br/>
+			<b class = "required" style="padding: 10px 10px 10px 10px;">Date Range</b>
+			<div class="col-md-12">
+				<input ui-date="dateOptions" ng-model="exp.startDate" placeholder="Start Date" class="form-control" id="startDate" ng-required="true" datepicker-popup>
+			</div>
+			<br/>&nbsp;<br/>
+			<div class="col-md-12">
+				<input ui-date="dateOptions" ng-model="exp.endDate" placeholder="End Date" class="form-control" id="endDate" ng-required="true" datepicker-popup>
+			</div>
 		</div>
 		<div class="panel-heading section"><h4><b>Output Format</b></h4></div>
 		<div class="panel-body" style="padding: 10px 10px 10px 10px;">
-			<b>FIle Format</b>
+			<b class = "required">FIle Format</b>
 			<div style="max-height:150px; padding:5px; overflow:auto;" class="">
 				<label><input type="radio" ng-model="exp.file_format" name="file_format" value="1"> Separate IP and Title Files</label>
 				<label><input type="radio" ng-model="exp.file_format" name="file_format" value="0"> Merged IP and Title Files</label>
 			</div>
 			<br/>
-			<b>Fields</b>
+			<b class = "required">Fields</b>
 			<div style="max-height:150px; padding:5px; overflow:auto;" class="">
 				<label style="font-weight: bold;"><input type="checkbox" checklist-model="exp.columns_all" checklist-value="1" ng-click="toggleAllColumns()"> Select All</label>
 				<div class="checkbox" ng-repeat="column in columns">
@@ -89,21 +100,21 @@
 		</div>
 		<div class="panel-heading section"><h4><b>Export Settings</b></h4></div>
 		<div class="panel-body" style="padding: 10px 10px 10px 10px;">
-			<b>Export Type</b>
+			<b class = "required">Export Type</b>
 			<div style="max-height:150px; padding:5px; overflow:auto;" class="">
 				<label><input type="radio" ng-model="exp.export_type" name="export_type" value="1"> One time download</label><br/>
 				<label><input type="radio" ng-model="exp.export_type" name="export_type" value="0"> Schedule</label>
 			</div>
 			<div style="max-height:150px; padding:5px; overflow:auto;" class="" ng-show="exp.export_type == '0'">
-				<b>Frequency</b><br/>
+				<b class = "required">Frequency</b><br/>
 				<label><input type="radio" ng-model="exp.frequency" name="frequency"> Weekly</label><br/>
 				<label><input type="radio" ng-model="exp.frequency" name="frequency"> Monthly</label>
 			</div>
 			<br/>
-			<b>File Name</b><br/>
-			<input type="text" ng-model="exp.filename" class="form-control" placeholder="File Name">
+			<b class = "required">File Name</b><br/>
+			<input type="text" ng-model="exp.fileName" class="form-control" placeholder="File Name">
 			<br/>
-			<b>FTP Location</b>
+			<b class = "required">FTP Location</b>
 			<select class="form-control" ng-model="exp.ftp_account_id">
 				<option ng-repeat="option in ftp_acc_list" value="{{option.ftp_account_id}}">{{option.title}}</option>
 			</select>

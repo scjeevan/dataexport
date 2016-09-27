@@ -210,3 +210,7 @@ label {
 .panel-group .panel + .panel {
     margin-top: 0px;
 }
+b.required:after {
+  content:"*";
+  color:red;
+}

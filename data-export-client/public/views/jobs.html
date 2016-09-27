@@ -11,6 +11,7 @@
 							<th>ID</th>
 							<th>Frequency</th>
 							<th>Selected Fields</th>
+							<th>Added Date</th>
 							<th>FTP Account</th>
 						</tr>
 					</thead>
@@ -19,7 +20,8 @@
 							<td>{{item.data_export_schedule_id}}</td>
 							<td>{{item.frequency}}</td>
 							<td>{{item.selected_columns}}</td>
-							<td>{{item.ftp_account_id}}</td>
+							<td>{{item.added_date | date:'dd-MM-yyyy'}}</td>
+							<td>{{item.title}}</td>
 						</tr>
 					</tbody>
 				</table>
