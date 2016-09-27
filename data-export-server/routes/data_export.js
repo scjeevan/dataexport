@@ -348,7 +348,9 @@ var exportDataMng = {
 			}
 			console.log("QUERY : " + _query);
 			executeGoogleBigQueryAllRows(_query,function(rows){
-				res.json(rows);
+				res.json({
+					values: rows
+				});
 			});
 		}
 		res.json([]);
