@@ -118,7 +118,7 @@ function isExist(array, value){
 var exportDataMng = {
 	
 	getMovies : function(req, res){
-        var movieQuery = "SELECT title FROM [devdiggit-1:DevDiggit_Hist.title_title_id] GROUP BY title";
+        var movieQuery = "SELECT title FROM devdiggit-1:DevDiggit_Hist.title_title_id GROUP BY title";
 		var movieArray = [];
 		executeGoogleBigQueryAllRows(movieQuery,function(rows){
             rows.forEach(function(movie){
@@ -130,7 +130,7 @@ var exportDataMng = {
     },
 	
 	getLocations : function(req, res){
-        var locationQuery = "SELECT Continent, Country, Region, State, City FROM [devdiggit-1:DevDiggit_Hist.unique_ip_count_for_location]";
+        var locationQuery = "SELECT Continent, Country, Region, State, City FROM devdiggit-1:DevDiggit_Hist.unique_ip_count_for_location ";
 		var locationArray = [];
 		executeGoogleBigQueryAllRows(locationQuery,function(rows){
             rows.forEach(function(loc){
