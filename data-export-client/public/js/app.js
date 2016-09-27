@@ -32,6 +32,10 @@ mvpApp.config(function($routeProvider, $httpProvider) {
 			templateUrl: 'views/export.html',
 			controller: 'MainCtrl'
 		})
+		.when('/jobs', {
+			templateUrl: 'views/jobs.html',
+			controller: 'MainCtrl'
+		})
 		.otherwise({
 			redirectTo: '/login'
 		});
@@ -263,6 +267,22 @@ parent.children = newNodes;
 // Force revalidate on tree given parent node's selected status 
 //ivhTreeviewMgr.select(myTree, parent, parent.selected);
 });
+
+mvpApp.controller('jobsManager', ['$window', '$scope', '$location', '$http', 'Api', 'ngToast', function($window, $scope, $location, $http, Api, ngToast) {
+	$scope.jobs_data = [];
+	$http.get(Api.root_url+ "api/listjobs").
+	success(function (response, status, headers, config) {
+		angular.forEach(response.values, function (v, k) {
+			this.push(v);
+		}, $scope.jobs_data);
+	}).error(function (data, status, headers, config) {
+		ngToast.create({
+			className: 'danger',
+			dismissButton:true,
+			content: 'Error while retrieving data'
+		});
+	});
+}
 
 mvpApp.controller('ftpAccountManager', ['$window', '$scope', '$location', '$http', 'Api', 'ngToast', function($window, $scope, $location, $http, Api, ngToast) {
 	$scope.ftp_data = [];

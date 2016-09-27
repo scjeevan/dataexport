@@ -1,0 +1,28 @@
+<div ng-controller="jobsManager">
+	<div class="col-md-12">
+		<div class="panel panel-primary">
+			<div class="panel-heading">
+				<h3 class="panel-title">Saved Jobs</h3>
+			</div>
+			<div class="panel-body">
+				<table class="table table-hover">
+					<thead>
+						<tr>
+							<th>ID</th>
+							<th>Frequency</th>
+							<th>Selected Fields</th>
+							<th>FTP Account</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr ng-repeat="item in ftp_data" ng-click="setClickedRow($index)" ng-class="{'selected':$index == selectedRow}">
+							<td>{{item.title}}</td>
+							<td>{{item.ip}}</td>
+							<td>{{item.protocol}}</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</div>
+</div>

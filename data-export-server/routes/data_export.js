@@ -311,7 +311,7 @@ var exportDataMng = {
 			}
 		}
 		console.log("GENRES : " + genreQ);
-		/*
+		
 		var selTitles = "";
 		if(typeof req.body.selected_titles != 'undefined' || req.body.selected_titles.length > 0){
 			selTitles += "(";
@@ -319,8 +319,10 @@ var exportDataMng = {
 				selTitles += req.body.selected_titles[i].title + ",";
 			}
 			selTitles = selTitles.substring(0, selTitles.length - 1) + ")";
-			console.log("TITLES : " + selTitles);
+			
 		}
+		console.log("TITLES : " + selTitles);
+		
 		var selGroups = "";
 		if(typeof req.body.selected_groups != 'undefined' || req.body.selected_groups.length > 0){
 			selGroups += "(";
@@ -328,16 +330,17 @@ var exportDataMng = {
 				selGroups += req.body.selected_groups[i].title + ",";
 			}
 			selGroups = selGroups.substring(0, selGroups.length - 1) + ")";
-			console.log("GROUPS : " + selGroups);
 		}
+		console.log("GROUPS : " + selGroups);
+		
 		if(typeof req.body.export_type != 'undefined' && typeof req.body.file_format != 'undefined'){
-			
 			var _query = "SELECT ";
 			for (var i in req.body.columns) {
 				_query += "t."+req.body.columns[i] + ",";
 			}
 			_query = _query.substring(0, _query.length - 1);
-			
+		}
+			/*
 			if(req.body.isGenre){
 				var start = req.body.startDate.replace(/T/, ' ').replace(/\..+/, '');
 				var end = req.body.endDate.replace(/T/, ' ').replace(/\..+/, '');
@@ -436,6 +439,23 @@ var exportDataMng = {
 		});
 		*/
 		
+	},
+	
+	listJobs: function (req, res) {
+		var query = 'SELECT * FROM data_export_schedules';
+		var formatedQuery = mysql.format(query, []);
+		mysql_client.query(formatedQuery, function (err, result) {
+			if (err) {
+				console.log(err);
+			}
+			else {
+				res.json({
+					data: {
+						values: result
+					}
+				});
+			}
+		});
 	},
 	
 	scheduleExportData: function (req, res) {
