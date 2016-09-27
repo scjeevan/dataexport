@@ -607,6 +607,7 @@ mvpApp.controller('dataExportFilter', ['$window', '$scope', '$location', '$http'
 		
 		
 	};
+	
 	/*
 	$scope.exportData = function() {
 		if((typeof $scope.exp.startDate == 'undefined') || (typeof $scope.exp.endDate == 'undefined')){
