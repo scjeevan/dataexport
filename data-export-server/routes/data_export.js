@@ -28,14 +28,7 @@ var mysql_client = mysql.createConnection({
 var conn = new Client();
 
 function executeGoogleBigQueryAllRows(sqlQuery, callback){
-	var options = {
-		query: sqlQuery,
-		timeoutMs: 10000,
-		useLegacySql: false,
-		allowLargeResults:true
-	};
-
-    bigquery.query(options, function(err, rows) {
+    bigquery.query(sqlQuery, function(err, rows) {
         if (!err) {
             callback(rows);
         }
@@ -118,7 +111,7 @@ function isExist(array, value){
 var exportDataMng = {
 	
 	getMovies : function(req, res){
-        var movieQuery = "SELECT title FROM devdiggit-1:DevDiggit_Hist.title_title_id GROUP BY title";
+        var movieQuery = "SELECT title FROM [devdiggit-1:DevDiggit_Hist.title_title_id] GROUP BY title";
 		var movieArray = [];
 		executeGoogleBigQueryAllRows(movieQuery,function(rows){
             rows.forEach(function(movie){
@@ -130,7 +123,7 @@ var exportDataMng = {
     },
 	
 	getLocations : function(req, res){
-        var locationQuery = "SELECT Continent, Country, Region, State, City FROM devdiggit-1:DevDiggit_Hist.unique_ip_count_for_location ";
+        var locationQuery = "SELECT Continent, Country, Region, State, City FROM [devdiggit-1:DevDiggit_Hist.unique_ip_count_for_location]";
 		var locationArray = [];
 		executeGoogleBigQueryAllRows(locationQuery,function(rows){
             rows.forEach(function(loc){
@@ -354,7 +347,13 @@ var exportDataMng = {
 				_query += " FROM [DevDiggit_Hist.Diggit_IP] AS t WHERE Date BETWEEN '"+start+"' AND '"+end+"' "; // LIMIT 10000
 			}
 			console.log("QUERY : " + _query);
-			executeGoogleBigQueryAllRows(_query,function(rows){
+			var options = {
+				query: _query,
+				timeoutMs: 10000,
+				useLegacySql: false,
+				allowLargeResults:true
+			};
+			executeGoogleBigQueryAllRows(options,function(rows){
 				res.json({
 					values: rows
 				});
