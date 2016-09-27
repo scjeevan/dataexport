@@ -442,7 +442,7 @@ var exportDataMng = {
 	},
 	
 	listJobs: function (req, res) {
-		var query = 'SELECT * FROM data_export_schedules';
+		var query = 'SELECT d.data_export_schedule_id, d.frequency, d.table_name, d.selected_columns, d.added_date, f.title FROM torrents.data_export_schedules d LEFT JOIN ftp_accounts f on d.ftp_account_id = f.ftp_account_id;';
 		var formatedQuery = mysql.format(query, []);
 		mysql_client.query(formatedQuery, function (err, result) {
 			if (err) {
