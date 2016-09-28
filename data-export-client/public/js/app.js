@@ -3,7 +3,7 @@
 var server_path = 'http://104.197.10.155:80/';
 
 
-var mvpApp = angular.module('dataExportApp', ['ngCookies', 'ngAnimate', 'ngRoute', 'googlechart', 'ui.bootstrap', 'infinite-scroll', 'smart-table', 'ngToast', 'angularSpinner', 'checklist-model', 'ui.date', 'angucomplete-alt', 'ivh.treeview']);
+var mvpApp = angular.module('dataExportApp', ['ngCookies', 'ngAnimate', 'ngRoute', 'googlechart', 'ui.bootstrap', 'infinite-scroll', 'smart-table', 'ngToast', 'angularSpinner', 'checklist-model', 'ui.date', 'angucomplete-alt', 'ivh.treeview', 'angularUtils.directives.dirPagination']);
 
 var titleColumns = ["title_id", "title", "season", "episode", "studio", "content_type", "genre", "mpaa_rating", "imdb_id", "episode_imdb_id", "diggit_id"];
 var infohashesColumns = ["infohash", "file_name", "created_by", "created_time", "added_time", "updated_time", "episode_title", "added_by", "languages", "verified", "media_format", "resolution", "aspect_ratio", "frame_rate", "subtitles", "bitrate", "quality", "no_of_files", "episode_id", "episode_airdate", "season", "source", "category", "torrent_url", "mm_hash_id", "mm_title_id", "file_size", "audio_language", "subtitle_language", "network", "metadata_source", "is_tracked"];
@@ -401,6 +401,25 @@ mvpApp.controller('ftpAccountManager', ['$window', '$scope', '$location', '$http
 	}
 }]);
 
+mvpApp.controller('listdata',function($http){
+    var vm = this;
+    vm.users = []; //declare an empty array
+    vm.pageno = 1; // initialize page no to 1
+    vm.total_count = 0;
+    vm.itemsPerPage = 10; //this could be a dynamic value from a drop down
+    vm.getData = function(pageno){ // This would fetch the data on page change.
+        //In practice this should be in a factory.
+        vm.users = [];  
+		$http.get("http://yourdomain/apiname/{itemsPerPage}/{pagenumber}").success(function(response){
+            //ajax request to fetch data into vm.data
+                       vm.users = response.data;  // data to be displayed on current page.
+            vm.total_count = response.total_count; // total data count.
+        });
+		// https://code.ciphertrick.com/2015/08/31/server-side-pagination-in-angularjs/
+    };
+    vm.getData(vm.pageno); // Call the function to fetch initial data on page load.
+});
+
 mvpApp.controller('dataExportFilter', ['$window', '$scope', '$location', '$http', 'Api', 'ngToast', function($window, $scope, $location, $http, Api, ngToast) {
 	$scope.columns = ipColumns;
 	$scope.selectedMovies = [];
@@ -575,6 +594,8 @@ mvpApp.controller('dataExportFilter', ['$window', '$scope', '$location', '$http'
 			alert("Please enter file name");
 		}
 		else{
+			$scope.headers = [];
+			$scope.ip_values = [];
 			if($scope.selectedMovies.length > 0){
 				$scope.exp.selected_titles = $scope.selectedMovies;
 			}
@@ -589,14 +610,6 @@ mvpApp.controller('dataExportFilter', ['$window', '$scope', '$location', '$http'
 				angular.forEach(data.headers, function (v, k) {
 					this.push(v);
 				}, $scope.headers);
-				/*
-				ngToast.create({
-					dismissOnTimeout:true,
-					timeout:4000,
-					content:data.values,
-					dismissButton:true
-				});
-				*/
 			}).
 			error(function (data, status, headers, config) {
 				ngToast.create({
@@ -608,50 +621,10 @@ mvpApp.controller('dataExportFilter', ['$window', '$scope', '$location', '$http'
 		}
 		
 		
-	};
-	
-	/*
-	$scope.exportData = function() {
-		if((typeof $scope.exp.startDate == 'undefined') || (typeof $scope.exp.endDate == 'undefined')){
-			alert("Please select date range");
-		}
-		else if(typeof $scope.exp.table == 'undefined'){
-			alert("Please select table");
-		}
-		else if(typeof $scope.exp.columns == 'undefined' || $scope.exp.columns.length == 0){
-			alert("Please select atleast one column");
-		}
-		else if(typeof $scope.exp.ftp_account_id == 'undefined'){
-			alert("Please select FTP account");
-		}
-		else if($scope.exp.isGenre && (typeof $scope.exp.genres == 'undefined' || $scope.exp.genres.length == 0)){
-			alert("Please select atleast one genre");
-		}
-		else{
-			$http.post(Api.root_url+ "api/export", $scope.exp).
-			success(function (data, status, headers, config) {
-				ngToast.create({
-					dismissOnTimeout:true,
-					timeout:4000,
-					content:data.values,
-					dismissButton:true
-				});
-			}).
-			error(function (data, status, headers, config) {
-				ngToast.create({
-					className: 'danger',
-					dismissButton:true,
-					content: 'Error while saving data'
-				});
-			});
-		}
 	};
 	$scope.dateOptions = {
 		dateFormat:'dd-mm-yy',
     };
-	
-	
-	*/
 }
 ]);
 
