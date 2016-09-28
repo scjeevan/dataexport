@@ -129,22 +129,20 @@
 		<div class="panel-heading section"><h4><b>Results</b></h4></div>
 		<div class="panel-body">
 			<table class="table table-hover">
-				<thead ng-if="ip_values.length > 0">
-					<tr ng-repeat="h in headers">
-						<th>{{h}}</th>
+				<thead>
+					<tr ng-if="headers.length > 0">
+						<th ng-repeat="h in headers">{{h}}</th>
 					</tr>
 				</thead>
 				<tbody ng-if="ip_values.length > 0">
 					<tr ng-repeat="item in ip_values">
-						<td>{{item.Infohash}}</td>
+						<!--<td>{{item.Infohash}}</td>
 						<td>{{item.TitleID}}</td>
 						<td>{{item.Date}}</td>
 						<td>{{item.IP}}</td>
-						<!--
-						<td ng-repeat="h in headers">
-							<th>{{item.{{h}}}}</th>
-						</td>
 						-->
+						<td ng-repeat="h in headers">{{item[h]}}</td>
+						
 					</tr>
 				</tbody>
 				<tbody ng-if="ip_values.length == 0">

@@ -412,6 +412,7 @@ mvpApp.controller('dataExportFilter', ['$window', '$scope', '$location', '$http'
 	$scope.exp = {};
 	$scope.exp.genres = [];
 	$scope.genreList = [];
+	$scope.headers = [];
 	
 	$http.get(Api.root_url+ "api/genres").
 	success(function (response, status, headers, config) {
@@ -585,6 +586,9 @@ mvpApp.controller('dataExportFilter', ['$window', '$scope', '$location', '$http'
 				angular.forEach(data.values, function (v, k) {
 					this.push(v);
 				}, $scope.ip_values);
+				angular.forEach(data.headers, function (v, k) {
+					this.push(v);
+				}, $scope.headers);
 				/*
 				ngToast.create({
 					dismissOnTimeout:true,
