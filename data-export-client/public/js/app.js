@@ -411,16 +411,8 @@ mvpApp.controller('dataExportFilter', ['$window', '$scope', '$location', '$http'
 	$scope.groups = [];
 	$scope.exp = {};
 	$scope.exp.genres = [];
-	var someobj = {
-		'Africa': ['Algeria', 'Angola', 'Benin', 'Botswana', 'Burkina faso', 'Burundi', 'Cameroon', 'Cape verde'],
-		'Asia': ['Afghanistan', 'Antarctica', 'Armenia', 'Azerbaijan', 'Bahrain', 'Bangladesh', 'Bermuda', 'Bhutan'],
-		'Europe': ['Aland islands', 'Albania', 'Andorra', 'Armenia', 'Austria', 'Azerbaijan', 'Belarus', 'Belgium'],
-		'North America': ['Aland islands', 'Albania', 'Andorra', 'Armenia', 'Austria', 'Azerbaijan', 'Belarus', 'Belgium'],
-		'Oceania': ['Aland islands', 'Albania', 'Andorra', 'Armenia', 'Austria', 'Azerbaijan', 'Belarus', 'Belgium'],
-		'Other': ['Aland islands', 'Albania', 'Andorra', 'Armenia', 'Austria', 'Azerbaijan', 'Belarus', 'Belgium']
-	};
-
 	$scope.genreList = [];
+	
 	$http.get(Api.root_url+ "api/genres").
 	success(function (response, status, headers, config) {
 		angular.forEach(response.data.values, function (v, k) {
