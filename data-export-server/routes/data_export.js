@@ -355,6 +355,7 @@ var exportDataMng = {
 			};
 			executeGoogleBigQueryAllRows(options,function(rows){
 				res.json({
+					headers: req.body.columns,
 					values: rows
 				});
 			});
