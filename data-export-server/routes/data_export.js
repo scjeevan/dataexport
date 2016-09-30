@@ -365,28 +365,36 @@ var exportDataMng = {
 		var _query = buildQuery(req.body, false);
 		var _countQuery = buildQuery(req.body, true);
 		executeGoogleBigQueryAllRows(_countQuery,function(r){
-			console.log("COUNT : " + r[0].c);
+			if(r[0].c > 0){
+				var pagenumber = req.body.pagenumber;
+				var itemsPerPage = req.body.itemsPerPage;
+				var lim1 = (pagenumber-1)*itemsPerPage;
+				console.log("pagenumber:"+pagenumber+", itemsPerPage:"+itemsPerPage+", lim1:"+lim1);
+				_query += " LIMIT "+itemsPerPage+" OFFSET "+lim1;
+				//var _query = "SELECT Infohash, TitleID, Date, IP, Port FROM DevDiggit_Hist.Diggit_IP LIMIT "+itemsPerPage+" OFFSET "+lim1;
+				var options = {
+					query: _query,
+					timeoutMs: 10000,
+					useLegacySql: false,
+					allowLargeResults:true
+				};
+				executeGoogleBigQueryAllRows(options,function(rows){
+					res.json({
+						values: rows,
+						total_count:r[0].c
+					});
+				});
+			}
+			else{
+				res.json({
+					values: [],
+					total_count:0
+				});
+			}
+			console.log("COUNT : " + );
 		});
-		/*
-		var pagenumber = req.body.pagenumber;
-		var itemsPerPage = req.body.itemsPerPage;
-		var lim1 = (pagenumber-1)*itemsPerPage;
-		console.log("pagenumber:"+pagenumber+", itemsPerPage:"+itemsPerPage+", lim1:"+lim1);
-		_query += " LIMIT "+itemsPerPage+" OFFSET "+lim1;
-		//var _query = "SELECT Infohash, TitleID, Date, IP, Port FROM DevDiggit_Hist.Diggit_IP LIMIT "+itemsPerPage+" OFFSET "+lim1;
-		var options = {
-			query: _query,
-			timeoutMs: 10000,
-			useLegacySql: false,
-			allowLargeResults:true
-		};
-		executeGoogleBigQueryAllRows(options,function(rows){
-			res.json({
-				values: rows,
-				total_count:1000
-			});
-		});
-		*/
+
+		
 	},
 	
 	exportAndSave: function (req, res) {
