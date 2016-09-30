@@ -36,7 +36,7 @@ function executeGoogleBigQueryAllRows(sqlQuery, callback){
     });
 }
 
-function buildQuery(paramArr){
+function buildQuery(paramArr, isCount){
 	var genreQ = "";
 	if(typeof paramArr.genres_all == 'undefined' || paramArr.genres_all != '1') {
 		if(typeof paramArr.genres != 'undefined' && paramArr.genres.length > 0){
@@ -76,14 +76,19 @@ function buildQuery(paramArr){
 		dateRange = " t.Date BETWEEN '"+start+"' AND '"+end+"' ";
 	}
 	var _query = "SELECT ";
-	if(typeof paramArr.columns != 'undefined' && paramArr.columns.length > 0){
-		for (var i in paramArr.columns) {
-			_query += "t."+paramArr.columns[i] + ",";
-		}
-		_query = _query.substring(0, _query.length - 1);
+	if(isCount){
+		_query += " COUNT(*) AS c ";
 	}
 	else{
-		_query += " * ";
+		if(typeof paramArr.columns != 'undefined' && paramArr.columns.length > 0){
+			for (var i in paramArr.columns) {
+				_query += "t."+paramArr.columns[i] + ",";
+			}
+			_query = _query.substring(0, _query.length - 1);
+		}
+		else{
+			_query += " * ";
+		}
 	}
 
 	if(genreQ.length > 0){
@@ -357,7 +362,12 @@ var exportDataMng = {
 	},
 	
 	filterData: function (req, res) {
-		var _query = buildQuery(req.body);
+		var _query = buildQuery(req.body, false);
+		var _countQuery = buildQuery(req.body, true);
+		executeGoogleBigQueryAllRows(_countQuery,function(r){
+			console.log("COUNT : " + r.c);
+		});
+		/*
 		var pagenumber = req.body.pagenumber;
 		var itemsPerPage = req.body.itemsPerPage;
 		var lim1 = (pagenumber-1)*itemsPerPage;
@@ -376,6 +386,7 @@ var exportDataMng = {
 				total_count:1000
 			});
 		});
+		*/
 	},
 	
 	exportAndSave: function (req, res) {
