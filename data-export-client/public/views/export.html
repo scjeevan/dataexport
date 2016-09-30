@@ -121,6 +121,7 @@
 		</div>
     </div>
 	<div style="padding:5px; overflow:auto;" class="">
+		<button value="Reload Table" class="btn btn-success" ng-click="getData('1')">Submit</button>
 		<button value="Submit" class="btn btn-primary" ng-click="submitForm()">Submit</button>
 	</div>
 </div>
@@ -143,7 +144,7 @@
 			</table>
 			-->
 			
-			<div class="bs-component" ng-controller="listdata as data">
+			<div class="bs-component">
                 <table class="table table-striped table-hover">
                     <thead>
                         <tr>
@@ -155,8 +156,8 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr ng-show="data.users.length <= 0"><td colspan="5" style="text-align:center;">Loading new data!!</td></tr>
-                        <tr dir-paginate="user in data.users|itemsPerPage:data.itemsPerPage" total-items="data.total_count">
+                        <tr ng-show="users.length <= 0"><td colspan="5" style="text-align:center;">Loading new data!!</td></tr>
+                        <tr dir-paginate="user in users|itemsPerPage:itemsPerPage" total-items="total_count">
                             <td>{{user.Infohash}}</td>
                             <td>{{user.name}}</td>
                             <td>{{user.surname}}</td>
@@ -169,7 +170,7 @@
                    max-size="8"
                    direction-links="true"
                    boundary-links="true"
-                   on-page-change="data.getData(newPageNumber)" >
+                   on-page-change="getData(newPageNumber)" >
                 </dir-pagination-controls>
             </div>
 			

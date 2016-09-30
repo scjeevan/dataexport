@@ -418,6 +418,11 @@ mvpApp.controller('dataExportFilter', ['$window', '$scope', '$location', '$http'
 	$scope.genreList = [];
 	$scope.headers = [];
 	
+	$scope.users = [];
+    $scope.pageno = 1;
+    $scope.total_count = 0;
+    $scope.itemsPerPage = 10;
+	
 	$http.get(Api.root_url+ "api/genres").
 	success(function (response, status, headers, config) {
 		angular.forEach(response.data.values, function (v, k) {
@@ -607,9 +612,27 @@ mvpApp.controller('dataExportFilter', ['$window', '$scope', '$location', '$http'
 		
 		
 	};
+	$scope.getData = function(pageno){
+        $scope.users = [];
+		$scope.exp.itemsPerPage = 10;
+		$scope.exp.pagenumber = pageno;
+		$http.post(Api.root_url+ "api/filterData", $scope.exp).
+		success(function (data, status, headers, config) {
+			$scope.users = data.values;
+			$scope.total_count = data.total_count;
+		}).
+		error(function (data, status, headers, config) {
+			ngToast.create({
+				className: 'danger',
+				dismissButton:true,
+				content: 'Error while saving data'
+			});
+		});
+    };
 	$scope.dateOptions = {
 		dateFormat:'dd-mm-yy',
     };
+	$scope.getData($scope.pageno);
 }
 ]);
 

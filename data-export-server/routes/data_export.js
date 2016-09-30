@@ -36,6 +36,62 @@ function executeGoogleBigQueryAllRows(sqlQuery, callback){
     });
 }
 
+function buildQuery(paramArr){
+	var genreQ = "";
+	if(typeof paramArr.genres_all == 'undefined' || paramArr.genres_all != '1') {
+		if(typeof paramArr.genres != 'undefined' && paramArr.genres.length > 0){
+			genreQ += "(";
+			for (var i in paramArr.genres) {
+				genreQ += paramArr.genres[i] + ",";
+			}
+			genreQ = genreQ.substring(0, genreQ.length - 1) + ")";
+		}
+	}
+	console.log("GENRES : " + genreQ);
+	
+	var selTitles = "";
+	if(typeof paramArr.selected_titles != 'undefined' && paramArr.selected_titles.length > 0){
+		selTitles += "(";
+		for (var i in paramArr.selected_titles) {
+			selTitles += paramArr.selected_titles[i].title + ",";
+		}
+		selTitles = selTitles.substring(0, selTitles.length - 1) + ")";
+		
+	}
+	console.log("TITLES : " + selTitles);
+	
+	var selGroups = "";
+	if(typeof paramArr.selected_groups != 'undefined' && paramArr.selected_groups.length > 0){
+		selGroups += "(";
+		for (var i in paramArr.selected_groups) {
+			selGroups += paramArr.selected_groups[i].title + ",";
+		}
+		selGroups = selGroups.substring(0, selGroups.length - 1) + ")";
+	}
+	console.log("GROUPS : " + selGroups);
+	var dateRange = "";
+	if((typeof paramArr.startDate != 'undefined' && paramArr.startDate.length > 0)&&(typeof paramArr.endDate != 'undefined' && paramArr.endDate.length > 0)){
+		var start = paramArr.startDate.replace(/T/, ' ').replace(/\..+/, '');
+		var end = paramArr.endDate.replace(/T/, ' ').replace(/\..+/, '');
+		dateRange = "t.Date BETWEEN '"+start+"' AND '"+end+"' ";
+	}
+	var _query = "SELECT ";
+	for (var i in paramArr.columns) {
+		_query += "t."+paramArr.columns[i] + ",";
+	}
+	_query = _query.substring(0, _query.length - 1);
+	if(genreQ.length > 0){
+		_query += " FROM DevDiggit_Hist.Diggit_IP AS t JOIN DevDiggit_Hist.mm_title_genres AS gt ON t.TitleID = gt.title_id WHERE gt.genre_id IN "+genreQ+" ";
+	} else {
+		_query += " FROM DevDiggit_Hist.Diggit_IP AS t WHERE Date "; // LIMIT 10000
+	}
+	if(dateRange != ""){
+		_query += dateRange;
+	}
+	console.log("QUERY : " + _query);
+	return _query;
+}
+
 function saveDateRemort(file_name, headers, rows, connectionProperties, ftl_loc) {
 	var act_file = process.env.DATAEXPORT_CSV_SAVE_PATH + file_name;
 	var writer = csvWriter({ 
@@ -291,6 +347,9 @@ var exportDataMng = {
 	},
 	
 	filterData: function (req, res) {
+		var query = buildQuery(req.body);
+		
+		/*
 		var pagenumber = req.body.pagenumber;
 		var itemsPerPage = req.body.itemsPerPage;
 		var lim1 = (pagenumber-1)*itemsPerPage;
@@ -308,6 +367,7 @@ var exportDataMng = {
 				total_count:1000
 			});
 		});
+		*/
 	},
 	
 	exportAndSave: function (req, res) {
