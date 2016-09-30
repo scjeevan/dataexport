@@ -157,7 +157,7 @@
                     <tbody>
                         <tr ng-show="data.users.length <= 0"><td colspan="5" style="text-align:center;">Loading new data!!</td></tr>
                         <tr dir-paginate="user in data.users|itemsPerPage:data.itemsPerPage" total-items="data.total_count">
-                            <td>{{user.index}}</td>
+                            <td>{{user.Infohash}}</td>
                             <td>{{user.name}}</td>
                             <td>{{user.surname}}</td>
                             <td>{{user.fullname}}</td>

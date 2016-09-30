@@ -378,6 +378,7 @@ mvpApp.controller('listdata',['$http', 'Api','ngToast',function($http,Api, ngToa
 	
     vm.getData = function(pageno){ // This would fetch the data on page change.
         //In practice this should be in a factory.
+		console.log("pageno:"+pageno);
         vm.users = [];
 		params.itemsPerPage = 10;
 		params.pagenumber = pageno;
