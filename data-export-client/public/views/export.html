@@ -128,6 +128,7 @@
     <div class="panel panel-default">
 		<div class="panel-heading section"><h4><b>Results</b></h4></div>
 		<div class="panel-body">
+			<!--
 			<table class="table table-hover">
 				<thead ng-if="headers.length > 0">
 					<tr>
@@ -139,16 +140,37 @@
 						<td ng-repeat="h in headers">{{item[h]}}</td>
 					</tr>
 				</tbody>
-				<!--
-				<tbody ng-if="ip_values.length == 0">
-					<tr>
-						<td colspan = 4 align="center"><b>&nbsp;</b></td>
-					</tr>
-				</tbody>
-				-->
-				
 			</table>
-
+			-->
+			<div class="bs-component" ng-controller="listdata as data">
+                <table class="table table-striped table-hover">
+                    <thead>
+                        <tr>
+                            <th>Id</th>
+                            <th>First Name</th>
+                            <th>Last Name</th>
+                            <th>Full Name</th>
+                            <th>Email</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr ng-show="data.users.length <= 0"><td colspan="5" style="text-align:center;">Loading new data!!</td></tr>
+                        <tr dir-paginate="user in data.users|itemsPerPage:data.itemsPerPage" total-items="data.total_count">
+                            <td>{{user.index}}</td>
+                            <td>{{user.name}}</td>
+                            <td>{{user.surname}}</td>
+                            <td>{{user.fullname}}</td>
+                            <td>{{user.email}}</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <dir-pagination-controls
+                   max-size="8"
+                   direction-links="true"
+                   boundary-links="true"
+                   on-page-change="data.getData(newPageNumber)" >
+                </dir-pagination-controls>
+            </div>
 		</div>
     </div>
 </div>

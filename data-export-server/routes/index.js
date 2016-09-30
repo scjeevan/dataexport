@@ -28,5 +28,6 @@ router.get('/api/getmovies', dataExportManager.getMovies);
 router.get('/api/getgroups', dataExportManager.getGroups);
 router.get('/api/getlocations', dataExportManager.getLocations);
 router.get('/api/listjobs', dataExportManager.listJobs);
+router.get('/api/filterData', dataExportManager.filterData);
 
 module.exports = router;
