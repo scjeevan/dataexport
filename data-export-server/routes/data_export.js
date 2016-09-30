@@ -347,14 +347,13 @@ var exportDataMng = {
 	},
 	
 	filterData: function (req, res) {
-		var query = buildQuery(req.body);
-		
-		/*
+		var _query = buildQuery(req.body);
 		var pagenumber = req.body.pagenumber;
 		var itemsPerPage = req.body.itemsPerPage;
 		var lim1 = (pagenumber-1)*itemsPerPage;
 		console.log("pagenumber:"+pagenumber+", itemsPerPage:"+itemsPerPage+", lim1:"+lim1);
-		var _query = "SELECT Infohash, TitleID, Date, IP, Port FROM DevDiggit_Hist.Diggit_IP LIMIT "+itemsPerPage+" OFFSET "+lim1;
+		_query += " LIMIT "+itemsPerPage+" OFFSET "+lim1;
+		//var _query = "SELECT Infohash, TitleID, Date, IP, Port FROM DevDiggit_Hist.Diggit_IP LIMIT "+itemsPerPage+" OFFSET "+lim1;
 		var options = {
 			query: _query,
 			timeoutMs: 10000,
@@ -367,7 +366,6 @@ var exportDataMng = {
 				total_count:1000
 			});
 		});
-		*/
 	},
 	
 	exportAndSave: function (req, res) {
