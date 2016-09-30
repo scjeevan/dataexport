@@ -76,7 +76,7 @@ function buildQuery(paramArr){
 		dateRange = " t.Date BETWEEN '"+start+"' AND '"+end+"' ";
 	}
 	var _query = "SELECT ";
-	if(paramArr.columns.length > 0){
+	if(typeof paramArr.columns != 'undefined' && paramArr.columns.length > 0){
 		for (var i in paramArr.columns) {
 			_query += "t."+paramArr.columns[i] + ",";
 		}
