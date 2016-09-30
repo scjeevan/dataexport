@@ -76,10 +76,16 @@ function buildQuery(paramArr){
 		dateRange = " t.Date BETWEEN '"+start+"' AND '"+end+"' ";
 	}
 	var _query = "SELECT ";
-	for (var i in paramArr.columns) {
-		_query += "t."+paramArr.columns[i] + ",";
+	if(paramArr.columns.length > 0){
+		for (var i in paramArr.columns) {
+			_query += "t."+paramArr.columns[i] + ",";
+		}
+		_query = _query.substring(0, _query.length - 1);
 	}
-	_query = _query.substring(0, _query.length - 1);
+	else{
+		_query += " * ";
+	}
+
 	if(genreQ.length > 0){
 		_query += " FROM DevDiggit_Hist.Diggit_IP AS t JOIN DevDiggit_Hist.mm_title_genres AS gt ON t.TitleID = gt.title_id WHERE gt.genre_id IN "+genreQ+" ";
 		if(dateRange != ""){
