@@ -614,12 +614,19 @@ mvpApp.controller('dataExportFilter', ['$window', '$scope', '$location', '$http'
 	};
 	$scope.getData = function(pageno){
         $scope.users = [];
-		$scope.exp.itemsPerPage = 10;
+		$scope.exp.itemsPerPage = 50;
 		$scope.exp.pagenumber = pageno;
 		$http.post(Api.root_url+ "api/filterData", $scope.exp).
 		success(function (data, status, headers, config) {
 			$scope.users = data.values;
 			$scope.total_count = data.total_count;
+			if((typeof data.headers == 'undefined') || (data.headers.length == 0)){
+				$scope.headers = ["Infohash", "TitleID", "Date", "IP", "Port"];
+			}
+			else{
+				$scope.headers = data.headers;
+			}
+			
 		}).
 		error(function (data, status, headers, config) {
 			ngToast.create({

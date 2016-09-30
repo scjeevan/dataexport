@@ -371,7 +371,6 @@ var exportDataMng = {
 				var lim1 = (pagenumber-1)*itemsPerPage;
 				console.log("pagenumber:"+pagenumber+", itemsPerPage:"+itemsPerPage+", lim1:"+lim1);
 				_query += " LIMIT "+itemsPerPage+" OFFSET "+lim1;
-				//var _query = "SELECT Infohash, TitleID, Date, IP, Port FROM DevDiggit_Hist.Diggit_IP LIMIT "+itemsPerPage+" OFFSET "+lim1;
 				var options = {
 					query: _query,
 					timeoutMs: 10000,
@@ -380,6 +379,7 @@ var exportDataMng = {
 				};
 				executeGoogleBigQueryAllRows(options,function(rows){
 					res.json({
+						headers: req.body.columns,
 						values: rows,
 						total_count:r[0].c
 					});
@@ -387,6 +387,7 @@ var exportDataMng = {
 			}
 			else{
 				res.json({
+					headers: req.body.columns,
 					values: [],
 					total_count:0
 				});
