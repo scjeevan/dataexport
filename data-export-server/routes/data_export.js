@@ -293,7 +293,7 @@ var exportDataMng = {
 	filterData: function (req, res) {
 		var pagenumber = req.body.pagenumber;
 		var itemsPerPage = req.body.itemsPerPage;
-		var _query = "SELECT Infohash, TitleID, Date, IP, Port FROM DevDiggit_Hist.Diggit_IP LIMIT ("+pagenumber+"-1)*{"+itemsPerPage+"},{"+itemsPerPage+"}" ;
+		var _query = "SELECT Infohash, TitleID, Date, IP, Port FROM DevDiggit_Hist.Diggit_IP LIMIT ("+pagenumber+"-1)*"+itemsPerPage+", "+itemsPerPage+"" ;
 		var options = {
 			query: _query,
 			timeoutMs: 10000,
