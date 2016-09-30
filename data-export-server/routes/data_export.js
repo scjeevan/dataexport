@@ -295,10 +295,9 @@ var exportDataMng = {
 		var itemsPerPage = req.body.itemsPerPage;
 		var lim1 = (pagenumber-1)*itemsPerPage;
 		console.log("pagenumber:"+pagenumber+", itemsPerPage:"+itemsPerPage+", lim1:"+lim1);
-		var _query = "SELECT Infohash, TitleID, Date, IP, Port FROM DevDiggit_Hist.Diggit_IP LIMIT "+itemsPerPage+"" ;
+		var _query = "SELECT Infohash, TitleID, Date, IP, Port FROM DevDiggit_Hist.Diggit_IP LIMIT "+itemsPerPage+" OFFSET "+lim1;
 		var options = {
 			query: _query,
-			startIndex: lim1,
 			timeoutMs: 10000,
 			useLegacySql: false,
 			allowLargeResults:true
