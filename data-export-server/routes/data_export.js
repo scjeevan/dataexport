@@ -391,7 +391,6 @@ var exportDataMng = {
 					total_count:0
 				});
 			}
-			console.log("COUNT : " + );
 		});
 
 		
