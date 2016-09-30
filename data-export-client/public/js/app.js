@@ -412,8 +412,8 @@ mvpApp.controller('listdata',function($http){
         vm.users = [];  
 		$http.get("http://yourdomain/apiname/{itemsPerPage}/{pagenumber}").success(function(response){
             //ajax request to fetch data into vm.data
-                       vm.users = response.data;  // data to be displayed on current page.
-            vm.total_count = response.total_count; // total data count.
+			vm.users = response.data;  // data to be displayed on current page.
+			vm.total_count = response.total_count; // total data count.
         });
 		// https://code.ciphertrick.com/2015/08/31/server-side-pagination-in-angularjs/
     };
