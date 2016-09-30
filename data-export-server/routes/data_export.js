@@ -73,7 +73,7 @@ function buildQuery(paramArr){
 	if((typeof paramArr.startDate != 'undefined' && paramArr.startDate.length > 0)&&(typeof paramArr.endDate != 'undefined' && paramArr.endDate.length > 0)){
 		var start = paramArr.startDate.replace(/T/, ' ').replace(/\..+/, '');
 		var end = paramArr.endDate.replace(/T/, ' ').replace(/\..+/, '');
-		dateRange = "t.Date BETWEEN '"+start+"' AND '"+end+"' ";
+		dateRange = " AND t.Date BETWEEN '"+start+"' AND '"+end+"' ";
 	}
 	var _query = "SELECT ";
 	for (var i in paramArr.columns) {
@@ -83,7 +83,7 @@ function buildQuery(paramArr){
 	if(genreQ.length > 0){
 		_query += " FROM DevDiggit_Hist.Diggit_IP AS t JOIN DevDiggit_Hist.mm_title_genres AS gt ON t.TitleID = gt.title_id WHERE gt.genre_id IN "+genreQ+" ";
 	} else {
-		_query += " FROM DevDiggit_Hist.Diggit_IP AS t WHERE Date "; // LIMIT 10000
+		_query += " FROM DevDiggit_Hist.Diggit_IP AS t WHERE 1 "; // LIMIT 10000
 	}
 	if(dateRange != ""){
 		_query += dateRange;
