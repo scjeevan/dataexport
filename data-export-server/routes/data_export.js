@@ -302,8 +302,8 @@ var exportDataMng = {
 		};
 		executeGoogleBigQueryAllRows(options,function(rows){
 			res.json({
-				headers: req.body.columns,
-				values: rows
+				values: rows,
+				total_count:1000
 			});
 		});
 	},
