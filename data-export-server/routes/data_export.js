@@ -365,7 +365,7 @@ var exportDataMng = {
 		var _query = buildQuery(req.body, false);
 		var _countQuery = buildQuery(req.body, true);
 		executeGoogleBigQueryAllRows(_countQuery,function(r){
-			console.log("COUNT : " + r.c);
+			console.log("COUNT : " + r[0].c);
 		});
 		/*
 		var pagenumber = req.body.pagenumber;
