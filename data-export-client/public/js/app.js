@@ -368,43 +368,6 @@ mvpApp.controller('ftpAccountManager', ['$window', '$scope', '$location', '$http
 	}
 }]);
 
-mvpApp.controller('listdata',['$http', 'Api','ngToast',function($http,Api, ngToast){
-    var vm = this;
-    vm.users = []; //declare an empty array
-    vm.pageno = 1; // initialize page no to 1
-    vm.total_count = 0;
-    vm.itemsPerPage = 10; //this could be a dynamic value from a drop down
-	var params = {};
-	
-    vm.getData = function(pageno){ // This would fetch the data on page change.
-        //In practice this should be in a factory.
-		console.log("pageno:"+pageno);
-        vm.users = [];
-		params.itemsPerPage = 10;
-		params.pagenumber = pageno;
-		$http.post(Api.root_url+ "api/filterData", params).
-		success(function (data, status, headers, config) {
-			vm.users = data.values;  // data to be displayed on current page.
-			vm.total_count = data.total_count; // total data count.
-		}).
-		error(function (data, status, headers, config) {
-			ngToast.create({
-				className: 'danger',
-				dismissButton:true,
-				content: 'Error while saving data'
-			});
-		});
-		/*
-		$http.get("http://yourdomain/apiname/{itemsPerPage}/{pagenumber}").success(function(response){
-            vm.users = response.data;  // data to be displayed on current page.
-			vm.total_count = response.total_count; // total data count.
-        });
-		// https://code.ciphertrick.com/2015/08/31/server-side-pagination-in-angularjs/
-		*/
-    };
-    vm.getData(vm.pageno); // Call the function to fetch initial data on page load.
-}]);
-
 mvpApp.controller('dataExportFilter', ['$window', '$scope', '$location', '$http', 'Api', 'ngToast', function($window, $scope, $location, $http, Api, ngToast) {
 	$scope.columns = ipColumns;
 	$scope.selectedMovies = [];
@@ -421,7 +384,7 @@ mvpApp.controller('dataExportFilter', ['$window', '$scope', '$location', '$http'
 	$scope.users = [];
     $scope.pageno = 1;
     $scope.total_count = 0;
-    $scope.itemsPerPage = 10;
+    $scope.itemsPerPage = 20;
 	
 	$http.get(Api.root_url+ "api/genres").
 	success(function (response, status, headers, config) {
@@ -613,12 +576,12 @@ mvpApp.controller('dataExportFilter', ['$window', '$scope', '$location', '$http'
 		
 	};
 	$scope.getData = function(pageno){
-        $scope.users = [];
-		$scope.exp.itemsPerPage = 50;
+        $scope.ip_values = [];
+		$scope.exp.itemsPerPage = 20;
 		$scope.exp.pagenumber = pageno;
 		$http.post(Api.root_url+ "api/filterData", $scope.exp).
 		success(function (data, status, headers, config) {
-			$scope.users = data.values;
+			$scope.ip_values = data.values;
 			$scope.total_count = data.total_count;
 			if((typeof data.headers == 'undefined') || (data.headers.length == 0)){
 				$scope.headers = ["Infohash", "TitleID", "Date", "IP", "Port"];

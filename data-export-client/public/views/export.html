@@ -152,14 +152,10 @@
 						</tr>
 					</thead>
                     <tbody>
-                        <tr ng-show="users.length <= 0"><td colspan="5" style="text-align:center;">Loading new data!!</td></tr>
-                        <tr dir-paginate="user in users|itemsPerPage:itemsPerPage" total-items="total_count">
-                            <td>{{user.Infohash}}</td>
-                            <td>{{user.name}}</td>
-                            <td>{{user.surname}}</td>
-                            <td>{{user.fullname}}</td>
-                            <td>{{user.email}}</td>
-                        </tr>
+                        <tr ng-show="ip_values.length <= 0"><td colspan="{{headers.length}}" style="text-align:center;">Loading new data!!</td></tr>
+						<tr dir-paginate="item in ip_values|itemsPerPage:itemsPerPage" total-items="total_count">
+							<td ng-repeat="h in headers">{{item[h]}}</td>
+						</tr>
                     </tbody>
                 </table>
                 <dir-pagination-controls
