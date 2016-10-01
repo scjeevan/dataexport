@@ -544,8 +544,6 @@ mvpApp.controller('dataExportFilter', ['$window', '$scope', '$location', '$http'
 			alert("Please enter file name");
 		}
 		else{
-			$scope.headers = [];
-			$scope.ip_values = [];
 			if($scope.selectedMovies.length > 0){
 				$scope.exp.selected_titles = $scope.selectedMovies;
 			}
@@ -554,12 +552,12 @@ mvpApp.controller('dataExportFilter', ['$window', '$scope', '$location', '$http'
 			}
 			$http.post(Api.root_url+ "api/exportsave", $scope.exp).
 			success(function (data, status, headers, config) {
-				angular.forEach(data.values, function (v, k) {
-					this.push(v);
-				}, $scope.ip_values);
-				angular.forEach(data.headers, function (v, k) {
-					this.push(v);
-				}, $scope.headers);
+				ngToast.create({
+					dismissOnTimeout:true,
+					timeout:4000,
+					content:'Selected data will upload',
+					dismissButton:true
+				});
 			}).
 			error(function (data, status, headers, config) {
 				ngToast.create({
