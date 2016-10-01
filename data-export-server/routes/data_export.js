@@ -96,7 +96,7 @@ function buildQuery(paramArr, isCount){
 			_query += " AND " + dateRange;
 		}
 	}
-	if(genreQ.length > 0 && selTitles.length == 0){
+	else if(genreQ.length > 0 && selTitles.length == 0){
 		_query += " FROM DevDiggit_Hist.Diggit_IP AS t JOIN DevDiggit_Hist.mm_title_genres AS gt ON t.TitleID = gt.title_id WHERE gt.genre_id IN "+genreQ+" ";
 		if(dateRange != ""){
 			_query += " AND " + dateRange;
