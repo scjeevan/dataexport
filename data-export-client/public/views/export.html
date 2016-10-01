@@ -71,16 +71,15 @@
 						<!-- <json-tree object="someobj" root-name="'Global'"></json-tree> -->
 					</div>
 				</accordion-group>
+				<accordion-group is-open="false">
+					<accordion-heading>Date Range</accordion-heading>
+					<div style="max-height:150px; padding:5px; overflow:auto;" class="">
+						<input ui-date="dateOptions" ng-model="exp.startDate" placeholder="Start Date" class="form-control" id="startDate" ng-required="true" datepicker-popup>
+						<br/>
+						<input ui-date="dateOptions" ng-model="exp.endDate" placeholder="End Date" class="form-control" id="endDate" ng-required="true" datepicker-popup>
+					</div>
+				</accordion-group>
 			</accordion>
-			<br/>
-			<b class = "required" style="padding: 10px 10px 10px 10px;">Date Range</b>
-			<div class="col-md-12">
-				<input ui-date="dateOptions" ng-model="exp.startDate" placeholder="Start Date" class="form-control" id="startDate" ng-required="true" datepicker-popup>
-			</div>
-			<br/>&nbsp;<br/>
-			<div class="col-md-12">
-				<input ui-date="dateOptions" ng-model="exp.endDate" placeholder="End Date" class="form-control" id="endDate" ng-required="true" datepicker-popup>
-			</div>
 		</div>
 		<div class="panel-heading section"><h4><b>Output Format</b></h4></div>
 		<div class="panel-body" style="padding: 10px 10px 10px 10px;">
@@ -107,8 +106,9 @@
 			</div>
 			<div style="max-height:150px; padding:5px; overflow:auto;" class="" ng-show="exp.export_type == '0'">
 				<b class = "required">Frequency</b><br/>
-				<label><input type="radio" ng-model="exp.frequency" name="frequency"> Weekly</label><br/>
-				<label><input type="radio" ng-model="exp.frequency" name="frequency"> Monthly</label>
+				<label><input type="radio" ng-model="exp.frequency" name="frequency" value="weekly"> Weekly</label><br/>
+				<label><input type="radio" ng-model="exp.frequency" name="frequency" value="monthly"> Monthly</label>
+				<label><input type="radio" ng-model="exp.frequency" name="frequency" value="daily"> Daily</label>
 			</div>
 			<br/>
 			<b class = "required">File Name</b><br/>

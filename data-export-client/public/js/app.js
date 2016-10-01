@@ -531,10 +531,7 @@ mvpApp.controller('dataExportFilter', ['$window', '$scope', '$location', '$http'
 	});
 	
 	$scope.submitForm = function() {
-		if((typeof $scope.exp.startDate == 'undefined') || (typeof $scope.exp.endDate == 'undefined')){
-			alert("Please select date range");
-		}
-		else if(typeof $scope.exp.columns == 'undefined' || $scope.exp.columns.length == 0){
+		if(typeof $scope.exp.columns == 'undefined' || $scope.exp.columns.length == 0){
 			alert("Please select atleast one field");
 		}
 		else if(typeof $scope.exp.export_type == 'undefined' || $scope.exp.export_type.length == 0){

@@ -403,49 +403,49 @@ var exportDataMng = {
 	},
 	
 	exportAndSave: function (req, res) {
-		var query = "";
-		var params = [];
-		var connectionProperties = {};
-		var ftp_loc = "";
-
+		var _query = buildQuery(req.body, false);
 		var ftp_account_id = 1;
 		if (typeof req.body.ftp_account_id != 'undefined'){
 			ftp_account_id = parseInt(req.body.ftp_account_id);
 		}
-		var genreQ = "";
-		if(typeof req.body.genres_all == 'undefined' || req.body.genres_all != '1') {
-			if(typeof req.body.genres != 'undefined' && req.body.genres.length > 0){
-				genreQ += "(";
-				for (var i in req.body.genres) {
-					genreQ += req.body.genres[i] + ",";
-				}
-				genreQ = genreQ.substring(0, genreQ.length - 1) + ")";
-			}
-		}
-		console.log("GENRES : " + genreQ);
 		
-		var selTitles = "";
-		if(typeof req.body.selected_titles != 'undefined' && req.body.selected_titles.length > 0){
-			selTitles += "(";
-			for (var i in req.body.selected_titles) {
-				selTitles += req.body.selected_titles[i].title + ",";
-			}
-			selTitles = selTitles.substring(0, selTitles.length - 1) + ")";
-			
-		}
-		console.log("TITLES : " + selTitles);
-		
-		var selGroups = "";
-		if(typeof req.body.selected_groups != 'undefined' && req.body.selected_groups.length > 0){
-			selGroups += "(";
-			for (var i in req.body.selected_groups) {
-				selGroups += req.body.selected_groups[i].title + ",";
-			}
-			selGroups = selGroups.substring(0, selGroups.length - 1) + ")";
-		}
-		console.log("GROUPS : " + selGroups);
-		
+		var query = "";
+		var params = [];
+		var connectionProperties = {};
+		var ftp_loc = "";		
 		if(typeof req.body.export_type != 'undefined' && typeof req.body.file_format != 'undefined'){
+			if(req.body.export_type == '1'){
+				console.log("Exporting Data to FTP Location");
+				query = "SELECT `title`, `username`, `password`, `ip`, `port`, `location` ,`protocol` FROM `ftp_accounts` WHERE `ftp_account_id`=?";
+				params = [ftp_account_id];
+				var formatedQuery = mysql.format(query, params);
+				mysql_client.query(formatedQuery, function (err, rows) {
+					if (err) {
+						console.log(err);
+					}
+					else {
+						ftp_loc = rows[0].location;
+						connectionProperties = {
+							host: rows[0].ip,
+							user: rows[0].username,
+							port: rows[0].port,
+							password: rows[0].password
+						};
+						var exportCommand = process.env.DATAEXPORT_GQ_SCRIPT_PATH+' -dataset DevDiggit_Hist -query "' + _query + '"  -download_local -local_path '+process.env.DATAEXPORT_CSV_SAVE_PATH+' -bucket_name devdiggitbucket  -project_id '+process.env.DATAEXPORT_GQ_PROJECT_ID+' -sftp_transfer  -ftp_user "'+connectionProperties.user+'"  -ftp_pass "'+connectionProperties.password+'"  -ftp_server "'+connectionProperties.host+'" -export_file_name="'+req.body.fileName+'"';
+						exec(exportCommand, function(err, out, code) {
+							if (err instanceof Error)
+								throw err;
+							process.stderr.write(err);
+							process.stdout.write(out);
+							process.exit(code);
+						});
+						res.json({
+							values: "File exported successfully"
+						});
+					}
+				});
+			}
+			
 			var start = req.body.startDate.replace(/T/, ' ').replace(/\..+/, '');
 			var end = req.body.endDate.replace(/T/, ' ').replace(/\..+/, '');
 			var _query = "SELECT ";
