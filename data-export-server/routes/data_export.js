@@ -27,6 +27,17 @@ var mysql_client = mysql.createConnection({
 
 var conn = new Client();
 
+var DEBUG = (function(){
+    var timestamp = function(){};
+    timestamp.toString = function(){
+        return "[DEBUG " + (new Date).toLocaleTimeString() + "]";    
+    };
+        
+    return {
+        log: console.log.bind(console, '%s', timestamp)
+    }
+})();
+
 function executeGoogleBigQueryAllRows(sqlQuery, callback){
     bigquery.query(sqlQuery, function(err, rows) {
         if (!err) {
@@ -431,10 +442,13 @@ var exportDataMng = {
 							port: rows[0].port,
 							password: rows[0].password
 						};
+						console.log("Start to call Data Export script");
+						DEBUG.log("apple");
 						var exportCommand = process.env.DATAEXPORT_GQ_SCRIPT_PATH+' -dataset DevDiggit_Hist -query "' + _query + '"  -download_local -local_path '+process.env.DATAEXPORT_CSV_SAVE_PATH+' -bucket_name devdiggitbucket  -project_id '+process.env.DATAEXPORT_GQ_PROJECT_ID+' -sftp_transfer  -ftp_user "'+connectionProperties.user+'"  -ftp_pass "'+connectionProperties.password+'"  -ftp_server "'+connectionProperties.host+'" -export_file_name="'+req.body.fileName+'"';
 						exec(exportCommand, function(err, out, code) {
 							if (err instanceof Error)
 								throw err;
+							console.log("Data Export script");
 							process.stderr.write(err);
 							process.stdout.write(out);
 							process.exit(code);
