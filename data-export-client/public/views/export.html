@@ -137,7 +137,8 @@
 						</tr>
 					</thead>
                     <tbody>
-                        <tr ng-show="ip_values.length <= 0"><td colspan="{{headers.length}}" style="text-align:center;">Loading new data!!</td></tr>
+                        <tr ng-show="dataCount < 0"><td colspan="{{headers.length}}" style="text-align:center;">Data not found for selected criteria</td></tr>
+						<tr ng-show="dataCount == 0"><td colspan="{{headers.length}}" style="text-align:center;">Loading new data!!</td></tr>
 						<tr dir-paginate="item in ip_values|itemsPerPage:itemsPerPage" total-items="total_count">
 							<td ng-repeat="h in headers">{{item[h]}}</td>
 						</tr>

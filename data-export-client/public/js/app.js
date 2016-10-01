@@ -380,7 +380,7 @@ mvpApp.controller('dataExportFilter', ['$window', '$scope', '$location', '$http'
 	$scope.exp.genres = [];
 	$scope.genreList = [];
 	$scope.headers = [];
-	
+	$scope.dataCount = -1;
 	$scope.users = [];
     $scope.pageno = 1;
     $scope.total_count = 0;
@@ -571,11 +571,11 @@ mvpApp.controller('dataExportFilter', ['$window', '$scope', '$location', '$http'
 		
 	};
 	$scope.getData = function(pageno){
+		$scope.dataCount = 0;
         $scope.ip_values = [];
 		$scope.exp.itemsPerPage = 20;
 		$scope.exp.pagenumber = pageno;
 		$scope.headers = [];
-		$scope.ip_values = [];
 		if($scope.selectedMovies.length > 0){
 			$scope.exp.selected_titles = $scope.selectedMovies;
 		}
@@ -592,7 +592,12 @@ mvpApp.controller('dataExportFilter', ['$window', '$scope', '$location', '$http'
 			else{
 				$scope.headers = data.headers;
 			}
-			
+			if(data.total_count > 0){
+				$scope.dataCount = 1;
+			}
+			else{
+				$scope.dataCount = -1;
+			}
 		}).
 		error(function (data, status, headers, config) {
 			ngToast.create({
