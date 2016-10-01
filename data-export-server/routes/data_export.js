@@ -53,7 +53,7 @@ function buildQuery(paramArr, isCount){
 	if(typeof paramArr.selected_titles != 'undefined' && paramArr.selected_titles.length > 0){
 		selTitles += "(";
 		for (var i in paramArr.selected_titles) {
-			selTitles += paramArr.selected_titles[i].title + ",";
+			selTitles += "'"+paramArr.selected_titles[i].title + "',";
 		}
 		selTitles = selTitles.substring(0, selTitles.length - 1) + ")";
 		

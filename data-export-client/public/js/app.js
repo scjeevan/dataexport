@@ -579,10 +579,18 @@ mvpApp.controller('dataExportFilter', ['$window', '$scope', '$location', '$http'
         $scope.ip_values = [];
 		$scope.exp.itemsPerPage = 20;
 		$scope.exp.pagenumber = pageno;
+		$scope.headers = [];
+		$scope.ip_values = [];
+		if($scope.selectedMovies.length > 0){
+			$scope.exp.selected_titles = $scope.selectedMovies;
+		}
+		if($scope.selectedGroups.length > 0){
+			$scope.exp.selected_groups = $scope.selectedGroups;
+		}
 		$http.post(Api.root_url+ "api/filterData", $scope.exp).
 		success(function (data, status, headers, config) {
 			$scope.ip_values = data.values;
-			$scope.total_count = data.total_count;
+			$scope.total_count = data.total_count / $scope.itemsPerPage;
 			if((typeof data.headers == 'undefined') || (data.headers.length == 0)){
 				$scope.headers = ["Infohash", "TitleID", "Date", "IP", "Port"];
 			}
