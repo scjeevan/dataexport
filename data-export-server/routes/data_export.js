@@ -30,7 +30,7 @@ var conn = new Client();
 var DEBUG = (function(){
     var timestamp = function(){};
     timestamp.toString = function(){
-        return "[DEBUG " + (new Date).toLocaleTimeString() + "]";    
+        return "[DEBUG " + (new Date).toLocaleString() + "]";    
     };
         
     return {
@@ -426,13 +426,13 @@ var exportDataMng = {
 		var ftp_loc = "";		
 		if(typeof req.body.export_type != 'undefined' && typeof req.body.file_format != 'undefined'){
 			if(req.body.export_type == '1'){
-				console.log("Exporting Data to FTP Location");
+				DEBUG.log("Exporting Data to FTP Location");
 				query = "SELECT `title`, `username`, `password`, `ip`, `port`, `location` ,`protocol` FROM `ftp_accounts` WHERE `ftp_account_id`=?";
 				params = [ftp_account_id];
 				var formatedQuery = mysql.format(query, params);
 				mysql_client.query(formatedQuery, function (err, rows) {
 					if (err) {
-						console.log(err);
+						DEBUG.log(err);
 					}
 					else {
 						ftp_loc = rows[0].location;
@@ -442,13 +442,12 @@ var exportDataMng = {
 							port: rows[0].port,
 							password: rows[0].password
 						};
-						console.log("Start to call Data Export script");
-						DEBUG.log("apple");
+						DEBUG.log("Start to call Data Export script");
 						var exportCommand = process.env.DATAEXPORT_GQ_SCRIPT_PATH+' -dataset DevDiggit_Hist -query "' + _query + '"  -download_local -local_path '+process.env.DATAEXPORT_CSV_SAVE_PATH+' -bucket_name devdiggitbucket  -project_id '+process.env.DATAEXPORT_GQ_PROJECT_ID+' -sftp_transfer  -ftp_user "'+connectionProperties.user+'"  -ftp_pass "'+connectionProperties.password+'"  -ftp_server "'+connectionProperties.host+'" -export_file_name="'+req.body.fileName+'"';
 						exec(exportCommand, function(err, out, code) {
 							if (err instanceof Error)
 								throw err;
-							console.log("Data Export script");
+							DEBUG.log("Data Export Success");
 							process.stderr.write(err);
 							process.stdout.write(out);
 							process.exit(code);
