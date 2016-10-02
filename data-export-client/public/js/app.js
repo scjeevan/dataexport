@@ -558,7 +558,7 @@ mvpApp.controller('dataExportFilter', ['$window', '$scope', '$location', '$http'
 				ngToast.create({
 					dismissOnTimeout:true,
 					timeout:4000,
-					content: data.values;,
+					content: data.values,
 					dismissButton:true
 				});
 			}).
