@@ -119,7 +119,6 @@ function buildQuery(paramArr, isCount){
 			_query += " WHERE " + dateRange;
 		}
 	}
-	
 	console.log("QUERY : " + _query);
 	return _query;
 }
@@ -420,11 +419,10 @@ var exportDataMng = {
 		if (typeof req.body.ftp_account_id != 'undefined'){
 			ftp_account_id = parseInt(req.body.ftp_account_id);
 		}
-		
 		var query = "";
 		var params = [];
 		var connectionProperties = {};
-		var ftp_loc = "";		
+		var ftp_loc = "";
 		if(typeof req.body.export_type != 'undefined' && typeof req.body.file_format != 'undefined'){
 			if(req.body.export_type == '1'){
 				DEBUG.log("Exporting Data to FTP Location");
@@ -473,12 +471,29 @@ var exportDataMng = {
 				});
 			}
 			else{
-				var file_format = req.body.file_format;
+				var now = new Date();
+				var fileFormat = req.body.file_format;
 				var frequency = req.body.frequency;
 				var fileName = req.body.fileName;
-				console.log(fileName+" | "+file_format+" | "+frequency);
+				var selTitles = "";
+				if(typeof req.body.selected_titles != 'undefined' && req.body.selected_titles.length > 0){
+					selTitles += "(";
+					for (var i in req.body.selected_titles) {
+						selTitles += "'"+req.body.selected_titles[i].title + "',";
+					}
+					selTitles = selTitles.substring(0, selTitles.length - 1) + ")";
+				}
+				var fields = "";
+				if(typeof req.body.columns != 'undefined' && req.body.columns.length > 0){
+					for (var i in req.body.columns) {
+						fields += req.body.columns[i] + ",";
+					}
+					fields = fields.substring(0, fields.length - 1);
+				}
+				DEBUG.log(fileName+" | "+fileFormat+" | "+frequency+" | "+selTitles+" | "+fields);
+				
 				/*
-				var now = new Date();
+				
 				var _query = "INSERT INTO data_export_schedules (frequency,table_name,selected_columns,added_date,ftp_account_id, is_genre, genres) VALUES (?, ?, ?, ?, ?, ?, ?)";
 				var _formatedQuery = mysql.format(_query, [req.body.switch_3, req.body.table, _columns, now, ftp_account_id, is_genre, genreQ]);
 				mysql_client.query(_formatedQuery, function (err, rows) {
