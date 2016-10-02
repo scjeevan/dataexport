@@ -449,27 +449,10 @@ var exportDataMng = {
 							port: rows[0].port,
 							password: rows[0].password
 						};
-						DEBUG.log("Start to call Data Export script to : " + ftpTitle);
-						var exportCommand = process.env.DATAEXPORT_GQ_SCRIPT_PATH + ' -dataset DevDiggit_Hist -query "' + _query + '"  -download_local -local_path '+process.env.DATAEXPORT_CSV_SAVE_PATH+' -bucket_name devdiggitbucket  -project_id '+process.env.DATAEXPORT_GQ_PROJECT_ID+' -sftp_transfer  -ftp_user "'+connectionProperties.user+'"  -ftp_pass "'+connectionProperties.password+'"  -ftp_server "'+connectionProperties.host+'" -export_file_name="'+req.body.fileName+'"';
-						/*
-						exec(exportCommand).then(function (result) {
-							var stdout = result.stdout;
-							var stderr = result.stderr;
-							console.log('stdout: ', stdout);
-							console.log('stderr: ', stderr);
-						}).catch(function (err) {
-							console.error('ERROR: ', err);
-						});
-						*/
-						exec(exportCommand, function(err, out, code) {
-							if (err instanceof Error)
-								throw err;
-							DEBUG.log("Data Export Success");
-							process.stderr.write(err);
-							process.stdout.write(out);
-							process.exit(code);
-						});
+						DEBUG.log("Start to export IP data to : " + ftpTitle);
+						exportDataUsingScript(_query, connectionProperties, req.body.fileName+"_IP");
 						if(isTitle){
+							DEBUG.log("Start to export title data");
 							var selTitles = "";
 							if(typeof req.body.selected_titles != 'undefined' && req.body.selected_titles.length > 0){
 								selTitles += "(";
@@ -480,7 +463,7 @@ var exportDataMng = {
 								
 							}
 							var titleQuery = "SELECT * FROM title_title_id WHERE title IN ("+selTitles+")";
-							var exportCommand = process.env.DATAEXPORT_GQ_SCRIPT_PATH + ' -dataset DevDiggit_Hist -query "' + titleQuery + '"  -download_local -local_path '+process.env.DATAEXPORT_CSV_SAVE_PATH+' -bucket_name devdiggitbucket  -project_id '+process.env.DATAEXPORT_GQ_PROJECT_ID+' -sftp_transfer  -ftp_user "'+connectionProperties.user+'"  -ftp_pass "'+connectionProperties.password+'"  -ftp_server "'+connectionProperties.host+'" -export_file_name="'+req.body.fileName+'"';
+							exportDataUsingScript(titleQuery, connectionProperties, req.body.fileName+"_TITLE");
 						}
 						res.json({
 							values: "Selected data is being exported"
@@ -514,7 +497,7 @@ var exportDataMng = {
 				mysql_client.query(_formatedQuery, function (err, rows) {
 					DEBUG.log("Job has been saved successfully");
 					res.json({
-						values: "SUCCESS"
+						values: "Job has been saved successfully"
 					});
 				});
 			}
@@ -708,6 +691,18 @@ var j = schedule.scheduleJob('0 0 0 1 * *', function(){
 	console.log('Data Export Job Ended at ' + date);	
 });
 
+function exportDataUsingScript(_query, connectionProperties, fileName){
+	var exportCommand = process.env.DATAEXPORT_GQ_SCRIPT_PATH + ' -dataset DevDiggit_Hist -query "' + _query + '"  -download_local -local_path '+process.env.DATAEXPORT_CSV_SAVE_PATH+' -bucket_name devdiggitbucket  -project_id '+process.env.DATAEXPORT_GQ_PROJECT_ID+' -sftp_transfer  -ftp_user "'+connectionProperties.user+'"  -ftp_pass "'+connectionProperties.password+'"  -ftp_server "'+connectionProperties.host+'" -export_file_name="'+fileName+'"';
+	exec(exportCommand, function(err, out, code) {
+		if (err instanceof Error)
+			throw err;
+		DEBUG.log("Data Exported Successfully");
+		process.stderr.write(err);
+		process.stdout.write(out);
+		process.exit(code);
+	});
+}
+
 function processToExport(tableName, columns, connProps, startDate, endDate, ftpLocation, callback) {
 	var file_name = tableName + "-" + Math.floor(new Date() / 1000) + ".csv";
 	var _query = "SELECT ";
@@ -721,28 +716,6 @@ function processToExport(tableName, columns, connProps, startDate, endDate, ftpL
 	if(tableName == 'ip'){
 		_query += " FROM DevDiggit_Hist.Diggit_IP WHERE Date BETWEEN '"+startDate+"' AND '"+endDate+"'";
 		console.log("[QUERY]:"+_query);
-		
-		/*
-		bigquery.startQuery(_query, function(err, job) {
-			if (!err) {
-				job.getQueryResults(function(err, rows, apiResponse) {
-					if(err) console.log(err);
-					var status = (rows.length==0)?"No data found":"Data saved successfully";
-					callback(status);
-					saveDateRemort(file_name, headers, rows, connProps, ftpLocation);
-				});
-			}
-		});
-		
-		bigquery.query(_query, function(err,rows){
-			if(err) console.log(err);
-			var status = (rows.length==0)?"No data found":"Data saved successfully";
-			res.json({
-				values: status
-			});
-			saveDateRemort(file_name, headers, rows);
-		});
-		*/
 	}
 	else{
 		var _formatedQuery = null;
