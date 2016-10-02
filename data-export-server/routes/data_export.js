@@ -490,16 +490,15 @@ var exportDataMng = {
 					}
 					fields = fields.substring(0, fields.length - 1);
 				}
-				DEBUG.log(fileName+" | "+fileFormat+" | "+frequency+" | "+selTitles+" | "+fields);
-				
-				/*
-				
-				var _query = "INSERT INTO data_export_schedules (frequency,table_name,selected_columns,added_date,ftp_account_id, is_genre, genres) VALUES (?, ?, ?, ?, ?, ?, ?)";
-				var _formatedQuery = mysql.format(_query, [req.body.switch_3, req.body.table, _columns, now, ftp_account_id, is_genre, genreQ]);
+				DEBUG.log("Saving data export job : " + frequency);
+				var _inQuery = "INSERT INTO data_export_schedules (frequency,table_name,selected_columns,added_date,ftp_account_id, filename, file_format, titles, query) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+				var _formatedQuery = mysql.format(_inQuery, [frequency, 'Diggit_IP', fields, now, ftp_account_id, fileName, fileFormat, selTitles, _query]);
 				mysql_client.query(_formatedQuery, function (err, rows) {
-					console.log("SAVED");
+					DEBUG.log("Job has been saved successfully");
+					res.json({
+						values: "SUCCESS"
+					});
 				});
-				*/
 			}
 		}
 		else{
