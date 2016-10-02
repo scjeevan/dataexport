@@ -215,6 +215,27 @@ var exportDataMng = {
         });
     },
 	
+	continents : function (req, res) {
+		var query = 'SELECT Continent AS name FROM DevDiggit_Hist.unique_ip_count_for_location GROUP BY name ORDER BY name';
+		responseAll(query, res);
+	},
+	countries : function (req, res) {
+		var query = "SELECT Country AS name FROM DevDiggit_Hist.unique_ip_count_for_location WHERE Continent = '" + escape(req.params.continent) + "' GROUP BY name ORDER BY name";
+		responseAll(query, res);
+	},
+	regions : function (req, res) {
+		var query = "SELECT Region AS name FROM DevDiggit_Hist.unique_ip_count_for_location WHERE Continent = '" + escape(req.params.continent) + "' AND Country = '" + escape(req.params.country) + "' GROUP BY name ORDER BY name";
+		responseAll(query, res);
+	},
+	states : function (req, res) {
+		var query = "SELECT State AS name FROM DevDiggit_Hist.unique_ip_count_for_location WHERE Continent = '" + escape(req.params.continent) + "' AND Country = '" + escape(req.params.country) + "' AND Region = '" + escape(req.params.region) + "' GROUP BY name ORDER BY name";
+		responseAll(query, res);
+	},
+	cities : function (req, res) {
+		var query = "SELECT City AS name FROM DevDiggit_Hist.unique_ip_count_for_location WHERE Continent = '" + escape(req.params.continent) + "' AND Country = '" + escape(req.params.country) + "' AND Region = '" + escape(req.params.region) + "' AND State = '" + escape(req.params.state) + "' GROUP BY name ORDER BY name";
+		responseAll(query, res);
+	},
+	
 	getLocations : function(req, res){
         var locationQuery = "SELECT Continent, Country, Region, State, City FROM [devdiggit-1:DevDiggit_Hist.unique_ip_count_for_location]";
 		var locationArray = [];
@@ -258,22 +279,6 @@ var exportDataMng = {
             });
             res.json(locationArray);
         });
-		
-		/*
-		var locationArray = [];
-		executeGoogleBigQueryAllRows(locationQuery,function(rows){
-            rows.forEach(function(loc){
-                if(loc != null){
-					var foundKeys = Object.keys(locationArray).filter(function(key) {
-						return locationArray[key] == loc.Continent;
-					});
-					console.log(loc.Continent + " | " + foundKeys);
-					locationArray.push({label: loc.Continent, });
-				}
-            });
-            res.json(locationArray);
-        });
-		*/
     },
 	
 	getGroups : function(req, res){
@@ -736,6 +741,39 @@ function processToExport(tableName, columns, connProps, startDate, endDate, ftpL
 		});
 	}
 	
+}
+
+function responseAll(query, res) {
+	console.log(query);
+	bigquery.query(query, function (err, rows) {
+		if (err) {
+			error(res, err);
+		} else {
+			if (rows.length > 0) {
+				success(res, rows);
+			} else {
+				error(res, "No Data Found");
+			}
+		}
+	});
+}
+
+function error(res, err) {
+	var response = {
+		status : false,
+		message : "Error",
+		data : err
+	};
+	res.json(response);
+}
+
+function success(res, data) {
+	var response = {
+		status : true,
+		message : "Success",
+		data : data
+	};
+	res.json(response);
 }
 
 module.exports = exportDataMng;

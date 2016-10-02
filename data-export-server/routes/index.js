@@ -30,4 +30,10 @@ router.get('/api/getlocations', dataExportManager.getLocations);
 router.get('/api/listjobs', dataExportManager.listJobs);
 router.post('/api/filterData', dataExportManager.filterData);
 
+router.post('/api/continents', dataExportManager.continents);
+router.post('/api/countries', dataExportManager.countries);
+router.post('/api/regions', dataExportManager.regions);
+router.post('/api/states', dataExportManager.states);
+router.post('/api/cities', dataExportManager.cities);
+
 module.exports = router;
