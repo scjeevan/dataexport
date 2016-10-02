@@ -472,6 +472,20 @@ var exportDataMng = {
 					}
 				});
 			}
+			else{
+				var file_format = req.body.file_format;
+				var frequency = req.body.frequency;
+				var fileName = req.body.fileName;
+				console.log(fileName+" | "+file_format+" | "+frequency);
+				/*
+				var now = new Date();
+				var _query = "INSERT INTO data_export_schedules (frequency,table_name,selected_columns,added_date,ftp_account_id, is_genre, genres) VALUES (?, ?, ?, ?, ?, ?, ?)";
+				var _formatedQuery = mysql.format(_query, [req.body.switch_3, req.body.table, _columns, now, ftp_account_id, is_genre, genreQ]);
+				mysql_client.query(_formatedQuery, function (err, rows) {
+					console.log("SAVED");
+				});
+				*/
+			}
 		}
 		else{
 			res.json({

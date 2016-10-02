@@ -543,6 +543,9 @@ mvpApp.controller('dataExportFilter', ['$window', '$scope', '$location', '$http'
 		else if(typeof $scope.exp.fileName == 'undefined'){
 			alert("Please enter file name");
 		}
+		else if($scope.exp.export_type == '0' && typeof $scope.exp.frequency == 'undefined'){
+			alert("Please select frequency");
+		}
 		else{
 			if($scope.selectedMovies.length > 0){
 				$scope.exp.selected_titles = $scope.selectedMovies;
