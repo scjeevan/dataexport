@@ -48,7 +48,7 @@ function executeGoogleBigQueryAllRows(sqlQuery, callback){
     });
 }
 
-function buildQuery(paramArr, isCount){
+function buildQuery(paramArr, isCount, isSchedule){
 	var genreQ = "";
 	if(typeof paramArr.genres_all == 'undefined' || paramArr.genres_all != '1') {
 		if(typeof paramArr.genres != 'undefined' && paramArr.genres.length > 0){
@@ -86,6 +86,9 @@ function buildQuery(paramArr, isCount){
 		var start = paramArr.startDate.replace(/T/, ' ').replace(/\..+/, '');
 		var end = paramArr.endDate.replace(/T/, ' ').replace(/\..+/, '');
 		dateRange = " t.Date BETWEEN '"+start+"' AND '"+end+"' ";
+	}
+	if(isSchedule){
+		dateRange = " t.Date BETWEEN '<start>' AND '<end>' ";
 	}
 	var _query = "SELECT ";
 	if(isCount){
@@ -369,8 +372,8 @@ var exportDataMng = {
 	},
 	
 	filterData: function (req, res) {
-		var _query = buildQuery(req.body, false);
-		var _countQuery = buildQuery(req.body, true);
+		var _query = buildQuery(req.body, false, false);
+		var _countQuery = buildQuery(req.body, true, false);
 		executeGoogleBigQueryAllRows(_countQuery,function(r){
 			if(r[0].c > 0){
 				var pagenumber = req.body.pagenumber;
@@ -406,7 +409,8 @@ var exportDataMng = {
 	
 	exportAndSave: function (req, res) {
 		var isTitle = (req.body.file_format == '1')?true:false;
-		var _query = buildQuery(req.body, false);
+		var isSchedule = (req.body.export_type == '0')?true:false;
+		var _query = buildQuery(req.body, false, isSchedule);
 		var ftp_account_id = 1;
 		if (typeof req.body.ftp_account_id != 'undefined'){
 			ftp_account_id = parseInt(req.body.ftp_account_id);
@@ -512,7 +516,7 @@ var exportDataMng = {
 	scheduleExportData: function (req, res) {
 		var _query = "";
 		if(req.body.table=='ip'){
-			_query = buildQuery(req.body, false);
+			_query = buildQuery(req.body, false, true);
 		}
 		else{
 			_query = "SELECT ";
