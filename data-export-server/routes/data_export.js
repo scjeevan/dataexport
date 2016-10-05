@@ -576,7 +576,7 @@ var exportDataMng = {
 	}
 };
 
-var j = schedule.scheduleJob('0 0 0 * * *', function(){
+var j = schedule.scheduleJob('0 * * * * *', function(){
 	DEBUG.log("Started data export job");
 	var date = new Date();
 	var month = date.getMonth() + 1;
