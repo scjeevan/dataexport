@@ -698,6 +698,7 @@ var j = schedule.scheduleJob('0 0 0 1 * *', function(){
 
 function exportDataUsingScript(_query, connectionProperties, fileName){
 	var exportCommand = process.env.DATAEXPORT_GQ_SCRIPT_PATH + ' -dataset DevDiggit_Hist -query "' + _query + '"  -download_local -local_path '+process.env.DATAEXPORT_CSV_SAVE_PATH+' -bucket_name devdiggitbucket  -project_id '+process.env.DATAEXPORT_GQ_PROJECT_ID+' -sftp_transfer  -ftp_user "'+connectionProperties.user+'"  -ftp_pass "'+connectionProperties.password+'"  -ftp_server "'+connectionProperties.host+'" -export_file_name="'+fileName+'"';
+	console.log(exportCommand);
 	exec(exportCommand, function(err, out, code) {
 		if (err instanceof Error)
 			throw err;
