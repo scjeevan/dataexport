@@ -526,7 +526,7 @@ var exportDataMng = {
 					genreQ += req.body.genres[i] + ",";
 				}
 				genreQ = genreQ.substring(0, genreQ.length - 1) + ")";
-				_query += " FROM mm_titles t, mm_title_genres g WHERE t.title_id = g.title_id AND g.genre_id IN "+genreQ;
+				_query += " FROM mm_titles t, mm_title_genres g WHERE t.mm_title_id = g.title_id AND g.genre_id IN "+genreQ;
 			} else {
 				_query += " FROM mm_titles t";
 			}
@@ -542,8 +542,8 @@ var exportDataMng = {
 		}
 		_columns = _columns.substring(0, _columns.length - 1);
 		var now = new Date();
-		var _query = "INSERT INTO data_export_schedules (frequency,table_name,selected_columns,added_date,ftp_account_id, filename, file_format, query) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
-		var _formatedQuery = mysql.format(_query, [req.body.switch_3, req.body.table, _columns, now, ftp_account_id, req.body.fileName, '1' ,_query]);
+		var _insQuery = "INSERT INTO data_export_schedules (frequency,table_name,selected_columns,added_date,ftp_account_id, filename, file_format, query) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+		var _formatedQuery = mysql.format(_insQuery, [req.body.switch_3, req.body.table, _columns, now, ftp_account_id, req.body.fileName, '1' ,_query]);
 		mysql_client.query(_formatedQuery, function (err, rows) {
 			console.log("SAVED");
 		});
