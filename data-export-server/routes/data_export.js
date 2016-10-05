@@ -680,7 +680,8 @@ function processToExport(row, startDate, endDate, callback) {
 	if(tableName == 'Diggit_IP'){
 		query.replace('<start>', start);
 		query.replace('<end>', end);
-		exportDataUsingScript(query, connProps, fileName+"_IP");
+		console.log(query);
+		//exportDataUsingScript(query, connProps, fileName+"_IP");
 		callback("SUCCESS");
 	}
 }
