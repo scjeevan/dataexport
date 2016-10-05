@@ -585,6 +585,7 @@ var j = schedule.scheduleJob('0 * * * * *', function(){
 	var query = "SELECT `table_name`, `selected_columns`, `title`, `username`, `password`, `ip`, `port`, `location` ,`protocol`, `is_genre`, `genres` FROM `data_export_schedules`,`ftp_accounts` WHERE `data_export_schedules`.`ftp_account_id` = `ftp_accounts`.`ftp_account_id` AND `data_export_schedules`.`frequency`=?";
 	var params = [];
 	if(day == 1){
+		DEBUG.log("Running Monthly jobs");
 		params = ['monthly'];
 		var formatedQuery = mysql.format(query, params);
 		mysql_client.query(formatedQuery, function (err, rows) {
@@ -607,6 +608,7 @@ var j = schedule.scheduleJob('0 * * * * *', function(){
 		});
 	}
 	if(weekDay == 1){
+		DEBUG.log("Running Weekly jobs");
 		params = ['weekly'];
 		var formatedQuery = mysql.format(query, params);
 		mysql_client.query(formatedQuery, function (err, rows) {
@@ -628,6 +630,7 @@ var j = schedule.scheduleJob('0 * * * * *', function(){
 			}
 		});
 	}
+	DEBUG.log("Running Daily jobs");
 	params = ['daily'];
 	var formatedQuery = mysql.format(query, params);
 	mysql_client.query(formatedQuery, function (err, rows) {
@@ -665,25 +668,29 @@ function exportDataUsingScript(_query, connectionProperties, fileName){
 }
 
 function processToExport(row, startDate, endDate, callback) {
-	var fileName = row.filename;
-	var fileFormat = row.file_format;
-	var tableName = row.table_name;
-	var title = row.titles;
-	var query = row.query;
-	var ftpLocation = row.location;
-	var connProps = {
-		host: row.ip,
-		user: row.username,
-		port: row.port,
-		password: row.password
-	};
-	if(tableName == 'Diggit_IP'){
-		//.replace('<start>', startDate);
-		//query.replace('<end>', endDate);
-		console.log(query);
-		//exportDataUsingScript(query, connProps, fileName+"_IP");
-		callback("SUCCESS");
+	if(typeof row != 'undefined'){
+		var jobId = row.data_export_schedule_id;
+		var fileName = row.filename;
+		var fileFormat = row.file_format;
+		var tableName = row.table_name;
+		var title = row.titles;
+		var query = row.query;
+		var ftpLocation = row.location;
+		var connProps = {
+			host: row.ip,
+			user: row.username,
+			port: row.port,
+			password: row.password
+		};
+		if(typeof query != 'undefined' && tableName == 'Diggit_IP'){
+			//.replace('<start>', startDate);
+			//query.replace('<end>', endDate);
+			console.log(query);
+			//exportDataUsingScript(query, connProps, fileName+"_IP");
+			callback("SUCCESS");
+		}
 	}
+	
 }
 
 function responseAll(query, res) {
