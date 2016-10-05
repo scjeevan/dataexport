@@ -582,7 +582,7 @@ var j = schedule.scheduleJob('0 * * * * *', function(){
 	var month = date.getMonth() + 1;
 	var day  = date.getDate();
 	var weekDay = date.getDay();
-	var query = "SELECT `table_name`, `selected_columns`, `title`, `username`, `password`, `ip`, `port`, `location` ,`protocol`, `is_genre`, `genres` FROM `data_export_schedules`,`ftp_accounts` WHERE `data_export_schedules`.`ftp_account_id` = `ftp_accounts`.`ftp_account_id` AND `data_export_schedules`.`frequency`=?";
+	var query = "SELECT `table_name`, `selected_columns`, `filename`, `file_format`, `titles`, `query`, `title`, `username`, `password`, `ip`, `port`, `location` ,`protocol` FROM `data_export_schedules`,`ftp_accounts` WHERE `data_export_schedules`.`ftp_account_id` = `ftp_accounts`.`ftp_account_id` AND `data_export_schedules`.`frequency`=?";
 	var params = [];
 	if(day == 1){
 		DEBUG.log("Running Monthly jobs");
@@ -651,7 +651,7 @@ var j = schedule.scheduleJob('0 * * * * *', function(){
 			});
 		}
 	});
-	console.log('Data Export Job Ended at ' + date);	
+	DEBUG.log("Data export jobs ended");
 });
 
 function exportDataUsingScript(_query, connectionProperties, fileName){
