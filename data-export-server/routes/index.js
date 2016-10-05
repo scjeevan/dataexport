@@ -36,4 +36,6 @@ router.post('/api/regions', dataExportManager.regions);
 router.post('/api/states', dataExportManager.states);
 router.post('/api/cities', dataExportManager.cities);
 
+router.post('/api/executejob', dataExportManager.executeJob);
+
 module.exports = router;

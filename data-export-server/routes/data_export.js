@@ -206,6 +206,11 @@ function isExist(array, value){
 
 var exportDataMng = {
 	
+	executeJob : function(req, res){
+		String jobId = parseInt(req.body.jobid);
+		
+	},
+	
 	getMovies : function(req, res){
         var movieQuery = "SELECT title FROM [devdiggit-1:DevDiggit_Hist.title_title_id] GROUP BY title";
 		var movieArray = [];
@@ -656,7 +661,6 @@ var j = schedule.scheduleJob('0 * * * * *', function(){
 
 function exportDataUsingScript(_query, connectionProperties, fileName){
 	var exportCommand = process.env.DATAEXPORT_GQ_SCRIPT_PATH + ' -dataset DevDiggit_Hist -query "' + _query + '" -download_local -local_path '+process.env.DATAEXPORT_CSV_SAVE_PATH+' -bucket_name devdiggitbucket -project_id '+process.env.DATAEXPORT_GQ_PROJECT_ID+' -sftp_transfer -ftp_user "'+connectionProperties.user+'"  -ftp_pass \''+connectionProperties.password+'\' -ftp_server "'+connectionProperties.host+'" -ftp_port '+connectionProperties.port+' -export_file_name '+fileName+'';
-	console.log(exportCommand);
 	exec(exportCommand, function(err, out, code) {
 		if (err instanceof Error)
 			throw err;
@@ -670,6 +674,7 @@ function exportDataUsingScript(_query, connectionProperties, fileName){
 function processToExport(row, startDate, endDate, callback) {
 	if(typeof row != 'undefined'){
 		var jobId = row.data_export_schedule_id;
+		DEBUG.log("Running Job #"+jobId);
 		var fileName = row.filename;
 		var fileFormat = row.file_format;
 		var tableName = row.table_name;
@@ -687,6 +692,7 @@ function processToExport(row, startDate, endDate, callback) {
 			query.replace('<end>', endDate);
 			console.log(query);
 			exportDataUsingScript(query, connProps, fileName+"_IP");
+			DEBUG.log("Completed Job #"+jobId);
 			callback("SUCCESS");
 		}
 	}
