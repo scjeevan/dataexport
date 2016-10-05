@@ -122,6 +122,7 @@ mvpApp.controller('dataExportForm', ['$window', '$scope', '$location', '$http', 
 					content:data.values,
 					dismissButton:true
 				});
+				$scope.exp = [];
 			}).
 			error(function (data, status, headers, config) {
 				ngToast.create({
@@ -229,6 +230,7 @@ mvpApp.controller('scheduleDataExport', ['$window', '$scope', '$location', '$htt
 					content:'Data Export schedule has been saved successfully',
 					dismissButton:true
 				});
+				$scope.exp = [];
 			}).
 			error(function (data, status, headers, config) {
 				ngToast.create({
@@ -658,6 +660,7 @@ mvpApp.controller('dataExportFilter', ['$window', '$scope', '$location', '$http'
 					content: data.values,
 					dismissButton:true
 				});
+				$scope.exp = [];
 			}).
 			error(function (data, status, headers, config) {
 				ngToast.create({

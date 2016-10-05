@@ -329,50 +329,30 @@ var exportDataMng = {
 				_query = _query.substring(0, _query.length - 1);
 				var start = req.body.startDate.replace(/T/, ' ').replace(/\..+/, '');
 				var end = req.body.endDate.replace(/T/, ' ').replace(/\..+/, '');
-				var file_name = req.body.fileName + "-" + Math.floor(new Date() / 1000) + ".csv";
+				var file_name = req.body.fileName + "_title.csv";
 				if(req.body.table == 'ip'){
 					if(req.body.isGenre){
 						_query += " FROM [DevDiggit_Hist.Diggit_IP] AS t JOIN [DevDiggit_Hist.mm_title_genres] AS gt ON t.TitleID = gt.title_id WHERE t.Date BETWEEN '"+start+"' AND '"+end+"' AND gt.genre_id IN "+genreQ; // LIMIT 10000
 					} else {
 						_query += " FROM DevDiggit_Hist.Diggit_IP WHERE Date BETWEEN '"+start+"' AND '"+end+"' "; // LIMIT 10000
 					}
-					
-					var exportCommand = process.env.DATAEXPORT_GQ_SCRIPT_PATH+' -dataset DevDiggit_Hist -query "' + _query + '"  -download_local -local_path '+process.env.DATAEXPORT_CSV_SAVE_PATH+' -bucket_name devdiggitbucket  -project_id '+process.env.DATAEXPORT_GQ_PROJECT_ID+' -sftp_transfer  -ftp_user "'+connectionProperties.user+'"  -ftp_pass "'+connectionProperties.password+'"  -ftp_server "'+connectionProperties.host+'" -export_file_name="'+req.body.fileName+'"';
-					console.log("[COMMAND]:"+exportCommand);
-					exec(exportCommand, function(err, out, code) {
-						if (err instanceof Error)
-							throw err;
-						process.stderr.write(err);
-						process.stdout.write(out);
-						process.exit(code);
-					});
+					exportDataUsingScript(_query, connectionProperties, file_name);
 					res.json({
-						values: "File exported successfully"
+						values: "Selected data is being exported"
 					});
 				}
 				else{
-					var _formatedQuery = null;
-					if(req.body.table === 'title'){
-						if(req.body.isGenre){
-							_query += " FROM mm_titles t, mm_title_genres g WHERE t.title_id = g.title_id AND g.genre_id IN "+genreQ;
-						} else {
-							_query += " FROM mm_titles t";
-						}
-						_formatedQuery = mysql.format(_query);
+					if(req.body.isGenre){
+						_query += " FROM mm_titles t, mm_title_genres g WHERE t.title_id = g.title_id AND g.genre_id IN "+genreQ;
+					} else {
+						_query += " FROM mm_titles t";
 					}
-					else{
-						if(req.body.isGenre){
-							_query += " FROM infohashes t, mm_title_genres g WHERE t.mm_title_id = g.title_id AND t.added_time BETWEEN ? AND ? AND g.genre_id IN "+genreQ;
-						} else {
-							_query += " FROM infohashes t WHERE t.added_time BETWEEN ? AND ?";
-						}
-						_formatedQuery = mysql.format(_query, [start, end]);
-					}
+					_formatedQuery = mysql.format(_query);
 					console.log("[QUERY]:"+_query);
 					mysql_client.query(_formatedQuery, function (err, rows) {
 						if(err) console.log(err);
 						var status = "No data found"
-						if(rows.length > 0){
+						if(typeof rows.length != 'undefined' && rows.length > 0){
 							status = "File exported successfully";
 							saveDateRemort(file_name, headers, rows, connectionProperties, ftp_loc);
 						}
@@ -697,7 +677,7 @@ var j = schedule.scheduleJob('0 0 0 1 * *', function(){
 });
 
 function exportDataUsingScript(_query, connectionProperties, fileName){
-	var exportCommand = process.env.DATAEXPORT_GQ_SCRIPT_PATH + ' -dataset DevDiggit_Hist -query "' + _query + '" -download_local -local_path '+process.env.DATAEXPORT_CSV_SAVE_PATH+' -bucket_name devdiggitbucket -project_id '+process.env.DATAEXPORT_GQ_PROJECT_ID+' -sftp_transfer -ftp_user "'+connectionProperties.user+'"  -ftp_pass \''+connectionProperties.password+'\' -ftp_server "'+connectionProperties.host+'" -ftp_port '+connectionProperties.port+' -export_file_name="'+fileName+'"';
+	var exportCommand = process.env.DATAEXPORT_GQ_SCRIPT_PATH + ' -dataset DevDiggit_Hist -query "' + _query + '" -download_local -local_path '+process.env.DATAEXPORT_CSV_SAVE_PATH+' -bucket_name devdiggitbucket -project_id '+process.env.DATAEXPORT_GQ_PROJECT_ID+' -sftp_transfer -ftp_user "'+connectionProperties.user+'"  -ftp_pass \''+connectionProperties.password+'\' -ftp_server "'+connectionProperties.host+'" -ftp_port '+connectionProperties.port+' -export_file_name '+fileName+'';
 	console.log(exportCommand);
 	exec(exportCommand, function(err, out, code) {
 		if (err instanceof Error)

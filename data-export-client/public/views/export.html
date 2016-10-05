@@ -106,9 +106,9 @@
 			</div>
 			<div style="max-height:150px; padding:5px; overflow:auto;" class="" ng-show="exp.export_type == '0'">
 				<b class = "required">Frequency</b><br/>
+				<label><input type="radio" ng-model="exp.frequency" name="frequency" value="daily"> Daily</label><br/>
 				<label><input type="radio" ng-model="exp.frequency" name="frequency" value="weekly"> Weekly</label><br/>
-				<label><input type="radio" ng-model="exp.frequency" name="frequency" value="monthly"> Monthly</label><br/>
-				<label><input type="radio" ng-model="exp.frequency" name="frequency" value="daily"> Daily</label>
+				<label><input type="radio" ng-model="exp.frequency" name="frequency" value="monthly"> Monthly</label>
 			</div>
 			<br/>
 			<b class = "required">File Name</b><br/>
@@ -122,7 +122,9 @@
     </div>
 	<div style="padding:5px; overflow:auto;" class="">
 		<button value="Reload Table" class="btn btn-success" ng-click="getData('1')">Reload Table</button>
-		<button value="Save" class="btn btn-primary" ng-click="submitForm()">Save</button>
+		<button value="Save" class="btn btn-primary" ng-click="submitForm()">
+			{{exp.export_type == '0'? 'Save Job' : 'Export'}}
+		</button>
 	</div>
 </div>
 <div class="maindiv col-md-9 col-sm-12">
