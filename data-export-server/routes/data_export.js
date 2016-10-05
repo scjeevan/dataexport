@@ -511,11 +511,11 @@ var exportDataMng = {
 	
 	scheduleExportData: function (req, res) {
 		var _query = "";
-		if(){
+		if(req.body.table=='ip'){
 			_query = buildQuery(req.body, false);
 		}
 		else{
-			var _query = "SELECT ";
+			_query = "SELECT ";
 			for (var i in req.body.columns) {
 				_query += "t."+req.body.columns[i] + ",";
 			}
@@ -531,6 +531,7 @@ var exportDataMng = {
 				_query += " FROM mm_titles t";
 			}
 		}
+		DEBUG.log("Saving [query]:"+_query);
 		var ftp_account_id = 1;
 		if (typeof req.body.ftp_account_id != 'undefined'){
 			ftp_account_id = parseInt(req.body.ftp_account_id);
