@@ -77,7 +77,7 @@ mvpApp.controller('dataExportForm', ['$window', '$scope', '$location', '$http', 
 			$scope.columns = titleColumns; //mm_titles
 		} else if(value=='infohashes'){
 			$scope.columns = infohashesColumns; // infohashes
-		} else if(value=='ip'){
+		} else if(value=='Diggit_IP'){
 			$scope.columns = ipColumns;
 		}
 	};
@@ -184,7 +184,7 @@ mvpApp.controller('scheduleDataExport', ['$window', '$scope', '$location', '$htt
 			$scope.columns = titleColumns; //mm_titles
 		} else if(value=='infohashes'){
 			$scope.columns = infohashesColumns; // infohashes
-		} else if(value=='ip'){
+		} else if(value=='Diggit_IP'){
 			$scope.columns = ipColumns;
 		}
 	};

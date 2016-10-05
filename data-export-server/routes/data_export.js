@@ -683,10 +683,10 @@ function processToExport(row, startDate, endDate, callback) {
 			password: row.password
 		};
 		if(typeof query != 'undefined' && tableName == 'Diggit_IP'){
-			//.replace('<start>', startDate);
-			//query.replace('<end>', endDate);
+			query.replace('<start>', startDate);
+			query.replace('<end>', endDate);
 			console.log(query);
-			//exportDataUsingScript(query, connProps, fileName+"_IP");
+			exportDataUsingScript(query, connProps, fileName+"_IP");
 			callback("SUCCESS");
 		}
 	}
