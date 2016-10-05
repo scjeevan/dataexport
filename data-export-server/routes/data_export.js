@@ -678,8 +678,8 @@ function processToExport(row, startDate, endDate, callback) {
 		password: row.password
 	};
 	if(tableName == 'Diggit_IP'){
-		query.replace('<start>', start);
-		query.replace('<end>', end);
+		query.replace('<start>', startDate);
+		query.replace('<end>', endDate);
 		console.log(query);
 		//exportDataUsingScript(query, connProps, fileName+"_IP");
 		callback("SUCCESS");
