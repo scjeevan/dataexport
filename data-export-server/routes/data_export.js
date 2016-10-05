@@ -332,8 +332,9 @@ var exportDataMng = {
 				_query = _query.substring(0, _query.length - 1);
 				var start = req.body.startDate.replace(/T/, ' ').replace(/\..+/, '');
 				var end = req.body.endDate.replace(/T/, ' ').replace(/\..+/, '');
-				var file_name = req.body.fileName + "_title.csv";
+				var file_name = req.body.fileName;
 				if(req.body.table == 'ip'){
+					file_name = file_name + "_IP";
 					if(req.body.isGenre){
 						_query += " FROM [DevDiggit_Hist.Diggit_IP] AS t JOIN [DevDiggit_Hist.mm_title_genres] AS gt ON t.TitleID = gt.title_id WHERE t.Date BETWEEN '"+start+"' AND '"+end+"' AND gt.genre_id IN "+genreQ; // LIMIT 10000
 					} else {
@@ -345,6 +346,7 @@ var exportDataMng = {
 					});
 				}
 				else{
+					file_name = file_name + "_title";
 					if(req.body.isGenre){
 						_query += " FROM mm_titles t, mm_title_genres g WHERE t.title_id = g.title_id AND g.genre_id IN "+genreQ;
 					} else {
@@ -367,8 +369,6 @@ var exportDataMng = {
 				}
 			}
 		});
-		
-		
 	},
 	
 	filterData: function (req, res) {
@@ -515,7 +515,7 @@ var exportDataMng = {
 	
 	scheduleExportData: function (req, res) {
 		var _query = "";
-		if(req.body.table=='ip'){
+		if(req.body.table=='Diggit_IP'){
 			_query = buildQuery(req.body, false, true);
 		}
 		else{
@@ -576,50 +576,15 @@ var exportDataMng = {
 	}
 };
 
-var j = schedule.scheduleJob('0 0 0 1 * *', function(){
+var j = schedule.scheduleJob('0 0 0 * * *', function(){
+	DEBUG.log("Started data export job");
 	var date = new Date();
-	console.log('Data Export Job Runnig at ' + date);
 	var month = date.getMonth() + 1;
 	var day  = date.getDate();
 	var weekDay = date.getDay();
 	var query = "SELECT `table_name`, `selected_columns`, `title`, `username`, `password`, `ip`, `port`, `location` ,`protocol`, `is_genre`, `genres` FROM `data_export_schedules`,`ftp_accounts` WHERE `data_export_schedules`.`ftp_account_id` = `ftp_accounts`.`ftp_account_id` AND `data_export_schedules`.`frequency`=?";
 	var params = [];
-	
-	if((month == 1 || month == 5 || month == 9) && day == 1){
-		params = ['weekly'];
-		var formatedQuery = mysql.format(query, params);
-		mysql_client.query(formatedQuery, function (err, rows) {
-			if (err) {
-				console.log(err);
-			}
-			else {
-				rows.forEach(function (row) {
-					if (row != null) {
-						var tableName = row.table_name;
-						var selected_columns = row.selected_columns;
-						var ftpLocation = row.location;
-						var connProps = {
-							host: row.ip,
-							user: row.username,
-							port: row.port,
-							password: row.password
-						};
-						var d = new Date();
-						d.setMonth(month - 4);
-						var start = d.toISOString().replace(/T/, ' ').replace(/\..+/, '')
-						var end = new Date().toISOString().replace(/T/, ' ').replace(/\..+/, '');
-						var columns = selected_columns.split(",");
-						processToExport(tableName, columns, connProps, start, end, ftpLocation, function (result) {
-							console.log(result);
-						});
-					}
-				});
-				
-				
-			}
-		});
-	}
-	else if(day == 1){
+	if(day == 1){
 		params = ['monthly'];
 		var formatedQuery = mysql.format(query, params);
 		mysql_client.query(formatedQuery, function (err, rows) {
@@ -629,27 +594,15 @@ var j = schedule.scheduleJob('0 0 0 1 * *', function(){
 			else {
 				rows.forEach(function (row) {
 					if (row != null) {
-						var tableName = row.table_name;
-						var selected_columns = row.selected_columns;
-						var ftpLocation = row.location;
-						var connProps = {
-							host: row.ip,
-							user: row.username,
-							port: row.port,
-							password: row.password
-						};
 						var d = new Date();
 						d.setMonth(month - 1);
 						var start = d.toISOString().replace(/T/, ' ').replace(/\..+/, '')
 						var end = new Date().toISOString().replace(/T/, ' ').replace(/\..+/, '');
-						var columns = selected_columns.split(",");
-						processToExport(tableName, columns, connProps, start, end, ftpLocation, function (result) {
+						processToExport(row, start, end, function (result) {
 							console.log(result);
-						});
+						})
 					}
 				});
-				
-				
 			}
 		});
 	}
@@ -663,30 +616,38 @@ var j = schedule.scheduleJob('0 0 0 1 * *', function(){
 			else {
 				rows.forEach(function (row) {
 					if (row != null) {
-						var tableName = row.table_name;
-						var selected_columns = row.selected_columns;
-						var ftpLocation = row.location;
-						var connProps = {
-							host: row.ip,
-							user: row.username,
-							port: row.port,
-							password: row.password
-						};
 						var d = new Date();
 						d.setDate(day - 7);
-						var start = d.toISOString().replace(/T/, ' ').replace(/\..+/, '')
+						var start = d.toISOString().replace(/T/, ' ').replace(/\..+/, '');
 						var end = new Date().toISOString().replace(/T/, ' ').replace(/\..+/, '');
-						var columns = selected_columns.split(",");
-						processToExport(tableName, columns, connProps, start, end, ftpLocation, function (result) {
+						processToExport(row, start, end, function (result) {
 							console.log(result);
-						});
+						})
 					}
 				});
-				
-				
 			}
 		});
 	}
+	params = ['daily'];
+	var formatedQuery = mysql.format(query, params);
+	mysql_client.query(formatedQuery, function (err, rows) {
+		if (err) {
+			console.log(err);
+		}
+		else {
+			rows.forEach(function (row) {
+				if (row != null) {
+					var d = new Date();
+					d.setDate(day - 1);
+					var start = d.toISOString().replace(/T/, ' ').replace(/\..+/, '')
+					var end = new Date().toISOString().replace(/T/, ' ').replace(/\..+/, '');
+					processToExport(row, start, end, function (result) {
+						console.log(result);
+					})
+				}
+			});
+		}
+	});
 	console.log('Data Export Job Ended at ' + date);	
 });
 
@@ -703,39 +664,25 @@ function exportDataUsingScript(_query, connectionProperties, fileName){
 	});
 }
 
-function processToExport(tableName, columns, connProps, startDate, endDate, ftpLocation, callback) {
-	var file_name = tableName + "-" + Math.floor(new Date() / 1000) + ".csv";
-	var _query = "SELECT ";
-	var headers = [];
-	for (var i in columns) {
-		_query += columns[i] + ",";
-		headers.push(columns[i]);
+function processToExport(row, startDate, endDate, callback) {
+	var fileName = row.filename;
+	var fileFormat = row.file_format;
+	var tableName = row.table_name;
+	var title = row.titles;
+	var query = row.query;
+	var ftpLocation = row.location;
+	var connProps = {
+		host: row.ip,
+		user: row.username,
+		port: row.port,
+		password: row.password
+	};
+	if(tableName == 'Diggit_IP'){
+		query.replace('<start>', start);
+		query.replace('<end>', end);
+		exportDataUsingScript(query, connProps, fileName+"_IP");
+		callback("SUCCESS");
 	}
-	_query = _query.substring(0, _query.length - 1);
-	
-	if(tableName == 'ip'){
-		_query += " FROM DevDiggit_Hist.Diggit_IP WHERE Date BETWEEN '"+startDate+"' AND '"+endDate+"'";
-		console.log("[QUERY]:"+_query);
-	}
-	else{
-		var _formatedQuery = null;
-		if(tableName === 'title'){
-			_query += " FROM mm_titles";
-			_formatedQuery = mysql.format(_query);
-		}
-		else{
-			_query += " FROM infohashes WHERE added_time BETWEEN ? AND ?";
-			_formatedQuery = mysql.format(_query, [startDate, endDate]);
-		}
-		console.log("[QUERY]:"+_query);
-		mysql_client.query(_formatedQuery, function (err, rows) {
-			if(err) console.log(err);
-			var status = (rows.length==0)?"No data found":"Data saved successfully";
-			callback(status);
-			saveDateRemort(file_name, headers, rows, connProps, ftpLocation);
-		});
-	}
-	
 }
 
 function responseAll(query, res) {
