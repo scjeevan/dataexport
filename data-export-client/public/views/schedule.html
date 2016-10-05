@@ -7,12 +7,13 @@
 		<div class="form-group">
 			<label class="control-label col-sm-3" for="email">Frequency:</label>
 			<div class="col-sm-9 switch-field">
+				<input type="radio" id="switch_3_right" name="switch_3" value="daily" ng-model="exp.switch_3"/>
+				<label for="switch_3_right">Daily</label>
 				<input type="radio" id="switch_3_left" name="switch_3" checked value="weekly" ng-model="exp.switch_3"/>
 				<label for="switch_3_left">Weekly</label>
 				<input type="radio" id="switch_3_center" name="switch_3" value="monthly" ng-model="exp.switch_3"/>
 				<label for="switch_3_center">Monthly</label>
-				<input type="radio" id="switch_3_right" name="switch_3" value="quarterly" ng-model="exp.switch_3"/>
-				<label for="switch_3_right">Quarterly</label>
+				
 			</div>
 		</div>
 		<div class="form-group">
@@ -20,9 +21,6 @@
 			<div class="col-sm-9">
 				<div class="radio">
 					<label><input type="radio" name="table" ng-change='loadColumns(exp.table)' value="title" ng-model="exp.table"/> Title</label>
-				</div>
-				<div class="radio">
-					<label><input type="radio" name="table" ng-change='loadColumns(exp.table)' value="infohashes" ng-model="exp.table"/> Infohashes </label>
 				</div>
 				<div class="radio">
 					<label><input type="radio" name="table" ng-change='loadColumns(exp.table)' value="ip" ng-model="exp.table"/> IP</label>
@@ -35,9 +33,14 @@
 				<span ng-if="columns.length === 0">
 					Please select a table
 				</span>
-				<div class="checkbox" ng-repeat="column in columns">
-					<label><input type="checkbox" checklist-model="exp.columns" checklist-value="column"> {{column}}</label>
-				</div>
+				<table class="table table-striped" ng-if="columns.length > 0">
+					<tr>
+						<th><input type="checkbox" checklist-model="exp.columns_all" checklist-value="1" ng-click="toggleAllColumns()"></th><th>Select All</th>
+					</tr>
+					<tr ng-repeat="column in columns">
+						<td><input type="checkbox" checklist-model="exp.columns" checklist-value="column"></td><td>{{column}}</td>
+					</tr>
+				</table>
 			</div>
 		</div>
 		<div class="form-group">
@@ -48,12 +51,17 @@
 				</div>
 			</div>
 		</div>
-		<div class="form-group">
+		<div class="form-group" ng-if="exp.isGenre">
 			<label for="inputttl" class="col-sm-3 control-label"></label>
 			<div class="col-sm-9">
-				<div class="checkbox" ng-repeat="g in genreList">
-					<label><input type="checkbox" checklist-model="exp.genres" checklist-value="g.genre_id"> {{g.genre}}</label>
-				</div>
+				<table class="table table-striped">
+					<tr>
+						<th><input type="checkbox" checklist-model="exp.genres_all" checklist-value="1" ng-click="toggleAll()"></th><th>Select All</th>
+					</tr>
+					<tr ng-repeat="g in genreList">
+						<td><input type="checkbox" checklist-model="exp.genres" checklist-value="g.genre_id"></td><td>{{g.genre}}</td>
+					</tr>
+				</table>
 			</div>
 		</div>
 		<div class="form-group">

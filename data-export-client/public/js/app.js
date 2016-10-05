@@ -81,6 +81,22 @@ mvpApp.controller('dataExportForm', ['$window', '$scope', '$location', '$http', 
 			$scope.columns = ipColumns;
 		}
 	};
+	$scope.toggleAll = function() {
+		if($scope.exp.genres_all == '1'){
+			$scope.exp.genres = $scope.genreList.map(function(item) { return item.genre_id; });
+		}
+		else{
+			$scope.exp.genres = [];
+		}
+	};
+	$scope.toggleAllColumns = function() {
+		if($scope.exp.columns_all == '1'){
+			$scope.exp.columns = $scope.columns.map(function(item) { return item; });
+		}
+		else{
+			$scope.exp.columns = [];
+		}
+	};
 	$scope.exportData = function() {
 		if((typeof $scope.exp.startDate == 'undefined') || (typeof $scope.exp.endDate == 'undefined')){
 			alert("Please select date range");
@@ -159,7 +175,6 @@ mvpApp.controller('scheduleDataExport', ['$window', '$scope', '$location', '$htt
 			content: 'Error while retrieving data'
 		});
 	});
-	
 	$scope.exp = {};
 	$scope.columns = [];
 	$scope.loadColumns = function(value) {
@@ -170,6 +185,22 @@ mvpApp.controller('scheduleDataExport', ['$window', '$scope', '$location', '$htt
 			$scope.columns = infohashesColumns; // infohashes
 		} else if(value=='ip'){
 			$scope.columns = ipColumns;
+		}
+	};
+	$scope.toggleAll = function() {
+		if($scope.exp.genres_all == '1'){
+			$scope.exp.genres = $scope.genreList.map(function(item) { return item.genre_id; });
+		}
+		else{
+			$scope.exp.genres = [];
+		}
+	};
+	$scope.toggleAllColumns = function() {
+		if($scope.exp.columns_all == '1'){
+			$scope.exp.columns = $scope.columns.map(function(item) { return item; });
+		}
+		else{
+			$scope.exp.columns = [];
 		}
 	};
 	$scope.createSchedule = function() {
@@ -368,6 +399,69 @@ mvpApp.controller('ftpAccountManager', ['$window', '$scope', '$location', '$http
 	}
 }]);
 
+mvpApp.controller('DemoCtrl', function(ivhTreeviewMgr) {
+	var data = [{
+		label: 'asia',
+		value: 'asia',
+		children: []
+	},
+	{
+		label: 'europe',
+		value: 'europe',
+		children: []
+	},
+	{
+		label: 'north america',
+		value: 'north america',
+		children: []
+	},
+	{
+		label: 'south america',
+		value: 'south america',
+		children: []
+	},
+	{
+		label: 'oceania',
+		value: 'oceania',
+		children: []
+	},
+	{
+		label: 'other',
+		value: 'other',
+		children: []
+	},
+	{
+		label: 'africa',
+		value: 'africa',
+		children: []
+	}
+	];
+	
+	this.locations = [{
+		label: 'Global',
+		value: 'global', 
+		children: data
+	}];
+	
+	
+	this.selectHats = function() {
+		var tree = getTree()
+	  , parent = getParent()
+	  , newNodes = [{label: 'Hello'},{label: 'World'}];
+
+	// Attach new children to parent node
+	parent.children = newNodes;
+
+	// Force revalidate on tree given parent node's selected status
+	ivhTreeviewMgr.select(myTree, parent, parent.selected);
+	
+		//ivhTreeviewMgr.select(stuff, 'hats');
+	};
+	this.deselectGel = function() {
+		ivhTreeviewMgr.deselect(stuff, stuff[1].children[1]);
+	};
+});
+
 mvpApp.controller('dataExportFilter', ['$window', '$scope', '$location', '$http', 'Api', 'ngToast', function($window, $scope, $location, $http, Api, ngToast) {
 	$scope.columns = ipColumns;
 	$scope.selectedMovies = [];
@@ -415,6 +509,7 @@ mvpApp.controller('dataExportFilter', ['$window', '$scope', '$location', '$http'
 			$scope.exp.columns = [];
 		}
 	};
+	/*
 	getLocations(function(data){
         $scope.locations = [{
 			label: 'Global',
@@ -422,12 +517,14 @@ mvpApp.controller('dataExportFilter', ['$window', '$scope', '$location', '$http'
 			children: data
 		}];
     });
+	*/
 	getMovies(function(data){
         $scope.movies = data;
     });
 	getGroups(function(data){
         $scope.groups = data;
     });
+	/*
 	function getLocations(callback){
 		var data = [{
 			label: 'asia',
@@ -475,7 +572,7 @@ mvpApp.controller('dataExportFilter', ['$window', '$scope', '$location', '$http'
 			console.log('error');
 		});
 		*/
-    }
+    //}
 	function getMovies(callback){
         $http.get(Api.root_url + "api/getmovies").
 		success(function (data) {                
