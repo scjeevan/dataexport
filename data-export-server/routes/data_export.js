@@ -207,7 +207,7 @@ var exportDataMng = {
 	
 	executeJob : function(req, res){
 		var jobId = parseInt(req.body.jobid);
-		var query = "SELECT `table_name`, `selected_columns`, `filename`, `frequency`, `file_format`, `titles`, `query`, `title`, `username`, `password`, `ip`, `port`, `location` ,`protocol` FROM `data_export_schedules`,`ftp_accounts` WHERE `data_export_schedules`.`ftp_account_id` = `ftp_accounts`.`ftp_account_id` AND `data_export_schedules`.`data_export_schedule_id`=?";
+		var query = "SELECT `data_export_schedule_id`, `table_name`, `selected_columns`, `filename`, `frequency`, `file_format`, `titles`, `query`, `title`, `username`, `password`, `ip`, `port`, `location` ,`protocol` FROM `data_export_schedules`,`ftp_accounts` WHERE `data_export_schedules`.`ftp_account_id` = `ftp_accounts`.`ftp_account_id` AND `data_export_schedules`.`data_export_schedule_id`=?";
 		var params = [jobId];
 		var formatedQuery = mysql.format(query, params);
 		mysql_client.query(formatedQuery, function (err, rows) {
@@ -215,33 +215,28 @@ var exportDataMng = {
 				console.log(err);
 			}
 			else {
-				console.log(rows);
-				console.log("table_name : " + rows[0].table_name);
 				if(rows.length == 1 ){
-					if (rows[0] != null) {
-						var row = rows[0];
-						var date = new Date();
-						var month = date.getMonth() + 1;
-						var day  = date.getDate();
-						if(row.frequency == 'daily'){
-							date.setDate(day - 1);
-						}
-						else if(row.frequency == 'weekly'){
-							date.setDate(day - 7);
-						}
-						else {
-							date.setMonth(month - 1);
-						}
-						var start = date.toISOString().replace(/T/, ' ').replace(/\..+/, '')
-						var end = new Date().toISOString().replace(/T/, ' ').replace(/\..+/, '');
-						console.log(start);
-						console.log(end);
-						
-						processToExport(rows[0], start, end, function (result) {
-							console.log(result);
-						});
-						
+					var row = rows[0];
+					var date = new Date();
+					var month = date.getMonth() + 1;
+					var day  = date.getDate();
+					if(row.frequency == 'daily'){
+						date.setDate(day - 1);
 					}
+					else if(row.frequency == 'weekly'){
+						date.setDate(day - 7);
+					}
+					else {
+						date.setMonth(month - 1);
+					}
+					var start = date.toISOString().replace(/T/, ' ').replace(/\..+/, '')
+					var end = new Date().toISOString().replace(/T/, ' ').replace(/\..+/, '');
+					console.log(start);
+					console.log(end);
+					
+					processToExport(row, start, end, function (result) {
+						console.log(result);
+					});
 				}
 			}
 		});
