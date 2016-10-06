@@ -206,8 +206,19 @@ function isExist(array, value){
 var exportDataMng = {
 	
 	executeJob : function(req, res){
+		var date = new Date();
+		var month = date.getMonth() + 1;
+		var day  = date.getDate();
+		var weekDay = date.getDay();
+		date.setDate(day - 1);
+		var start = date.toISOString().replace(/T/, ' ').replace(/\..+/, '')
+		var end = new Date().toISOString().replace(/T/, ' ').replace(/\..+/, '');
+		console.log(start);
+		console.log(end);
+		res.json("OK");
+		/*
 		var jobId = parseInt(req.body.jobid);
-		var query = "SELECT `table_name`, `selected_columns`, `filename`, `file_format`, `titles`, `query`, `title`, `username`, `password`, `ip`, `port`, `location` ,`protocol` FROM `data_export_schedules`,`ftp_accounts` WHERE `data_export_schedules`.`ftp_account_id` = `ftp_accounts`.`ftp_account_id` AND `data_export_schedules`.`data_export_schedule_id`=?";
+		var query = "SELECT `table_name`, `selected_columns`, `filename`, `frequency`, `file_format`, `titles`, `query`, `title`, `username`, `password`, `ip`, `port`, `location` ,`protocol` FROM `data_export_schedules`,`ftp_accounts` WHERE `data_export_schedules`.`ftp_account_id` = `ftp_accounts`.`ftp_account_id` AND `data_export_schedules`.`data_export_schedule_id`=?";
 		var params = [jobId];
 		var formatedQuery = mysql.format(query, params);
 		mysql_client.query(formatedQuery, function (err, rows) {
@@ -236,15 +247,16 @@ var exportDataMng = {
 						var end = new Date().toISOString().replace(/T/, ' ').replace(/\..+/, '');
 						console.log(start);
 						console.log(end);
-						/*
+						
 						processToExport(rows[0], start, end, function (result) {
 							console.log(result);
 						});
-						*/
+						
 					}
 				}
 			}
 		});
+		*/
 	},
 	
 	getMovies : function(req, res){
@@ -617,7 +629,7 @@ var exportDataMng = {
 	}
 };
 
-var j = schedule.scheduleJob('0 0 * * * *', function(){
+var j = schedule.scheduleJob('0 0 0 * * *', function(){
 	DEBUG.log("Started data export job");
 	var date = new Date();
 	var month = date.getMonth() + 1;
