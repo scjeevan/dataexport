@@ -33,7 +33,6 @@ var DEBUG = (function(){
     timestamp.toString = function(){
         return "[DEBUG " + (new Date).toLocaleString() + "]";    
     };
-        
     return {
         log: console.log.bind(console, '%s', timestamp)
     }
@@ -58,8 +57,8 @@ function buildQuery(paramArr, isCount, isSchedule){
 			}
 			genreQ = genreQ.substring(0, genreQ.length - 1) + ")";
 		}
+		DEBUG.log("GENRES : " + genreQ);
 	}
-	console.log("GENRES : " + genreQ);
 	
 	var selTitles = "";
 	if(typeof paramArr.selected_titles != 'undefined' && paramArr.selected_titles.length > 0){
@@ -68,9 +67,8 @@ function buildQuery(paramArr, isCount, isSchedule){
 			selTitles += "'"+paramArr.selected_titles[i].title + "',";
 		}
 		selTitles = selTitles.substring(0, selTitles.length - 1) + ")";
-		
+		DEBUG.log("TITLES : " + selTitles);
 	}
-	console.log("TITLES : " + selTitles);
 	
 	var selGroups = "";
 	if(typeof paramArr.selected_groups != 'undefined' && paramArr.selected_groups.length > 0){
@@ -79,8 +77,9 @@ function buildQuery(paramArr, isCount, isSchedule){
 			selGroups += paramArr.selected_groups[i].title + ",";
 		}
 		selGroups = selGroups.substring(0, selGroups.length - 1) + ")";
+		DEBUG.log("GROUPS : " + selGroups);
 	}
-	console.log("GROUPS : " + selGroups);
+	
 	var dateRange = "";
 	if((typeof paramArr.startDate != 'undefined' && paramArr.startDate.length > 0)&&(typeof paramArr.endDate != 'undefined' && paramArr.endDate.length > 0)){
 		var start = paramArr.startDate.replace(/T/, ' ').replace(/\..+/, '');
@@ -128,7 +127,7 @@ function buildQuery(paramArr, isCount, isSchedule){
 			_query += " WHERE " + dateRange;
 		}
 	}
-	console.log("QUERY : " + _query);
+	DEBUG.log("QUERY : " + _query);
 	return _query;
 }
 
@@ -218,13 +217,30 @@ var exportDataMng = {
 			else {
 				if(rows.length == 1 ){
 					if (rows[0] != null) {
+						var row = rows[0];
+						var date = new Date();
 						var d = new Date();
-						d.setMonth(month - 1);
-						var start = d.toISOString().replace(/T/, ' ').replace(/\..+/, '')
+						var month = date.getMonth() + 1;
+						var day  = date.getDate();
+						var weekDay = date.getDay();
+						if(row.frequency == 'daily'){
+							date.setDate(day - 1);
+						}
+						else if(row.frequency == 'weekly'){
+							date.setDate(day - 7);
+						}
+						else {
+							date.setMonth(month - 1);
+						}
+						var start = date.toISOString().replace(/T/, ' ').replace(/\..+/, '')
 						var end = new Date().toISOString().replace(/T/, ' ').replace(/\..+/, '');
+						console.log(start);
+						console.log(end);
+						/*
 						processToExport(rows[0], start, end, function (result) {
 							console.log(result);
-						})
+						});
+						*/
 					}
 				}
 			}
