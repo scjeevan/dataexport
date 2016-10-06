@@ -206,17 +206,6 @@ function isExist(array, value){
 var exportDataMng = {
 	
 	executeJob : function(req, res){
-		var date = new Date();
-		var month = date.getMonth() + 1;
-		var day  = date.getDate();
-		var weekDay = date.getDay();
-		date.setDate(day - 1);
-		var start = date.toISOString().replace(/T/, ' ').replace(/\..+/, '')
-		var end = new Date().toISOString().replace(/T/, ' ').replace(/\..+/, '');
-		console.log(start);
-		console.log(end);
-		res.json("OK");
-		/*
 		var jobId = parseInt(req.body.jobid);
 		var query = "SELECT `table_name`, `selected_columns`, `filename`, `frequency`, `file_format`, `titles`, `query`, `title`, `username`, `password`, `ip`, `port`, `location` ,`protocol` FROM `data_export_schedules`,`ftp_accounts` WHERE `data_export_schedules`.`ftp_account_id` = `ftp_accounts`.`ftp_account_id` AND `data_export_schedules`.`data_export_schedule_id`=?";
 		var params = [jobId];
@@ -230,10 +219,8 @@ var exportDataMng = {
 					if (rows[0] != null) {
 						var row = rows[0];
 						var date = new Date();
-						var d = new Date();
 						var month = date.getMonth() + 1;
 						var day  = date.getDate();
-						var weekDay = date.getDay();
 						if(row.frequency == 'daily'){
 							date.setDate(day - 1);
 						}
@@ -256,7 +243,6 @@ var exportDataMng = {
 				}
 			}
 		});
-		*/
 	},
 	
 	getMovies : function(req, res){
@@ -723,6 +709,7 @@ function processToExport(row, startDate, endDate, callback) {
 	if(typeof row != 'undefined'){
 		var jobId = row.data_export_schedule_id;
 		DEBUG.log("Running Job #"+jobId);
+		/*
 		var fileName = row.filename;
 		var fileFormat = row.file_format;
 		var tableName = row.table_name;
@@ -743,6 +730,7 @@ function processToExport(row, startDate, endDate, callback) {
 			DEBUG.log("Completed Job #"+jobId);
 			callback("SUCCESS");
 		}
+		*/
 	}
 	
 }
