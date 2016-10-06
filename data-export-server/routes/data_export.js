@@ -215,6 +215,7 @@ var exportDataMng = {
 				console.log(err);
 			}
 			else {
+				console.log(rows);
 				if(rows.length == 1 ){
 					if (rows[0] != null) {
 						var row = rows[0];
