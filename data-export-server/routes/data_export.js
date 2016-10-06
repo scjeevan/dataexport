@@ -706,7 +706,6 @@ function processToExport(row, startDate, endDate, callback) {
 	if(typeof row != 'undefined'){
 		var jobId = row.data_export_schedule_id;
 		DEBUG.log("Running Job #"+jobId);
-		/*
 		var fileName = row.filename;
 		var fileFormat = row.file_format;
 		var tableName = row.table_name;
@@ -723,11 +722,10 @@ function processToExport(row, startDate, endDate, callback) {
 			query.replace('<start>', startDate);
 			query.replace('<end>', endDate);
 			console.log(query);
-			exportDataUsingScript(query, connProps, fileName+"_IP");
+			//exportDataUsingScript(query, connProps, fileName+"_IP");
 			DEBUG.log("Completed Job #"+jobId);
 			callback("SUCCESS");
 		}
-		*/
 	}
 	
 }
