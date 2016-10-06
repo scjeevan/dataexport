@@ -207,8 +207,28 @@ function isExist(array, value){
 var exportDataMng = {
 	
 	executeJob : function(req, res){
-		String jobId = parseInt(req.body.jobid);
-		
+		var jobId = parseInt(req.body.jobid);
+		var query = "SELECT `table_name`, `selected_columns`, `filename`, `file_format`, `titles`, `query`, `title`, `username`, `password`, `ip`, `port`, `location` ,`protocol` FROM `data_export_schedules`,`ftp_accounts` WHERE `data_export_schedules`.`ftp_account_id` = `ftp_accounts`.`ftp_account_id` AND `data_export_schedules`.`data_export_schedule_id`=?";
+		var params = [jobId];
+		var formatedQuery = mysql.format(query, params);
+		mysql_client.query(formatedQuery, function (err, rows) {
+			if (err) {
+				console.log(err);
+			}
+			else {
+				if(rows.length == 1 ){
+					if (rows[0] != null) {
+						var d = new Date();
+						d.setMonth(month - 1);
+						var start = d.toISOString().replace(/T/, ' ').replace(/\..+/, '')
+						var end = new Date().toISOString().replace(/T/, ' ').replace(/\..+/, '');
+						processToExport(rows[0], start, end, function (result) {
+							console.log(result);
+						})
+					}
+				}
+			}
+		});
 	},
 	
 	getMovies : function(req, res){
