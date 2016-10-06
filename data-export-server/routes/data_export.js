@@ -719,8 +719,8 @@ function processToExport(row, startDate, endDate, callback) {
 			password: row.password
 		};
 		if(typeof query != 'undefined' && tableName == 'Diggit_IP'){
-			query.replace("<start>", startDate);
-			query.replace("<end>", endDate);
+			query = query.replace("<start>", startDate);
+			query = query.replace("<end>", endDate);
 			console.log(query);
 			//exportDataUsingScript(query, connProps, fileName+"_IP");
 			DEBUG.log("Completed Job #"+jobId);
