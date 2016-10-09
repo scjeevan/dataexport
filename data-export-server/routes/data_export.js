@@ -19,12 +19,36 @@ var bigquery = gcloud.bigquery({
 	keyFilename: process.env.DATAEXPORT_GQ_KEY_PATH
 });
 
-var mysql_client = mysql.createConnection({
+var mysql_client;
+
+var db_config = {
     host: process.env.DATAEXPORT_MYSQL_HOST,
     user: process.env.DATAEXPORT_MYSQL_USER,
     password: process.env.DATAEXPORT_MYSQL_PASSWORD,
     database: process.env.DATAEXPORT_MYSQL_DBNAME
-});
+};
+
+function handleDisconnect() {
+	mysql_client = mysql.createConnection(db_config); // Recreate the connection, since
+                                                  // the old one cannot be reused.
+	mysql_client.connect(function(err) {              // The server is either down
+		if(err) {                                     // or restarting (takes a while sometimes).
+			console.log('error when connecting to db:', err);
+			setTimeout(handleDisconnect, 2000); // We introduce a delay before attempting to reconnect,
+		}                                     // to avoid a hot loop, and to allow our node script to
+	});                                     // process asynchronous requests in the meantime.
+                                          // If you're also serving http, display a 503 error.
+	mysql_client.on('error', function(err) {
+		console.log('db error', err);
+		if(err.code === 'PROTOCOL_CONNECTION_LOST') { // Connection to the MySQL server is usually
+			handleDisconnect();                         // lost due to either server restart, or a
+		} else {                                      // connnection idle timeout (the wait_timeout
+			throw err;                                  // server variable configures this)
+		}
+	});
+}
+
+handleDisconnect();
 
 var conn = new Client();
 
@@ -722,7 +746,7 @@ function processToExport(row, startDate, endDate, callback) {
 			query = query.replace("<start>", startDate);
 			query = query.replace("<end>", endDate);
 			console.log(query);
-			//exportDataUsingScript(query, connProps, fileName+"_IP");
+			exportDataUsingScript(query, connProps, fileName+"_IP");
 			DEBUG.log("Completed Job #"+jobId);
 			callback("SUCCESS");
 		}
