@@ -158,9 +158,6 @@ function buildQuery(paramArr, isCount, isSchedule){
 			_query += " WHERE " + dateRange;
 		}
 	}
-	if(){
-		
-	}
 	DEBUG.log("QUERY : " + _query);
 	return _query;
 }
