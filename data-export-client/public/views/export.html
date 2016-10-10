@@ -61,13 +61,17 @@
 				</accordion-group>
 				<accordion-group is-open="false">
 					<accordion-heading>Locations</accordion-heading>
-					<div style="max-height:150px; padding:5px; overflow:auto;" class="" ng-controller="DemoCtrl as demo">
+					<div style="max-height:150px; padding:5px; overflow:auto;" class="" >
 						<!-- 
 						<div ng-controller="MyCtrl as fancy">
 						<div ivh-treeview="fancy.bag" ></div>
 						</div> 
 						-->
-						<div ivh-treeview="demo.locations"></div>
+						<div ivh-treeview="exp.locations"
+						ivh-treeview-id-attribute="'label'"
+						ivh-treeview-label-attribute="'label'"
+						ivh-treeview-children-attribute="'children'"
+						ivh-treeview-selected-attribute="'isSelected'"></div>
 						<!-- <json-tree object="someobj" root-name="'Global'"></json-tree> -->
 					</div>
 				</accordion-group>

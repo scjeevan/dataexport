@@ -401,6 +401,24 @@ mvpApp.controller('ftpAccountManager', ['$window', '$scope', '$location', '$http
 	}
 }]);
 
+mvpApp.config(function(ivhTreeviewOptionsProvider) {
+	ivhTreeviewOptionsProvider.set({
+		idAttribute: 'id',
+		labelAttribute: 'label',
+		childrenAttribute: 'children',
+		selectedAttribute: 'selected',
+		useCheckboxes: false,
+		expandToDepth: 0,
+		indeterminateAttribute: '__ivhTreeviewIndeterminate',
+		expandedAttribute: '__ivhTreeviewExpanded',
+		defaultSelectedState: true,
+		validate: true,
+		twistieExpandedTpl: '(-)',
+		twistieCollapsedTpl: '(+)',
+		twistieLeafTpl: 'o'
+	});
+});
+
 mvpApp.controller('DemoCtrl', function(ivhTreeviewMgr) {
 	var data = [{
 		label: 'asia',
@@ -511,22 +529,22 @@ mvpApp.controller('dataExportFilter', ['$window', '$scope', '$location', '$http'
 			$scope.exp.columns = [];
 		}
 	};
-	/*
+	
 	getLocations(function(data){
-        $scope.locations = [{
+        $scope.exp.locations = [{
 			label: 'Global',
 			value: 'global',
 			children: data
 		}];
     });
-	*/
+	
 	getMovies(function(data){
         $scope.movies = data;
     });
 	getGroups(function(data){
         $scope.groups = data;
     });
-	/*
+	
 	function getLocations(callback){
 		var data = [{
 			label: 'asia',
@@ -574,7 +592,7 @@ mvpApp.controller('dataExportFilter', ['$window', '$scope', '$location', '$http'
 			console.log('error');
 		});
 		*/
-    //}
+    }
 	function getMovies(callback){
         $http.get(Api.root_url + "api/getmovies").
 		success(function (data) {                
@@ -745,58 +763,6 @@ mvpApp.directive('datepickerPopup', function (dateFilter,$parse){
 			});
 		}
 	}
-});
-
-mvpApp.directive('leaf', function (tree, ivhTreeviewMgr,$window,apiService) {
-	return { 
-		restrict: 'AE', 
-		link: function (scope, element, attrs) {
-			element.on('click', function () {
-				var root = scope.trvw.root();
-				if (scope.node.type == 'S') { 
-					return;
-				}
-				if (scope.node.children!==null & scope.node.children.length > 0) {
-					if (scope.node.children[0].type != 'DEL') {
-						return;//Loaded Parent, not need to load again
-					}
-				}
-				var config = {
-					params: {
-						id: scope.node.id
-					}
-				};
-				var url = "";
-				var fakechild = true;
-				switch (scope.node.type) {
-					case 'C1': 
-						url = 'api/your URL/';
-						fakechild = false;
-						break;
-					case 'S':  //Is the last node. need to stop
-						break;
-				}
-				apiService.get(url, config, loadCompleted, loadFailed);
-				function loadCompleted(result) {
-					if (result.status == 200) {
-						if (result.data != "") {
-							tree.genNode(result.data, scope.node, fakechild); 
-						} else {
-							if (scope.node.children[0].type == 'DEL') {
-								delete scope.node.children 
-							}  
-						}
-					} else {
-						$window.alert('Tree leaf loaded failed - ' + scope.node.type + ' ' + result.error);
-					}
-				}
-				function loadFailed(result) {
-					ivhTreeviewMgr.collapse(root, scope.node); 
-					$window.alert('Tree leaf loaded failed - ' + scope.node.type + ' ' + result.error);
-				}
-			});
-		}
-	};
 });
 
 mvpApp.controller('NavBarCtrl', ['$scope', '$location', function($scope, $location) {
