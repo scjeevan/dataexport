@@ -108,7 +108,7 @@ function buildQuery(paramArr, isCount, isSchedule){
 	if(isSchedule){
 		dateRange = " t.Date BETWEEN '<start>' AND '<end>' ";
 	}
-	var locations = req.body.locations;
+	var locations = paramArr.locations;
 	var continents = "";
 	if(!locations[0].isSelected){
 		locations[0].children.forEach(function(entry) {
