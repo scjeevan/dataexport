@@ -110,12 +110,14 @@ function buildQuery(paramArr, isCount, isSchedule){
 	}
 	var locations = paramArr.locations;
 	var continents = "";
-	if(!locations[0].isSelected){
+	if(!locations[0].isSelected && locations[0].children.length > 0){
+		continents += "(";
 		locations[0].children.forEach(function(entry) {
 			if(entry.isSelected){
 				continents += entry.value + ",";
 			}
 		});
+		continents = continents.substring(0, continents.length - 1) + ")";
 	}
 	console.log(continents);
 	var _query = "SELECT ";
@@ -155,6 +157,9 @@ function buildQuery(paramArr, isCount, isSchedule){
 		if(dateRange != ""){
 			_query += " WHERE " + dateRange;
 		}
+	}
+	if(){
+		
 	}
 	DEBUG.log("QUERY : " + _query);
 	return _query;
