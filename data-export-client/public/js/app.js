@@ -419,7 +419,8 @@ mvpApp.config(function(ivhTreeviewOptionsProvider) {
 	});
 });
 
-mvpApp.controller('DemoCtrl', function(ivhTreeviewMgr) {
+mvpApp.controller('DemoCtrl', function($scope, ivhTreeviewBfs, ivhTreeviewMgr) {
+	$scope.exp = {};
 	var data = [{
 		label: 'asia',
 		value: 'asia',
@@ -457,12 +458,20 @@ mvpApp.controller('DemoCtrl', function(ivhTreeviewMgr) {
 	}
 	];
 	
-	this.locations = [{
+	$scope.exp.locations = [{
 		label: 'Global',
 		value: 'global', 
 		children: data
 	}];
 	
+	var selectedNodes = [];
+	ivhTreeviewBfs(data, function(node) {
+		console.log(node);
+		if(node.selected) {
+			console.log(node);
+			selectedNodes.push(node)
+		}
+	});
 	
 	this.selectHats = function() {
 		var tree = getTree()
@@ -482,7 +491,7 @@ mvpApp.controller('DemoCtrl', function(ivhTreeviewMgr) {
 	};
 });
 
-mvpApp.controller('dataExportFilter', ['$window', '$scope', '$location', '$http', 'Api', 'ngToast', function($window, $scope, $location, $http, Api, ngToast) {
+mvpApp.controller('dataExportFilter', ['ivhTreeviewBfs', '$window', '$scope', '$location', '$http', 'Api', 'ngToast', function(ivhTreeviewBfs, $window, $scope, $location, $http, Api, ngToast) {
 	$scope.columns = ipColumns;
 	$scope.selectedMovies = [];
 	$scope.selectedGroups = [];
@@ -593,6 +602,7 @@ mvpApp.controller('dataExportFilter', ['$window', '$scope', '$location', '$http'
 		});
 		*/
     }
+
 	function getMovies(callback){
         $http.get(Api.root_url + "api/getmovies").
 		success(function (data) {                

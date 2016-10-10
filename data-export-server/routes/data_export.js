@@ -428,7 +428,7 @@ var exportDataMng = {
 	
 	filterData: function (req, res) {
 		var locations = req.body.locations;
-		console.log(JSON.stringify(locations));
+		console.log(locations[0].isSelected);
 		var _query = buildQuery(req.body, false, false);
 		var _countQuery = buildQuery(req.body, true, false);
 		executeGoogleBigQueryAllRows(_countQuery,function(r){
