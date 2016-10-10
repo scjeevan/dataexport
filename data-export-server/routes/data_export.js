@@ -108,6 +108,16 @@ function buildQuery(paramArr, isCount, isSchedule){
 	if(isSchedule){
 		dateRange = " t.Date BETWEEN '<start>' AND '<end>' ";
 	}
+	var locations = req.body.locations;
+	var continents = "";
+	if(!locations[0].isSelected){
+		locations[0].children.forEach(function(entry) {
+			if(entry.isSelected){
+				continents += entry.value + ",";
+			}
+		});
+	}
+	console.log(continents);
 	var _query = "SELECT ";
 	if(isCount){
 		_query += " COUNT(*) AS c ";
@@ -427,8 +437,6 @@ var exportDataMng = {
 	},
 	
 	filterData: function (req, res) {
-		var locations = req.body.locations;
-		console.log(locations[0].isSelected);
 		var _query = buildQuery(req.body, false, false);
 		var _countQuery = buildQuery(req.body, true, false);
 		executeGoogleBigQueryAllRows(_countQuery,function(r){
