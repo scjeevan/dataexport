@@ -1,3 +1,5 @@
+var db = require('./database');
+/*
 var mysql = require("mysql");
 
 var mysql_client = mysql.createConnection({
@@ -6,22 +8,25 @@ var mysql_client = mysql.createConnection({
     password: process.env.DATAEXPORT_MYSQL_PASSWORD,
     database: process.env.DATAEXPORT_MYSQL_DBNAME
 });
-
+*/
 function getAllFtpAccounts(callback) {
 	var query = 'SELECT * FROM ftp_accounts';
     var formatedQuery;
 
     formatedQuery = mysql.format(query, []);
-    mysql_client.query(formatedQuery, function (err, result) {
-        if (err) {
-            console.log(err);
-            callback([]);
-        }
-        else {
-            callback(result);
-        }
-    });
-	
+	db.getConnection(function(err, connection){
+		connection.query(formatedQuery, function (err, result) {
+			if (err) {
+				connection.release();
+				console.log(err);
+				callback([]);
+			}
+			else {
+				callback(result);
+			}
+		});
+		connection.release();
+	});
 }
 
 var ftpAccountsData = {
@@ -46,15 +51,19 @@ var ftpAccountsData = {
 			params = [req.body.title, req.body.username, req.body.password, req.body.ip, req.body.port, req.body.location, req.body.protocol, parseInt(req.body.ftp_account_id)];
 		}
 		var formatedQuery = mysql.format(query, params);
-		mysql_client.query(formatedQuery, function (err, result) {
-			if (err) {
-				console.log(err);
-			}
-			else {
-				res.json({
-					values: result
-				});
-			}
+		db.getConnection(function(err, connection){
+			connection.query(formatedQuery, function (err, result) {
+				if (err) {
+					connection.release();
+					console.log(err);
+				}
+				else {
+					res.json({
+						values: result
+					});
+				}
+			});
+			connection.release();
 		});
 	},
 	
@@ -65,15 +74,19 @@ var ftpAccountsData = {
 			query = "DELETE FROM `ftp_accounts` WHERE `ftp_account_id` = ?";
 			params = [parseInt(req.body.ftp_account_id)];
 			var formatedQuery = mysql.format(query, params);
-			mysql_client.query(formatedQuery, function (err, result) {
-				if (err) {
-					console.log(err);
-				}
-				else {
-					res.json({
-						values: result
-					});
-				}
+			db.getConnection(function(err, connection){
+				connection.query(formatedQuery, function (err, result) {
+					if (err) {
+						connection.release();
+						console.log(err);
+					}
+					else {
+						res.json({
+							values: result
+						});
+					}
+				});
+				connection.release();
 			});
 		}
 	}
