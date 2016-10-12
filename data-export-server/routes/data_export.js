@@ -1,3 +1,4 @@
+var db = require('./database');
 var mysql = require("mysql");
 var fs = require("file-system");
 var Client = require('ssh2').Client;
@@ -6,7 +7,7 @@ var schedule = require('node-schedule');
 var exec = require('exec');
 //var exec = require('child-process-promise').exec;
 var writer = csvWriter();
-
+var conn = new Client();
 
 var BIGQUERY_DATASET_HIST = process.env.DATAEXPORT_GQ_PROJECT_ID.trim();
 
@@ -18,34 +19,6 @@ var bigquery = gcloud.bigquery({
 	projectId: BIGQUERY_DATASET_HIST,
 	keyFilename: process.env.DATAEXPORT_GQ_KEY_PATH
 });
-
-var mysql_client;
-
-var db_config = {
-    host: process.env.DATAEXPORT_MYSQL_HOST,
-    user: process.env.DATAEXPORT_MYSQL_USER,
-    password: process.env.DATAEXPORT_MYSQL_PASSWORD,
-    database: process.env.DATAEXPORT_MYSQL_DBNAME
-};
-
-function handleDisconnect() {
-	mysql_client = mysql.createConnection(db_config);
-	mysql_client.connect(function(err) {
-		if(err) {
-			console.log('error when connecting to db:', err);
-			setTimeout(handleDisconnect, 2000);
-		}
-	});
-
-	mysql_client.on('error', function(err) {
-		console.log('db error', err);
-		handleDisconnect();
-	});
-}
-
-handleDisconnect();
-
-var conn = new Client();
 
 var DEBUG = (function(){
     var timestamp = function(){};
@@ -241,35 +214,38 @@ var exportDataMng = {
 		var query = "SELECT `data_export_schedule_id`, `table_name`, `selected_columns`, `filename`, `frequency`, `file_format`, `titles`, `query`, `title`, `username`, `password`, `ip`, `port`, `location` ,`protocol` FROM `data_export_schedules`,`ftp_accounts` WHERE `data_export_schedules`.`ftp_account_id` = `ftp_accounts`.`ftp_account_id` AND `data_export_schedules`.`data_export_schedule_id`=?";
 		var params = [jobId];
 		var formatedQuery = mysql.format(query, params);
-		mysql_client.query(formatedQuery, function (err, rows) {
-			if (err) {
-				console.log(err);
-			}
-			else {
-				if(rows.length == 1 ){
-					var row = rows[0];
-					var date = new Date();
-					var month = date.getMonth() + 1;
-					var day  = date.getDate();
-					if(row.frequency == 'daily'){
-						date.setDate(day - 1);
-					}
-					else if(row.frequency == 'weekly'){
-						date.setDate(day - 7);
-					}
-					else {
-						date.setMonth(month - 1);
-					}
-					var start = date.toISOString().replace(/T/, ' ').replace(/\..+/, '')
-					var end = new Date().toISOString().replace(/T/, ' ').replace(/\..+/, '');
-					console.log(start);
-					console.log(end);
-					
-					processToExport(row, start, end, function (result) {
-						console.log(result);
-					});
+		db.getConnection(function(err, connection){
+			connection.query(formatedQuery, function (err, rows) {
+				if (err) {
+					console.log(err);
 				}
-			}
+				else {
+					if(rows.length == 1 ){
+						var row = rows[0];
+						var date = new Date();
+						var month = date.getMonth() + 1;
+						var day  = date.getDate();
+						if(row.frequency == 'daily'){
+							date.setDate(day - 1);
+						}
+						else if(row.frequency == 'weekly'){
+							date.setDate(day - 7);
+						}
+						else {
+							date.setMonth(month - 1);
+						}
+						var start = date.toISOString().replace(/T/, ' ').replace(/\..+/, '')
+						var end = new Date().toISOString().replace(/T/, ' ').replace(/\..+/, '');
+						console.log(start);
+						console.log(end);
+						
+						processToExport(row, start, end, function (result) {
+							console.log(result);
+						});
+					}
+				}
+			});
+			connection.release();
 		});
 	},
 	
@@ -354,8 +330,11 @@ var exportDataMng = {
 	getGroups : function(req, res){
 		var query = "SELECT `group_name` FROM `groups` GROUP BY `group_name`";
 		var formatedQuery = mysql.format(query);
-		mysql_client.query(formatedQuery, function (err, rows) {
-			res.json(rows);
+		db.getConnection(function(err, connection){
+			connection.query(formatedQuery, function (err, rows) {
+				res.json(rows);
+			});
+			connection.release();
 		});
     },
 	
@@ -378,64 +357,68 @@ var exportDataMng = {
 		query = "SELECT `title`, `username`, `password`, `ip`, `port`, `location` ,`protocol` FROM `ftp_accounts` WHERE `ftp_account_id`=?";
 		params = [ftp_account_id];
 		var formatedQuery = mysql.format(query, params);
-		mysql_client.query(formatedQuery, function (err, rows) {
-			if (err) {
-				console.log(err);
-			}
-			else {
-				ftp_loc = rows[0].location;
-				connectionProperties = {
-					host: rows[0].ip,
-					user: rows[0].username,
-					port: rows[0].port,
-					password: rows[0].password
-				};
-				var _query = "SELECT ";
-				var headers = [];
-				for (var i in req.body.columns) {
-					_query += "t."+req.body.columns[i] + ",";
-					headers.push(req.body.columns[i]);
+		db.getConnection(function(err, connection){
+			connection.query(formatedQuery, function (err, rows) {
+				if (err) {
+					console.log(err);
 				}
-				_query = _query.substring(0, _query.length - 1);
-				var start = req.body.startDate.replace(/T/, ' ').replace(/\..+/, '');
-				var end = req.body.endDate.replace(/T/, ' ').replace(/\..+/, '');
-				var file_name = req.body.fileName;
-				if(req.body.table == 'ip'){
-					file_name = file_name + "_IP";
-					if(req.body.isGenre){
-						_query += " FROM [DevDiggit_Hist.Diggit_IP] AS t JOIN [DevDiggit_Hist.mm_title_genres] AS gt ON t.TitleID = gt.title_id WHERE t.Date BETWEEN '"+start+"' AND '"+end+"' AND gt.genre_id IN "+genreQ; // LIMIT 10000
-					} else {
-						_query += " FROM DevDiggit_Hist.Diggit_IP WHERE Date BETWEEN '"+start+"' AND '"+end+"' "; // LIMIT 10000
+				else {
+					ftp_loc = rows[0].location;
+					connectionProperties = {
+						host: rows[0].ip,
+						user: rows[0].username,
+						port: rows[0].port,
+						password: rows[0].password
+					};
+					var _query = "SELECT ";
+					var headers = [];
+					for (var i in req.body.columns) {
+						_query += "t."+req.body.columns[i] + ",";
+						headers.push(req.body.columns[i]);
 					}
-					exportDataUsingScript(_query, connectionProperties, file_name);
-					res.json({
-						values: "Selected data is being exported"
-					});
-				}
-				else{
-					file_name = file_name + "_title";
-					if(req.body.isGenre){
-						_query += " FROM mm_titles t, mm_title_genres g WHERE t.title_id = g.title_id AND g.genre_id IN "+genreQ;
-					} else {
-						_query += " FROM mm_titles t";
-					}
-					_formatedQuery = mysql.format(_query);
-					console.log("[QUERY]:"+_query);
-					mysql_client.query(_formatedQuery, function (err, rows) {
-						if(err) console.log(err);
-						var status = "No data found"
-						if(typeof rows.length != 'undefined' && rows.length > 0){
-							status = "File exported successfully";
-							saveDateRemort(file_name, headers, rows, connectionProperties, ftp_loc);
+					_query = _query.substring(0, _query.length - 1);
+					var start = req.body.startDate.replace(/T/, ' ').replace(/\..+/, '');
+					var end = req.body.endDate.replace(/T/, ' ').replace(/\..+/, '');
+					var file_name = req.body.fileName;
+					if(req.body.table == 'ip'){
+						file_name = file_name + "_IP";
+						if(req.body.isGenre){
+							_query += " FROM [DevDiggit_Hist.Diggit_IP] AS t JOIN [DevDiggit_Hist.mm_title_genres] AS gt ON t.TitleID = gt.title_id WHERE t.Date BETWEEN '"+start+"' AND '"+end+"' AND gt.genre_id IN "+genreQ; // LIMIT 10000
+						} else {
+							_query += " FROM DevDiggit_Hist.Diggit_IP WHERE Date BETWEEN '"+start+"' AND '"+end+"' "; // LIMIT 10000
 						}
+						exportDataUsingScript(_query, connectionProperties, file_name);
 						res.json({
-							values: status
+							values: "Selected data is being exported"
 						});
-						
-					});
+					}
+					else{
+						file_name = file_name + "_title";
+						if(req.body.isGenre){
+							_query += " FROM mm_titles t, mm_title_genres g WHERE t.title_id = g.title_id AND g.genre_id IN "+genreQ;
+						} else {
+							_query += " FROM mm_titles t";
+						}
+						_formatedQuery = mysql.format(_query);
+						console.log("[QUERY]:"+_query);
+						connection.query(_formatedQuery, function (err, rows) {
+							if(err) console.log(err);
+							var status = "No data found"
+							if(typeof rows.length != 'undefined' && rows.length > 0){
+								status = "File exported successfully";
+								saveDateRemort(file_name, headers, rows, connectionProperties, ftp_loc);
+							}
+							res.json({
+								values: status
+							});
+							
+						});
+					}
 				}
-			}
+			});
+			connection.release();
 		});
+		
 	},
 	
 	filterData: function (req, res) {
@@ -492,40 +475,44 @@ var exportDataMng = {
 				query = "SELECT `title`, `username`, `password`, `ip`, `port`, `location` ,`protocol` FROM `ftp_accounts` WHERE `ftp_account_id`=?";
 				params = [ftp_account_id];
 				var formatedQuery = mysql.format(query, params);
-				mysql_client.query(formatedQuery, function (err, rows) {
-					if (err) {
-						DEBUG.log(err);
-					}
-					else {
-						var ftpTitle = rows[0].title;
-						ftp_loc = rows[0].location;
-						connectionProperties = {
-							host: rows[0].ip,
-							user: rows[0].username,
-							port: rows[0].port,
-							password: rows[0].password
-						};
-						DEBUG.log("Start to export IP data to : " + ftpTitle);
-						exportDataUsingScript(_query, connectionProperties, req.body.fileName+"_IP");
-						if(isTitle){
-							DEBUG.log("Start to export title data");
-							var selTitles = "";
-							if(typeof req.body.selected_titles != 'undefined' && req.body.selected_titles.length > 0){
-								selTitles += "(";
-								for (var i in req.body.selected_titles) {
-									selTitles += "'"+req.body.selected_titles[i].title + "',";
-								}
-								selTitles = selTitles.substring(0, selTitles.length - 1) + ")";
-								
-							}
-							var titleQuery = "SELECT * FROM title_title_id WHERE title IN ("+selTitles+")";
-							exportDataUsingScript(titleQuery, connectionProperties, req.body.fileName+"_TITLE");
+				db.getConnection(function(err, connection){
+					connection.query(formatedQuery, function (err, rows) {
+						if (err) {
+							DEBUG.log(err);
 						}
-						res.json({
-							values: "Selected data is being exported"
-						});
-					}
+						else {
+							var ftpTitle = rows[0].title;
+							ftp_loc = rows[0].location;
+							connectionProperties = {
+								host: rows[0].ip,
+								user: rows[0].username,
+								port: rows[0].port,
+								password: rows[0].password
+							};
+							DEBUG.log("Start to export IP data to : " + ftpTitle);
+							exportDataUsingScript(_query, connectionProperties, req.body.fileName+"_IP");
+							if(isTitle){
+								DEBUG.log("Start to export title data");
+								var selTitles = "";
+								if(typeof req.body.selected_titles != 'undefined' && req.body.selected_titles.length > 0){
+									selTitles += "(";
+									for (var i in req.body.selected_titles) {
+										selTitles += "'"+req.body.selected_titles[i].title + "',";
+									}
+									selTitles = selTitles.substring(0, selTitles.length - 1) + ")";
+									
+								}
+								var titleQuery = "SELECT * FROM title_title_id WHERE title IN ("+selTitles+")";
+								exportDataUsingScript(titleQuery, connectionProperties, req.body.fileName+"_TITLE");
+							}
+							res.json({
+								values: "Selected data is being exported"
+							});
+						}
+					});
+					connection.release();
 				});
+				
 			}
 			else{
 				var now = new Date();
@@ -550,12 +537,16 @@ var exportDataMng = {
 				DEBUG.log("Saving data export job : " + frequency);
 				var _inQuery = "INSERT INTO data_export_schedules (frequency,table_name,selected_columns,added_date,ftp_account_id, filename, file_format, titles, query) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
 				var _formatedQuery = mysql.format(_inQuery, [frequency, 'Diggit_IP', fields, now, ftp_account_id, fileName, fileFormat, selTitles, _query]);
-				mysql_client.query(_formatedQuery, function (err, rows) {
-					DEBUG.log("Job has been saved successfully");
-					res.json({
-						values: "Job has been saved successfully"
+				db.getConnection(function(err, connection){
+					connection.query(_formatedQuery, function (err, rows) {
+						DEBUG.log("Job has been saved successfully");
+						res.json({
+							values: "Job has been saved successfully"
+						});
 					});
+					connection.release();
 				});
+				
 			}
 		}
 		else{
@@ -568,16 +559,20 @@ var exportDataMng = {
 	listJobs: function (req, res) {
 		var query = 'SELECT d.data_export_schedule_id, d.frequency, d.table_name, d.selected_columns, d.added_date, f.title FROM torrents.data_export_schedules d LEFT JOIN ftp_accounts f on d.ftp_account_id = f.ftp_account_id ORDER BY d.data_export_schedule_id DESC';
 		var formatedQuery = mysql.format(query, []);
-		mysql_client.query(formatedQuery, function (err, result) {
-			if (err) {
-				console.log(err);
-			}
-			else {
-				res.json({
-					values: result
-				});
-			}
+		db.getConnection(function(err, connection){
+			connection.query(formatedQuery, function (err, result) {
+				if (err) {
+					console.log(err);
+				}
+				else {
+					res.json({
+						values: result
+					});
+				}
+			});
+			connection.release();
 		});
+		
 	},
 	
 	scheduleExportData: function (req, res) {
@@ -615,8 +610,11 @@ var exportDataMng = {
 		var now = new Date();
 		var _insQuery = "INSERT INTO data_export_schedules (frequency,table_name,selected_columns,added_date,ftp_account_id, filename, file_format, query) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
 		var _formatedQuery = mysql.format(_insQuery, [req.body.switch_3, req.body.table, _columns, now, ftp_account_id, req.body.fileName, '1' ,_query]);
-		mysql_client.query(_formatedQuery, function (err, rows) {
-			console.log("SAVED");
+		db.getConnection(function(err, connection){
+			connection.query(_formatedQuery, function (err, rows) {
+				console.log("SAVED");
+			});
+			connection.release();
 		});
 		res.json({
             data: {
@@ -628,18 +626,22 @@ var exportDataMng = {
 	genresList: function (req, res) {
 		var query = 'SELECT * FROM genres';
 		var formatedQuery = mysql.format(query, []);
-		mysql_client.query(formatedQuery, function (err, result) {
-			if (err) {
-				console.log(err);
-			}
-			else {
-				res.json({
-					data: {
-						values: result
-					}
-				});
-			}
+		db.getConnection(function(err, connection){
+			connection.query(formatedQuery, function (err, result) {
+				if (err) {
+					console.log(err);
+				}
+				else {
+					res.json({
+						data: {
+							values: result
+						}
+					});
+				}
+			});
+			connection.release();
 		});
+		
 	}
 };
 
@@ -655,7 +657,61 @@ var j = schedule.scheduleJob('0 0 0 * * *', function(){
 		DEBUG.log("Running Monthly jobs");
 		params = ['monthly'];
 		var formatedQuery = mysql.format(query, params);
-		mysql_client.query(formatedQuery, function (err, rows) {
+		db.getConnection(function(err, connection){
+			connection.query(formatedQuery, function (err, rows) {
+				if (err) {
+					console.log(err);
+				}
+				else {
+					rows.forEach(function (row) {
+						if (row != null) {
+							var d = new Date();
+							d.setMonth(month - 1);
+							var start = d.toISOString().replace(/T/, ' ').replace(/\..+/, '')
+							var end = new Date().toISOString().replace(/T/, ' ').replace(/\..+/, '');
+							processToExport(row, start, end, function (result) {
+								console.log(result);
+							})
+						}
+					});
+				}
+			});
+			connection.release();
+		});
+		
+	}
+	if(weekDay == 1){
+		DEBUG.log("Running Weekly jobs");
+		params = ['weekly'];
+		var formatedQuery = mysql.format(query, params);
+		db.getConnection(function(err, connection){
+			connection.query(formatedQuery, function (err, rows) {
+				if (err) {
+					console.log(err);
+				}
+				else {
+					rows.forEach(function (row) {
+						if (row != null) {
+							var d = new Date();
+							d.setDate(day - 7);
+							var start = d.toISOString().replace(/T/, ' ').replace(/\..+/, '');
+							var end = new Date().toISOString().replace(/T/, ' ').replace(/\..+/, '');
+							processToExport(row, start, end, function (result) {
+								console.log(result);
+							})
+						}
+					});
+				}
+			});
+			connection.release();
+		});
+		
+	}
+	DEBUG.log("Running Daily jobs");
+	params = ['daily'];
+	var formatedQuery = mysql.format(query, params);
+	db.getConnection(function(err, connection){
+		connection.query(formatedQuery, function (err, rows) {
 			if (err) {
 				console.log(err);
 			}
@@ -663,7 +719,7 @@ var j = schedule.scheduleJob('0 0 0 * * *', function(){
 				rows.forEach(function (row) {
 					if (row != null) {
 						var d = new Date();
-						d.setMonth(month - 1);
+						d.setDate(day - 1);
 						var start = d.toISOString().replace(/T/, ' ').replace(/\..+/, '')
 						var end = new Date().toISOString().replace(/T/, ' ').replace(/\..+/, '');
 						processToExport(row, start, end, function (result) {
@@ -673,50 +729,7 @@ var j = schedule.scheduleJob('0 0 0 * * *', function(){
 				});
 			}
 		});
-	}
-	if(weekDay == 1){
-		DEBUG.log("Running Weekly jobs");
-		params = ['weekly'];
-		var formatedQuery = mysql.format(query, params);
-		mysql_client.query(formatedQuery, function (err, rows) {
-			if (err) {
-				console.log(err);
-			}
-			else {
-				rows.forEach(function (row) {
-					if (row != null) {
-						var d = new Date();
-						d.setDate(day - 7);
-						var start = d.toISOString().replace(/T/, ' ').replace(/\..+/, '');
-						var end = new Date().toISOString().replace(/T/, ' ').replace(/\..+/, '');
-						processToExport(row, start, end, function (result) {
-							console.log(result);
-						})
-					}
-				});
-			}
-		});
-	}
-	DEBUG.log("Running Daily jobs");
-	params = ['daily'];
-	var formatedQuery = mysql.format(query, params);
-	mysql_client.query(formatedQuery, function (err, rows) {
-		if (err) {
-			console.log(err);
-		}
-		else {
-			rows.forEach(function (row) {
-				if (row != null) {
-					var d = new Date();
-					d.setDate(day - 1);
-					var start = d.toISOString().replace(/T/, ' ').replace(/\..+/, '')
-					var end = new Date().toISOString().replace(/T/, ' ').replace(/\..+/, '');
-					processToExport(row, start, end, function (result) {
-						console.log(result);
-					})
-				}
-			});
-		}
+		connection.release();
 	});
 	DEBUG.log("Data export jobs ended");
 });

@@ -1,14 +1,6 @@
 var db = require('./database');
-
 var mysql = require("mysql");
-/*
-var mysql_client = mysql.createConnection({
-    host: process.env.DATAEXPORT_MYSQL_HOST,
-    user: process.env.DATAEXPORT_MYSQL_USER,
-    password: process.env.DATAEXPORT_MYSQL_PASSWORD,
-    database: process.env.DATAEXPORT_MYSQL_DBNAME
-});
-*/
+
 function getAllFtpAccounts(callback) {
 	var query = 'SELECT * FROM ftp_accounts';
     var formatedQuery;
@@ -17,7 +9,6 @@ function getAllFtpAccounts(callback) {
 	db.getConnection(function(err, connection){
 		connection.query(formatedQuery, function (err, result) {
 			if (err) {
-				//connection.release();
 				console.log(err);
 				callback([]);
 			}
@@ -54,7 +45,6 @@ var ftpAccountsData = {
 		db.getConnection(function(err, connection){
 			connection.query(formatedQuery, function (err, result) {
 				if (err) {
-					//connection.release();
 					console.log(err);
 				}
 				else {
@@ -77,7 +67,6 @@ var ftpAccountsData = {
 			db.getConnection(function(err, connection){
 				connection.query(formatedQuery, function (err, result) {
 					if (err) {
-						//connection.release();
 						console.log(err);
 					}
 					else {
