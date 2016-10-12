@@ -15,7 +15,7 @@ module.exports = {
 			callback(err, connection);
 		});
 	},
-	format:function (callback){
+	format:function (query, params, callback){
 		mysql.format(query, params, function(formatedQuery){
 			callback(formatedQuery);
 		});
