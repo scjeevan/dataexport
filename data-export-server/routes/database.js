@@ -9,28 +9,10 @@ var db_config = {
 
 var pool = mysql.createPool(db_config);
 
-module.exports = {
-	getConnection:function(callback) {
-		pool.getConnection(function(err, connection) {
-			callback(err, connection);
-		});
-	},
-	format:function (callback){
-		callback(mysql.format(query, params));
-	}
-};
-/*
 var getConnection = function(callback) {
     pool.getConnection(function(err, connection) {
         callback(err, connection);
     });
 };
 
-var format = function (callback){
-	mysql.format(query, params, function(formatedQuery){
-		callback(formatedQuery);
-	});
-};
-
 module.exports = getConnection;
-*/
