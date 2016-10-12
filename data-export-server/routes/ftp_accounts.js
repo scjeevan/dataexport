@@ -17,7 +17,7 @@ function getAllFtpAccounts(callback) {
 	db.getConnection(function(err, connection){
 		connection.query(formatedQuery, function (err, result) {
 			if (err) {
-				connection.release();
+				//connection.release();
 				console.log(err);
 				callback([]);
 			}
@@ -54,7 +54,7 @@ var ftpAccountsData = {
 		db.getConnection(function(err, connection){
 			connection.query(formatedQuery, function (err, result) {
 				if (err) {
-					connection.release();
+					//connection.release();
 					console.log(err);
 				}
 				else {
@@ -77,7 +77,7 @@ var ftpAccountsData = {
 			db.getConnection(function(err, connection){
 				connection.query(formatedQuery, function (err, result) {
 					if (err) {
-						connection.release();
+						//connection.release();
 						console.log(err);
 					}
 					else {
