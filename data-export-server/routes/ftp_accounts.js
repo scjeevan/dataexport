@@ -13,7 +13,7 @@ function getAllFtpAccounts(callback) {
 	var query = 'SELECT * FROM ftp_accounts';
     var formatedQuery;
 
-    formatedQuery = mysql.format(query, []);
+    formatedQuery = db.format(query, []);
 	db.getConnection(function(err, connection){
 		connection.query(formatedQuery, function (err, result) {
 			if (err) {
@@ -50,7 +50,7 @@ var ftpAccountsData = {
 			query = "UPDATE `ftp_accounts` SET `title` = ?, `username` = ?, `password` = ?, `ip` = ?, `port` = ?, `location` = ?, `protocol` = ?  WHERE `ftp_account_id` = ?";
 			params = [req.body.title, req.body.username, req.body.password, req.body.ip, req.body.port, req.body.location, req.body.protocol, parseInt(req.body.ftp_account_id)];
 		}
-		var formatedQuery = mysql.format(query, params);
+		var formatedQuery = db.format(query, params);
 		db.getConnection(function(err, connection){
 			connection.query(formatedQuery, function (err, result) {
 				if (err) {
@@ -73,7 +73,7 @@ var ftpAccountsData = {
 		if (typeof req.body.ftp_account_id != 'undefined'){
 			query = "DELETE FROM `ftp_accounts` WHERE `ftp_account_id` = ?";
 			params = [parseInt(req.body.ftp_account_id)];
-			var formatedQuery = mysql.format(query, params);
+			var formatedQuery = db.format(query, params);
 			db.getConnection(function(err, connection){
 				connection.query(formatedQuery, function (err, result) {
 					if (err) {
