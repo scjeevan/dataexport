@@ -1,7 +1,7 @@
 var db = require('./database');
-/*
-var mysql = require("mysql");
 
+var mysql = require("mysql");
+/*
 var mysql_client = mysql.createConnection({
     host: process.env.DATAEXPORT_MYSQL_HOST,
     user: process.env.DATAEXPORT_MYSQL_USER,
@@ -13,7 +13,7 @@ function getAllFtpAccounts(callback) {
 	var query = 'SELECT * FROM ftp_accounts';
     var formatedQuery;
 
-    formatedQuery = db.format(query, []);
+    formatedQuery = mysql.format(query, []);
 	db.getConnection(function(err, connection){
 		connection.query(formatedQuery, function (err, result) {
 			if (err) {
