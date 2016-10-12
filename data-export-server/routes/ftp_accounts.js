@@ -13,7 +13,7 @@ function getAllFtpAccounts(callback) {
 	var query = 'SELECT * FROM ftp_accounts';
     var formatedQuery;
 
-    formatedQuery = mysql.format(query, []);
+    formatedQuery = db.format(query, []);
 	db.getConnection(function(err, connection){
 		connection.query(formatedQuery, function (err, result) {
 			if (err) {

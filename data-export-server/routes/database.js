@@ -15,10 +15,8 @@ module.exports = {
 			callback(err, connection);
 		});
 	},
-	format:function (query, params, callback){
-		mysql.format(query, params, function(formatedQuery){
-			callback(formatedQuery);
-		});
+	format:function (callback){
+		callback(mysql.format(query, params));
 	}
 };
 /*
