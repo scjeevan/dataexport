@@ -84,14 +84,14 @@ function buildQuery(paramArr, isCount, isSchedule){
 	var locations = paramArr.locations;
 	var continents = "";
 	if(typeof locations != 'undefined' && !locations[0].isSelected && locations[0].children.length > 0){
+		continents += "(";
 		locations[0].children.forEach(function(entry) {
-			continents += "(";
 			if(entry.isSelected){
 				continents += "'"+entry.value + "',";
 			}
-			continents = continents.substring(0, continents.length - 1) + ")";
-			DEBUG.log("CONTINENTS : " + continents);
 		});
+		continents = continents.substring(0, continents.length - 1) + ")";
+		DEBUG.log("CONTINENTS : " + continents);
 	}
 	var appendedParams = 0;
 	var _query = "SELECT ";
