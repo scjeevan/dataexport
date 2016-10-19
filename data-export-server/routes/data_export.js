@@ -91,8 +91,8 @@ function buildQuery(paramArr, isCount, isSchedule){
 			}
 		});
 		continents = continents.substring(0, continents.length - 1) + ")";
+		DEBUG.log("CONTINENTS : " + continents);
 	}
-	console.log(continents);
 	var appendedParams = 0;
 	var _query = "SELECT ";
 	if(isCount){
