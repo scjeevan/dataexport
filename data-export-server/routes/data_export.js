@@ -84,13 +84,12 @@ function buildQuery(paramArr, isCount, isSchedule){
 	var locations = paramArr.locations;
 	var continents = "";
 	if(typeof locations != 'undefined' && !locations[0].isSelected && locations[0].children.length > 0){
-		continents += "(";
 		locations[0].children.forEach(function(entry) {
 			if(entry.isSelected){
-				continents += "'"+entry.value + "',";
+				continents += " Continent LIKE '"+entry.value + "' AND";
 			}
 		});
-		continents = continents.substring(0, continents.length - 1) + ")";
+		continents = continents.substring(0, continents.length - 3);
 		DEBUG.log("CONTINENTS : " + continents);
 	}
 	var appendedParams = 0;
@@ -134,10 +133,10 @@ function buildQuery(paramArr, isCount, isSchedule){
 	}
 	if(continents != ""){
 		if(appendedParams == 0){
-			_query += " WHERE Continent IN " + continents ;
+			_query += " WHERE " + continents ;
 		}
 		else{
-			_query += " AND Continent IN " + continents ;
+			_query += " AND " + continents ;
 		}
 	}
 	DEBUG.log("QUERY : " + _query);
