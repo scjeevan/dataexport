@@ -512,7 +512,6 @@ var exportDataMng = {
 					});
 					connection.release();
 				});
-				
 			}
 			else{
 				var now = new Date();
