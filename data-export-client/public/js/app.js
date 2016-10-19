@@ -3,7 +3,7 @@
 var server_path = 'http://104.197.10.155:80/';
 
 
-var mvpApp = angular.module('dataExportApp', ['ngCookies', 'ngAnimate', 'ngRoute', 'googlechart', 'ui.bootstrap', 'infinite-scroll', 'smart-table', 'ngToast', 'angularSpinner', 'checklist-model', 'ui.date', 'angucomplete-alt', 'ivh.treeview', 'angularUtils.directives.dirPagination']);
+var mvpApp = angular.module('dataExportApp', ['ngCookies', 'ngAnimate', 'ngRoute', 'googlechart', 'ui.bootstrap', 'infinite-scroll', 'smart-table', 'ngToast', 'angularSpinner', 'checklist-model', 'angucomplete-alt', 'ivh.treeview', 'angularUtils.directives.dirPagination', 'ngMaterial']);
 
 var titleColumns = ["mm_title_id", "title", "season", "episode", "studio", "content_type", "genre", "mpaa_rating", "imdb_id", "episode_imdb_id", "diggit_id"];
 var infohashesColumns = ["infohash", "file_name", "created_by", "created_time", "added_time", "updated_time", "episode_title", "added_by", "languages", "verified", "media_format", "resolution", "aspect_ratio", "frame_rate", "subtitles", "bitrate", "quality", "no_of_files", "episode_id", "episode_airdate", "season", "source", "category", "torrent_url", "mm_hash_id", "mm_title_id", "file_size", "audio_language", "subtitle_language", "network", "metadata_source", "is_tracked"];
@@ -43,8 +43,6 @@ mvpApp.config(function($routeProvider, $httpProvider) {
 
 
 mvpApp.controller('MvpCtrl', ['$window', '$scope', '$location', function($window, $scope, $location) {
-	$scope.showMenu = true;
-	$scope.isCollapsed = true;
 	$scope.activeMenu = "";
 	$scope.setActive = function(menuItem) {
 		$scope.activeMenu = menuItem
@@ -67,9 +65,14 @@ mvpApp.controller('dataExportForm', ['$window', '$scope', '$location', '$http', 
 			content: 'Error while retrieving data'
 		});
 	});
-	
 	$scope.exp = {};
 	$scope.columns = [];
+	$scope.exp = {
+        startDate: new Date(),
+        endDate: new Date()
+    };
+    $scope.dt1 = new Date($scope.exp.startDate);
+    $scope.dt2 = new Date($scope.exp.endDate);
 	$scope.loadColumns = function(value) {
 		$scope.columns = [];
 		$scope.exp.columns = [];
@@ -114,6 +117,8 @@ mvpApp.controller('dataExportForm', ['$window', '$scope', '$location', '$http', 
 			alert("Please select atleast one genre");
 		}
 		else{
+			$scope.exp.startDate = formatDate($scope.exp.startDate);
+			$scope.exp.endDate = formatDate($scope.exp.endDate);
 			$http.post(Api.root_url+ "api/export", $scope.exp).
 			success(function (data, status, headers, config) {
 				ngToast.create({
@@ -325,6 +330,7 @@ mvpApp.controller('ftpAccountManager', ['$window', '$scope', '$location', '$http
 						content:'FTP account has been deleted',
 						dismissButton:true
 					});
+					angular.copy({},$scope.ftp);
 					$scope.ftp_data = [];
 					$http.get(Api.root_url+ "api/listftpaccounts").
 					success(function (response, status, headers, config) {
@@ -509,7 +515,14 @@ mvpApp.controller('dataExportFilter', ['ivhTreeviewBfs', '$window', '$scope', '$
     $scope.pageno = 1;
     $scope.total_count = 0;
     $scope.itemsPerPage = 20;
-	
+	/*
+	$scope.exp = {
+        startDate: new Date(),
+        endDate: new Date()
+    };
+    $scope.dt1 = new Date($scope.exp.startDate);
+    $scope.dt2 = new Date($scope.exp.endDate);
+	*/
 	$http.get(Api.root_url+ "api/genres").
 	success(function (response, status, headers, config) {
 		angular.forEach(response.data.values, function (v, k) {
@@ -742,6 +755,10 @@ mvpApp.controller('dataExportFilter', ['ivhTreeviewBfs', '$window', '$scope', '$
 	$scope.dateOptions = {
 		dateFormat:'dd-mm-yy',
     };
+	$scope.view_tab = 'tab1';
+	$scope.changeTab = function(tab) {
+		$scope.view_tab = tab;
+	}
 	$scope.getData($scope.pageno);
 }
 ]);
@@ -764,6 +781,12 @@ mvpApp.config(function(ivhTreeviewOptionsProvider) {
 	});
 });
 
+mvpApp.config(function($mdDateLocaleProvider) {
+    $mdDateLocaleProvider.formatDate = function(date) {
+       return moment(date).format('YYYY-MM-DD');
+    };
+});
+
 mvpApp.directive('datepickerPopup', function (dateFilter,$parse){
 	return {
 		restrict: 'EAC',
@@ -780,4 +803,14 @@ mvpApp.controller('NavBarCtrl', ['$scope', '$location', function($scope, $locati
 
 }]);
 
+function formatDate(d) {
+	var date = new Date(d);
+	var month = '' + (date.getMonth() + 1);
+	var day = '' + date.getDate();
+	var year = date.getFullYear();
 
+    if (month.length < 2) month = '0' + month;
+    if (day.length < 2) day = '0' + day;
+
+    return [year, month, day].join('-');
+}

@@ -1,114 +1,119 @@
-<div ng-controller="dataExportForm" class="panel panel-primary">
-<div class="panel-heading">
-	<h3 class="panel-title">Export Bulk Data to FTP Location</h3>
-</div>
-<div class="panel-body">
-	<form class="form-horizontal" role="form">
-		<!--
-		<div class="form-group">
-			<label class="control-label col-sm-2" for="email">Frequency:</label>
-			<div class="col-sm-10 switch-field">
-				<input type="radio" id="switch_3_left" name="switch_3" value="yes" checked/>
-				<label for="switch_3_left">Weekly</label>
-				<input type="radio" id="switch_3_center" name="switch_3" value="maybe" />
-				<label for="switch_3_center">Monthly</label>
-				<input type="radio" id="switch_3_right" name="switch_3" value="no" />
-				<label for="switch_3_right">Quarterly</label>
+<div ng-controller="dataExportForm" class="container form-sec">
+	<div class="col-md-12">
+		<div class="box box-warning">
+			<div class="second-border"></div>
+			<div class="box-header with-border">
+				<h3 class="box-title">Export Bulk Data to FTP Location</h3>
 			</div>
-		</div>
-		-->
-		<div class="form-group">
-			<label for="inputttl" class="col-sm-3 control-label">Time Range</label>
-			<div class="col-sm-9">
-				<div class="col-sm-3">
-					<input ui-date="dateOptions" ng-model="exp.startDate" placeholder="Start Date" class="form-control" id="startDate" ng-required="true" datepicker-popup>
-				</div>
-				<div class="col-sm-3">
-					<input ui-date="dateOptions" ng-model="exp.endDate" placeholder="End Date" class="form-control" id="endDate" ng-required="true" datepicker-popup>
-				</div>
-			</div>
-		</div>
-		<div class="form-group">
-			<label for="inputttl" class="col-sm-3 control-label">Table</label>
-			<div class="col-sm-9">
-				<div class="radio">
-					<label><input type="radio" name="table" ng-change='loadColumns(exp.table)' value="title" ng-model="exp.table"/> Title</label>
-				</div>
-				<div class="radio">
-					<label><input type="radio" name="table" ng-change='loadColumns(exp.table)' value="Diggit_IP" ng-model="exp.table"/> IP</label>
-				</div>
-			</div>
-		</div>
-		<div class="form-group">
-			<label for="inputttl" class="col-sm-3 control-label">Columns</label>
-			<div class="col-sm-9">
-				<span ng-if="columns.length === 0">
-					Please select a table
-				</span>
-				<table class="table table-striped" ng-if="columns.length > 0">
-					<tr>
-						<th><input type="checkbox" checklist-model="exp.columns_all" checklist-value="1" ng-click="toggleAllColumns()"></th><th>Select All</th>
-					</tr>
-					<tr ng-repeat="column in columns">
-						<td><input type="checkbox" checklist-model="exp.columns" checklist-value="column"></td><td>{{column}}</td>
-					</tr>
-				</table>
-			</div>
-		</div>
-		<div class="form-group">
-			<label for="inputttl" class="col-sm-3 control-label">Filter By Genres</label>
-			<div class="col-sm-9">
-				<div class="checkbox">
-					<label><input type="checkbox" ng-model="exp.isGenre" ng-change="isFilterByGenre()"></label>
-				</div>
-			</div>
-		</div>
-		<div class="form-group" ng-if="exp.isGenre">
-			<label for="inputttl" class="col-sm-3 control-label"></label>
-			<div class="col-sm-9">
-				<table class="table table-striped">
-					<tr>
+			<div class="box-body">
+				<form role="form" class="form-horizontal ng-invalid ng-invalid-required ng-valid-date ng-dirty ng-valid-ui-date-validator">
+					<div class="form-group">
+						<label class="col-sm-3 control-label" for="inputttl">Time Range</label>
+						<div class="col-sm-9">
+						<div class="col-sm-3">
+						<md-datepicker 
+							ng-model="dt1" 
+							md-placeholder="Enter start date"
+							flex ng-change="exp.startDate = dt1.toISOString()"></md-datepicker>
+						<!--
+						<input ng-required="true" id="startDate" name="startDate" class="form-control ng-untouched ng-isolate-scope ng-invalid ng-invalid-required ng-valid-date hasDatepicker ng-dirty ng-valid-ui-date-validator" placeholder="Start Date" ng-model="exp.startDate" >
+						<!-- ngIf: isOpen -->
+						</div>
+						<div class="col-sm-3">
+						<md-datepicker 
+							ng-model="dt2" 
+							md-placeholder="Enter end date"
+							flex ng-change="exp.endDate = dt2.toISOString()"></md-datepicker>
+						<!--
+						<input ng-required="true" id="endDate" name="endDate" class="form-control ng-untouched ng-isolate-scope ng-invalid ng-invalid-required ng-valid-date hasDatepicker ng-dirty ng-valid-ui-date-validator" placeholder="End Date" ng-model="exp.endDate" ui-date="dateOptions">
+						<!-- ngIf: isOpen -->
+						</div>
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-sm-3 control-label" for="inputttl">Table</label>
+						<div class="col-sm-9">
+							<div class="radio radio-right"><label>
+							<input type="radio" ng-model="exp.table" value="title" ng-change="loadColumns(exp.table)" name="table" class="ng-pristine ng-untouched ng-valid">
+							Title</label>
+							</div>
+							<div class="radio radio-right"><label>
+							<input type="radio" ng-model="exp.table" value="Diggit_IP" ng-change="loadColumns(exp.table)" name="table" class="ng-pristine ng-untouched ng-valid">
+							Diggit_IP</label>
+							</div>
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-sm-3 control-label" for="inputttl">Columns</label>
+						<div class="col-sm-9">
+						<!-- ngIf: columns.length === 0 -->
+						<span ng-if="columns.length === 0" class="ng-scope radio-right"> Please select a table </span>
+						<!-- end ngIf: columns.length === 0 -->
+						<!-- ngRepeat: column in columns -->
+						<table class="table table-striped" ng-if="columns.length > 0">
+							<tr>
+								<th><input type="checkbox" checklist-model="exp.columns_all" checklist-value="1" ng-click="toggleAllColumns()"></th><th>Select All</th>
+							</tr>
+							<tr ng-repeat="column in columns">
+								<td><input type="checkbox" checklist-model="exp.columns" checklist-value="column"></td><td>{{column}}</td>
+							</tr>
+						</table>
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-sm-3 control-label" for="inputttl">Filter By Genres</label>
+						<div class="col-sm-9">
+						<div class="checkbox radio-right">
+						<label>
+						<input type="checkbox" ng-change="isFilterByGenre()" ng-model="exp.isGenre" class="ng-pristine ng-untouched ng-valid">
+						</label>
+						</div>
+						</div>
+					</div>
+					<div class="form-group" ng-if="exp.isGenre">
+						<label for="inputttl" class="col-sm-3 control-label"></label>
+						<div class="col-sm-9">
+						<table class="table table-striped">
+						<tr>
 						<th><input type="checkbox" checklist-model="exp.genres_all" checklist-value="1" ng-click="toggleAll()"></th><th>Select All</th>
-					</tr>
-					<tr ng-repeat="g in genreList">
+						</tr>
+						<tr ng-repeat="g in genreList">
 						<td><input type="checkbox" checklist-model="exp.genres" checklist-value="g.genre_id"></td><td>{{g.genre}}</td>
-					</tr>
-				</table>
-				<!--
-				<div class="checkbox" ng-repeat="g in genreList">
-					<label><input type="checkbox" checklist-model="exp.genres" checklist-value="g.genre_id"> {{g.genre}}</label>
-				</div>
-				-->
+						</tr>
+						</table>
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-sm-3 control-label" for="inputttl">File Name</label>
+						<div class="col-sm-9">
+						<div class="col-sm-6">
+							<input type="text" class="form-control ng-pristine ng-untouched ng-valid" ng-model="exp.fileName">
+						</div>
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-sm-3 control-label" for="inputttl">FTP Location</label>
+						<div class="col-sm-9">
+						<div class="col-sm-6">
+						<select ng-model="exp.ftp_account_id" class="form-control ng-pristine ng-untouched ng-valid">
+							<option ng-repeat="option in ftp_acc_list" value="{{option.ftp_account_id}}">{{option.title}}</option>
+						</select>
+						</div>
+						<div class="col-sm-6"></div>
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-sm-3 control-label" for="inputttl"></label>
+						<div class="col-sm-9">
+							<button ng-click="exportData()" class="btn btn-save btn-right" value="Export">Export</button>
+						</div>
+					</div>
+				</form>
 			</div>
+			<!-- /.box-body -->
+			<br>
+			<br>
 		</div>
-		<div class="form-group">
-			<label for="inputttl" class="col-sm-3 control-label">File Name</label>
-			<div class="col-sm-9">
-				<div class="col-sm-6">
-					<input type="text" ng-model="exp.fileName" class="form-control"/>
-				</div>
-			</div>
-		</div>
-		<div class="form-group">
-			<label for="inputttl" class="col-sm-3 control-label">FTP Location</label>
-			<div class="col-sm-9">
-				<div class="col-sm-6">
-				<select class="form-control" ng-model="exp.ftp_account_id">
-					<option ng-repeat="option in ftp_acc_list" value="{{option.ftp_account_id}}">{{option.title}}</option>
-				</select>
-				</div>
-				<div class="col-sm-6"></div>
-			</div>
-		</div>
-		<div class="form-group">
-			<label for="inputttl" class="col-sm-3 control-label"></label>
-			<div class="col-sm-9">
-				<button value="Export" class="btn btn-primary" ng-click="exportData()">Export</button>
-			</div>
-		</div>
-	</form>
+	</div>
 </div>
-</div>
-</div>
-
 

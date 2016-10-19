@@ -83,7 +83,7 @@ function buildQuery(paramArr, isCount, isSchedule){
 	}
 	var locations = paramArr.locations;
 	var continents = "";
-	if(!locations[0].isSelected && locations[0].children.length > 0){
+	if(typeof locations != 'undefined' && !locations[0].isSelected && locations[0].children.length > 0){
 		continents += "(";
 		locations[0].children.forEach(function(entry) {
 			if(entry.isSelected){
@@ -377,8 +377,8 @@ var exportDataMng = {
 						headers.push(req.body.columns[i]);
 					}
 					_query = _query.substring(0, _query.length - 1);
-					var start = req.body.startDate.replace(/T/, ' ').replace(/\..+/, '');
-					var end = req.body.endDate.replace(/T/, ' ').replace(/\..+/, '');
+					var start = req.body.startDate;
+					var end = req.body.endDate;
 					var file_name = req.body.fileName;
 					if(req.body.table == 'ip'){
 						file_name = file_name + "_IP";
@@ -404,7 +404,7 @@ var exportDataMng = {
 						connection.query(_formatedQuery, function (err, rows) {
 							if(err) console.log(err);
 							var status = "No data found"
-							if(typeof rows.length != 'undefined' && rows.length > 0){
+							if(typeof rows != 'undefined' && typeof rows.length != 'undefined' && rows.length > 0){
 								status = "File exported successfully";
 								saveDateRemort(file_name, headers, rows, connectionProperties, ftp_loc);
 							}
@@ -557,7 +557,7 @@ var exportDataMng = {
 	},
 	
 	listJobs: function (req, res) {
-		var query = 'SELECT d.data_export_schedule_id, d.frequency, d.table_name, d.selected_columns, d.added_date, f.title FROM torrents.data_export_schedules d LEFT JOIN ftp_accounts f on d.ftp_account_id = f.ftp_account_id ORDER BY d.data_export_schedule_id DESC';
+		var query = 'SELECT d.data_export_schedule_id, d.title as schedule_title, d.frequency, d.table_name, d.selected_columns, d.added_date, f.title FROM torrents.data_export_schedules d LEFT JOIN ftp_accounts f on d.ftp_account_id = f.ftp_account_id ORDER BY d.data_export_schedule_id DESC';
 		var formatedQuery = mysql.format(query, []);
 		db.getConnection(function(err, connection){
 			connection.query(formatedQuery, function (err, result) {
