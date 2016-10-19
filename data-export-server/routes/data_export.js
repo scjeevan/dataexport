@@ -110,6 +110,9 @@ function buildQuery(paramArr, isCount, isSchedule){
 	}
 	if(selTitles.length > 0 && genreQ.length > 0){ /*** NEED TO BE MODIFIED ***/
 		_query += " FROM DevDiggit_Hist.Diggit_IP AS t JOIN DevDiggit_Hist.title_title_id AS gt ON t.TitleID = gt.title_id WHERE gt.title IN "+selTitles+" ";
+		if(continents != ""){
+			_query += " AND Continent IN (" + continents + ")";
+		}
 		if(dateRange != ""){
 			_query += " AND " + dateRange;
 		}
@@ -127,6 +130,9 @@ function buildQuery(paramArr, isCount, isSchedule){
 		}
 	} else {
 		_query += " FROM DevDiggit_Hist.Diggit_IP AS t ";
+		if(continents != ""){
+			_query += " AND Continent IN (" + continents + ")";
+		}
 		if(dateRange != ""){
 			_query += " WHERE " + dateRange;
 		}
@@ -403,7 +409,7 @@ var exportDataMng = {
 						console.log("[QUERY]:"+_query);
 						connection.query(_formatedQuery, function (err, rows) {
 							if(err) console.log(err);
-							var status = "No data found"
+							var status = "Data not found for selected criteria"
 							if(typeof rows != 'undefined' && typeof rows.length != 'undefined' && rows.length > 0){
 								status = "File exported successfully";
 								saveDateRemort(file_name, headers, rows, connectionProperties, ftp_loc);

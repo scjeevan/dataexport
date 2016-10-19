@@ -67,12 +67,14 @@ mvpApp.controller('dataExportForm', ['$window', '$scope', '$location', '$http', 
 	});
 	$scope.exp = {};
 	$scope.columns = [];
+	/*
 	$scope.exp = {
         startDate: new Date(),
         endDate: new Date()
     };
     $scope.dt1 = new Date($scope.exp.startDate);
     $scope.dt2 = new Date($scope.exp.endDate);
+	*/
 	$scope.loadColumns = function(value) {
 		$scope.columns = [];
 		$scope.exp.columns = [];
@@ -783,7 +785,7 @@ mvpApp.config(function(ivhTreeviewOptionsProvider) {
 
 mvpApp.config(function($mdDateLocaleProvider) {
     $mdDateLocaleProvider.formatDate = function(date) {
-       return moment(date).format('YYYY-MM-DD');
+       return (typeof date != 'undefined')? moment(date).format('YYYY-MM-DD') : '';
     };
 });
 
