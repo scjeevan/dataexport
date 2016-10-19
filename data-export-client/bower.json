@@ -33,7 +33,8 @@
     "angular-ui-bootstrap": "^2.1.3",
     "angular-ivh-treeview": "^1.0.4",
     "angularUtils-pagination": "angular-utils-pagination#^0.11.1",
-    "angular-material": "^1.1.1"
+    "angular-material": "^1.1.1",
+    "moment": "^2.15.1"
   },
   "resolutions": {
     "angular": "1.4.7"
