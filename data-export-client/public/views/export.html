@@ -177,7 +177,7 @@
 													<div class="panel">
 													<div id="collapseOne" class="panel-collapse collapse">
 													<div class="panel-body">
-													<div ng-show="exp.export_type == '0'" class="ng-hide" style="max-height:150px; padding:5px; overflow:auto;"> <b class="required">Frequency</b><br>
+													<div ng-show="exp.export_type == '0'" class="ng-hide"> <b class="required">Frequency</b><br>
 													<label>
 													<input type="radio" value="daily" name="frequency" ng-model="exp.frequency" class="ng-pristine ng-untouched ng-valid">
 													Daily</label>
@@ -189,12 +189,14 @@
 													<label>
 													<input type="radio" value="monthly" name="frequency" ng-model="exp.frequency" class="ng-pristine ng-untouched ng-valid">
 													Monthly</label>
+													<br><br>
+													<b class="required">Schedule Title</b><br>
+													<input type="text" placeholder="Schedule Title" class="form-control ng-pristine ng-untouched ng-valid" ng-model="exp.schedule_title">
 													</div>
 													</div>
 													</div>
 													</div>
 													</div>
-													<br>
 													<b class="required">File Name</b><br>
 													<input type="text" placeholder="File Name" class="form-control ng-pristine ng-untouched ng-valid" ng-model="exp.fileName">
 													<br>

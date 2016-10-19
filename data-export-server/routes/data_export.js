@@ -537,6 +537,7 @@ var exportDataMng = {
 				var fileFormat = req.body.file_format;
 				var frequency = req.body.frequency;
 				var fileName = req.body.fileName;
+				var scheduleTitle = req.body.schedule_title
 				var selTitles = "";
 				if(typeof req.body.selected_titles != 'undefined' && req.body.selected_titles.length > 0){
 					selTitles += "(";
@@ -553,8 +554,8 @@ var exportDataMng = {
 					fields = fields.substring(0, fields.length - 1);
 				}
 				DEBUG.log("Saving data export job : " + frequency);
-				var _inQuery = "INSERT INTO data_export_schedules (frequency,table_name,selected_columns,added_date,ftp_account_id, filename, file_format, titles, query) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
-				var _formatedQuery = mysql.format(_inQuery, [frequency, 'Diggit_IP', fields, now, ftp_account_id, fileName, fileFormat, selTitles, _query]);
+				var _inQuery = "INSERT INTO data_export_schedules (title, frequency,table_name,selected_columns,added_date,ftp_account_id, filename, file_format, titles, query) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+				var _formatedQuery = mysql.format(_inQuery, [scheduleTitle, frequency, 'Diggit_IP', fields, now, ftp_account_id, fileName, fileFormat, selTitles, _query]);
 				db.getConnection(function(err, connection){
 					connection.query(_formatedQuery, function (err, rows) {
 						DEBUG.log("Job has been saved successfully");
