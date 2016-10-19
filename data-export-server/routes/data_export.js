@@ -87,12 +87,13 @@ function buildQuery(paramArr, isCount, isSchedule){
 		continents += "(";
 		locations[0].children.forEach(function(entry) {
 			if(entry.isSelected){
-				continents += entry.value + ",";
+				continents += "'"+entry.value + "',";
 			}
 		});
 		continents = continents.substring(0, continents.length - 1) + ")";
 	}
 	console.log(continents);
+	var appendedParams = 0;
 	var _query = "SELECT ";
 	if(isCount){
 		_query += " COUNT(*) AS c ";
@@ -110,31 +111,33 @@ function buildQuery(paramArr, isCount, isSchedule){
 	}
 	if(selTitles.length > 0 && genreQ.length > 0){ /*** NEED TO BE MODIFIED ***/
 		_query += " FROM DevDiggit_Hist.Diggit_IP AS t JOIN DevDiggit_Hist.title_title_id AS gt ON t.TitleID = gt.title_id WHERE gt.title IN "+selTitles+" ";
-		if(continents != ""){
-			_query += " AND Continent IN (" + continents + ")";
-		}
-		if(dateRange != ""){
-			_query += " AND " + dateRange;
-		}
+		appendedParams++;
 	}
 	else if(selTitles.length > 0 && genreQ.length == 0){
 		_query += " FROM DevDiggit_Hist.Diggit_IP AS t JOIN DevDiggit_Hist.title_title_id AS gt ON t.TitleID = gt.title_id WHERE gt.title IN "+selTitles+" ";
-		if(dateRange != ""){
-			_query += " AND " + dateRange;
-		}
+		appendedParams++;
 	}
 	else if(genreQ.length > 0 && selTitles.length == 0){
 		_query += " FROM DevDiggit_Hist.Diggit_IP AS t JOIN DevDiggit_Hist.mm_title_genres AS gt ON t.TitleID = gt.title_id WHERE gt.genre_id IN "+genreQ+" ";
-		if(dateRange != ""){
-			_query += " AND " + dateRange;
-		}
+		appendedParams++;
 	} else {
 		_query += " FROM DevDiggit_Hist.Diggit_IP AS t ";
-		if(continents != ""){
-			_query += " AND Continent IN (" + continents + ")";
-		}
-		if(dateRange != ""){
+	}
+	if(dateRange != ""){
+		if(appendedParams == 0){
 			_query += " WHERE " + dateRange;
+			appendedParams++;
+		}
+		else{
+			_query += " AND " + dateRange;
+		}
+	}
+	if(continents != ""){
+		if(appendedParams == 0){
+			_query += " WHERE Continent IN (" + continents + ")";
+		}
+		else{
+			_query += " AND Continent IN (" + continents + ")";
 		}
 	}
 	DEBUG.log("QUERY : " + _query);
