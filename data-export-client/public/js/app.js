@@ -213,8 +213,11 @@ mvpApp.controller('scheduleDataExport', ['$window', '$scope', '$location', '$htt
 		}
 	};
 	$scope.createSchedule = function() {
-		if(typeof $scope.exp.switch_3 == 'undefined'){
-			alert("Please select Schedule type");
+		if(typeof $scope.exp.schedule_title == 'undefined'){
+			alert("Please enter schedule title");
+		}
+		else if(typeof $scope.exp.switch_3 == 'undefined'){
+			alert("Please select schedule type");
 		}
 		else if(typeof $scope.exp.table == 'undefined'){
 			alert("Please select table");

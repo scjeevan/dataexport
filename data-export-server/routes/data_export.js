@@ -139,6 +139,17 @@ function buildQuery(paramArr, isCount, isSchedule){
 			_query += " AND " + continents ;
 		}
 	}
+	/*
+	if(selGroups != ""){
+		if(appendedParams == 0){
+			_query += " WHERE group_id IN " + selGroups ;
+			appendedParams++;
+		}
+		else{
+			_query += " AND group_id IN " + selGroups ;
+		}
+	}
+	*/
 	DEBUG.log("QUERY : " + _query);
 	return _query;
 }
@@ -615,8 +626,8 @@ var exportDataMng = {
 		}
 		_columns = _columns.substring(0, _columns.length - 1);
 		var now = new Date();
-		var _insQuery = "INSERT INTO data_export_schedules (frequency,table_name,selected_columns,added_date,ftp_account_id, filename, file_format, query) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
-		var _formatedQuery = mysql.format(_insQuery, [req.body.switch_3, req.body.table, _columns, now, ftp_account_id, req.body.fileName, '1' ,_query]);
+		var _insQuery = "INSERT INTO data_export_schedules (title, frequency,table_name,selected_columns,added_date,ftp_account_id, filename, file_format, query) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+		var _formatedQuery = mysql.format(_insQuery, [req.body.schedule_title, req.body.switch_3, req.body.table, _columns, now, ftp_account_id, req.body.fileName, '1' ,_query]);
 		db.getConnection(function(err, connection){
 			connection.query(_formatedQuery, function (err, rows) {
 				console.log("SAVED");
