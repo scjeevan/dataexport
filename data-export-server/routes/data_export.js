@@ -134,10 +134,10 @@ function buildQuery(paramArr, isCount, isSchedule){
 	}
 	if(continents != ""){
 		if(appendedParams == 0){
-			_query += " WHERE Continent IN (" + continents + ")";
+			_query += " WHERE Continent IN " + continents ;
 		}
 		else{
-			_query += " AND Continent IN (" + continents + ")";
+			_query += " AND Continent IN " + continents ;
 		}
 	}
 	DEBUG.log("QUERY : " + _query);
