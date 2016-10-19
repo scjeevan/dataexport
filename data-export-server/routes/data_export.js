@@ -86,7 +86,7 @@ function buildQuery(paramArr, isCount, isSchedule){
 	if(typeof locations != 'undefined' && !locations[0].isSelected && locations[0].children.length > 0){
 		locations[0].children.forEach(function(entry) {
 			if(entry.isSelected){
-				continents += " Continent LIKE '"+entry.value + "' OR";
+				continents += " t.Continent LIKE '"+entry.value + "' OR";
 			}
 		});
 		continents = continents.substring(0, continents.length - 2);
