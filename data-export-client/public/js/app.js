@@ -575,38 +575,38 @@ mvpApp.controller('dataExportFilter', ['ivhTreeviewBfs', '$window', '$scope', '$
 	
 	function getLocations(callback){
 		var data = [{
-			label: 'asia',
-			value: 'asia',
+			label: 'Asia',
+			value: 'Asia',
 			children: []
 		},
 		{
-			label: 'europe',
-			value: 'europe',
+			label: 'Europe',
+			value: 'Europe',
 			children: []
 		},
 		{
-			label: 'north america',
-			value: 'north america',
+			label: 'North America',
+			value: 'North America',
 			children: []
 		},
 		{
-			label: 'south america',
-			value: 'south america',
+			label: 'South America',
+			value: 'South America',
 			children: []
 		},
 		{
-			label: 'oceania',
-			value: 'oceania',
+			label: 'Oceania',
+			value: 'Oceania',
 			children: []
 		},
 		{
-			label: 'other',
-			value: 'other',
+			label: 'Other',
+			value: 'Other',
 			children: []
 		},
 		{
-			label: 'africa',
-			value: 'africa',
+			label: 'Africa',
+			value: 'Africa',
 			children: []
 		}
 		];

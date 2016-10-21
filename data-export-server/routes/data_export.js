@@ -290,15 +290,15 @@ var exportDataMng = {
 		responseAll(query, res);
 	},
 	regions : function (req, res) {
-		var query = "SELECT Region AS name FROM DevDiggit_Hist.unique_ip_count_for_location WHERE Continent = '" + escape(req.params.continent) + "' AND Country = '" + escape(req.params.country) + "' GROUP BY name ORDER BY name";
+		var query = "SELECT Region AS name FROM DevDiggit_Hist.unique_ip_count_for_location WHERE Continent = '" + escape(req.body.continent) + "' AND Country = '" + escape(req.body.country) + "' GROUP BY name ORDER BY name";
 		responseAll(query, res);
 	},
 	states : function (req, res) {
-		var query = "SELECT State AS name FROM DevDiggit_Hist.unique_ip_count_for_location WHERE Continent = '" + escape(req.params.continent) + "' AND Country = '" + escape(req.params.country) + "' AND Region = '" + escape(req.params.region) + "' GROUP BY name ORDER BY name";
+		var query = "SELECT State AS name FROM DevDiggit_Hist.unique_ip_count_for_location WHERE Continent = '" + escape(req.body.continent) + "' AND Country = '" + escape(req.body.country) + "' AND Region = '" + escape(req.body.region) + "' GROUP BY name ORDER BY name";
 		responseAll(query, res);
 	},
 	cities : function (req, res) {
-		var query = "SELECT City AS name FROM DevDiggit_Hist.unique_ip_count_for_location WHERE Continent = '" + escape(req.params.continent) + "' AND Country = '" + escape(req.params.country) + "' AND Region = '" + escape(req.params.region) + "' AND State = '" + escape(req.params.state) + "' GROUP BY name ORDER BY name";
+		var query = "SELECT City AS name FROM DevDiggit_Hist.unique_ip_count_for_location WHERE Continent = '" + escape(req.body.continent) + "' AND Country = '" + escape(req.body.country) + "' AND Region = '" + escape(req.body.region) + "' AND State = '" + escape(req.body.state) + "' GROUP BY name ORDER BY name";
 		responseAll(query, res);
 	},
 	
