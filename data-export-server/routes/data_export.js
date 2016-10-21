@@ -285,7 +285,7 @@ var exportDataMng = {
 		responseAll(query, res);
 	},
 	countries : function (req, res) {
-		var query = "SELECT Country AS name FROM DevDiggit_Hist.unique_ip_count_for_location WHERE Continent = '" + escape(req.params.continent) + "' GROUP BY name ORDER BY name";
+		var query = "SELECT Country AS name FROM DevDiggit_Hist.ip_aggregation WHERE Continent = '" + escape(req.params.continent) + "' GROUP BY name ORDER BY name";
 		responseAll(query, res);
 	},
 	regions : function (req, res) {
