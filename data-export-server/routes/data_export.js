@@ -281,16 +281,8 @@ var exportDataMng = {
     },
 	
 	continents : function (req, res) {
-		var query = 'SELECT Continent AS name FROM DevDiggit_Hist.unique_ip_count_for_location GROUP BY name ORDER BY name';
-		var contArray = [];
-		executeGoogleBigQueryAllRows(query,function(rows){
-            rows.forEach(function(movie){
-                if(movie != null && movie.name != '') 
-					contArray.push({name: movie.name});
-            });
-            res.json(contArray);
-        });
-		//responseAll(query, res);
+		var query = 'SELECT Continent AS name FROM DevDiggit_Hist.ip_aggregation GROUP BY name ORDER BY name';
+		responseAll(query, res);
 	},
 	countries : function (req, res) {
 		var query = "SELECT Country AS name FROM DevDiggit_Hist.unique_ip_count_for_location WHERE Continent = '" + escape(req.params.continent) + "' GROUP BY name ORDER BY name";
