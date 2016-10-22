@@ -34,10 +34,10 @@ var ftpAccountsData = {
     },
 	
 	saveFtpAccount: function (req, res) {
-		var HOST = process.env.DATAEXPORT_FTP_HOST.trim();
-		var PORT = process.env.DATAEXPORT_FTP_PORT.trim();
-		var LOCATION = process.env.DATAEXPORT_FTP_LOCATION.trim();
-		var PROTOCOL = process.env.DATAEXPORT_FTP_PROTOCOL.trim();
+		var HOST = process.env.DATAEXPORT_FTP_HOST;
+		var PORT = process.env.DATAEXPORT_FTP_PORT;
+		var LOCATION = process.env.DATAEXPORT_FTP_LOCATION;
+		var PROTOCOL = process.env.DATAEXPORT_FTP_PROTOCOL;
 		console.log("HOST : "+HOST);
 		console.log("PORT : "+PORT);
 		console.log("LOCATION : "+LOCATION);
