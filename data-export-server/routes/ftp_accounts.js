@@ -1,5 +1,6 @@
 var db = require('./database');
 var nodemiral = require('nodemiral');
+var fs = require("file-system");
 
 var mysql = require("mysql");
 
@@ -38,11 +39,7 @@ var ftpAccountsData = {
 		var PORT = process.env.DATAEXPORT_FTP_PORT;
 		var LOCATION = process.env.DATAEXPORT_FTP_LOCATION;
 		var PROTOCOL = process.env.DATAEXPORT_FTP_PROTOCOL;
-		console.log("HOST : "+HOST);
-		console.log("PORT : "+PORT);
-		console.log("LOCATION : "+LOCATION);
-		console.log("PROTOCOL : "+PROTOCOL);
-		var session = nodemiral.session(HOST, {username: 'jeevan', pem: '/opt/jeevan/Hydra_jeevan.pem'});
+		var session = nodemiral.session(HOST, {username: 'jeevan', pem: fs.readFileSync('/opt/jeevan/Hydra_jeevan.pem').toString('utf8').trim()});
 		session.execute('uname -a', function(err, code, logs) {
 			console.log(logs.stdout);
 		});
