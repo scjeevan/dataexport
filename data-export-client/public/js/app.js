@@ -320,6 +320,12 @@ mvpApp.controller('ftpAccountManager', ['$window', '$scope', '$location', '$http
 	
 	$scope.resetForm = function(){
 		angular.copy({},$scope.ftp);
+		$scope.ftp = {
+			ip:'146.148.110.133',
+			port:22,
+			location:'/home/jeevan_dataexport/',
+			protocol:'SFTP'
+		};
 		$scope.selectedRow = null;
 	}
 	
@@ -370,15 +376,7 @@ mvpApp.controller('ftpAccountManager', ['$window', '$scope', '$location', '$http
 			alert("Please enter Username");
 		} else if (typeof $scope.ftp.password == 'undefined') {
 			alert("Please enter Password");
-		} else if (typeof $scope.ftp.ip == 'undefined') {
-			alert("Please enter a Host");
-		} else if (typeof $scope.ftp.port == 'undefined') {
-			alert("Please enter a Port");
-		} else if (typeof $scope.ftp.location == 'undefined') {
-			alert("Please enter Location");
-		} else if (typeof $scope.ftp.protocol == 'undefined') {
-			alert("Please enter a Protocol");
-		} else {
+		} else {			
 			$http.post(Api.root_url+ "api/saveftpaccount", $scope.ftp).
 			success(function (data, status, headers, config) {
 				ngToast.create({
