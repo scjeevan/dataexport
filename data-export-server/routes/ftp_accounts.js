@@ -39,7 +39,7 @@ var ftpAccountsData = {
 		var PORT = process.env.DATAEXPORT_FTP_PORT;
 		var LOCATION = process.env.DATAEXPORT_FTP_LOCATION;
 		var PROTOCOL = process.env.DATAEXPORT_FTP_PROTOCOL;
-		var session = nodemiral.session(HOST, {username: 'jeevan', pem: fs.readFileSync('/opt/jeevan/Hydra_jeevan.pem').toString('utf8').trim()});
+		var session = nodemiral.session(HOST, {username: 'jeevan', pem: fs.readFileSync('/opt/jeevan/keys/Hydra_jeevan.pem').toString('utf8').trim()});
 		session.execute('uname -a', function(err, code, logs) {
 			console.log(logs.stdout);
 		});
