@@ -39,11 +39,33 @@ var ftpAccountsData = {
 		var PORT = process.env.DATAEXPORT_FTP_PORT;
 		var LOCATION = process.env.DATAEXPORT_FTP_LOCATION;
 		var PROTOCOL = process.env.DATAEXPORT_FTP_PROTOCOL;
-		var session = nodemiral.session(HOST, {username: 'jeevan', pem: fs.readFileSync('/opt/jeevan/keys/Hydra_jeevan.pem').toString('utf8').trim()});
-		session.execute('uname -a', function(err, code, logs) {
-			console.log(logs.stdout);
-		});
-
+		var KEY_PATH = process.env.DATAEXPORT_FTP_SERVER_KEY;
+		var title = req.body.title;
+		var username = req.body.username;
+		var password = req.body.password;
+		if (typeof req.body.ftp_account_id == 'undefined'){
+			var command = '/opt/script_sftp/addsftpuser.sh ' + username + ' ' + password;
+			var session = nodemiral.session(HOST, {username: 'jeevan', pem: fs.readFileSync(KEY_PATH).toString('utf8').trim()});
+			session.execute(command, function(err, code, logs) {
+				console.log(logs.stdout);
+				query = "INSERT INTO `ftp_accounts` (`title`,`username`,`password`,`ip`,`port`,`location`,`protocol`) VALUES (?,?,?,?,?,?,?)";
+				params = [title, username, password, HOST, PORT, LOCATION+username, PROTOCOL];
+				var formatedQuery = mysql.format(query, params);
+				db.getConnection(function(err, connection){
+					connection.query(formatedQuery, function (err, result) {
+						if (err) {
+							console.log(err);
+						}
+						else {
+							res.json({
+								values: result
+							});
+						}
+					});
+					connection.release();
+				});
+			});
+		}
 		/*
 		var query = "";
 		var params = [];
