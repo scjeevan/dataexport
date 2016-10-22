@@ -38,6 +38,10 @@ var ftpAccountsData = {
 		var PORT = process.env.DATAEXPORT_FTP_PORT.trim();
 		var LOCATION = process.env.DATAEXPORT_FTP_LOCATION.trim();
 		var PROTOCOL = process.env.DATAEXPORT_FTP_PROTOCOL.trim();
+		console.log("HOST : "+HOST);
+		console.log("PORT : "+PORT);
+		console.log("LOCATION : "+LOCATION);
+		console.log("PROTOCOL : "+PROTOCOL);
 		var session = nodemiral.session(HOST, {username: 'jeevan', pem: '/opt/jeevan/Hydra_jeevan.pem'});
 		session.execute('uname -a', function(err, code, logs) {
 			console.log(logs.stdout);
