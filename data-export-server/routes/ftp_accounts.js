@@ -44,7 +44,7 @@ var ftpAccountsData = {
 		var username = req.body.username;
 		var password = req.body.password;
 		if (typeof req.body.ftp_account_id == 'undefined'){
-			var command = 'sudo /opt/script_sftp/addsftpuser.sh ' + username + ' ' + password;
+			var command = '/opt/script_sftp/addsftpuser.sh ' + username + ' ' + password;
 			var session = nodemiral.session(HOST, {username: 'jeevan', pem: fs.readFileSync(KEY_PATH).toString('utf8').trim()});
 			/*
 			session.execute('sudo su', function(err, code, logs) {
