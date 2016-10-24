@@ -675,10 +675,7 @@ mvpApp.controller('dataExportFilter', ['ivhTreeviewBfs', '$window', '$scope', '$
 	});
 	
 	$scope.submitForm = function() {
-		if(typeof $scope.exp.schedule_title == 'undefined'){
-			alert("Please enter schedule title");
-		}
-		else if(typeof $scope.exp.columns == 'undefined' || $scope.exp.columns.length == 0){
+		if(typeof $scope.exp.columns == 'undefined' || $scope.exp.columns.length == 0){
 			alert("Please select atleast one field");
 		}
 		else if(typeof $scope.exp.export_type == 'undefined' || $scope.exp.export_type.length == 0){
@@ -692,6 +689,9 @@ mvpApp.controller('dataExportFilter', ['ivhTreeviewBfs', '$window', '$scope', '$
 		}
 		else if($scope.exp.export_type == '0' && typeof $scope.exp.frequency == 'undefined'){
 			alert("Please select frequency");
+		}
+		else if($scope.exp.export_type == '0' && typeof $scope.exp.schedule_title == 'undefined'){
+			alert("Please enter schedule title");
 		}
 		else{
 			if($scope.selectedMovies.length > 0){
