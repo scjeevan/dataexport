@@ -379,26 +379,36 @@ mvpApp.controller('ftpAccountManager', ['$window', '$scope', '$location', '$http
 		} else {			
 			$http.post(Api.root_url+ "api/saveftpaccount", $scope.ftp).
 			success(function (data, status, headers, config) {
-				ngToast.create({
-					dismissOnTimeout:true,
-					timeout:4000,
-					content:'FTP account has been saved',
-					dismissButton:true
-				});
-				$scope.ftp_data = [];
-				$http.get(Api.root_url+ "api/listftpaccounts").
-				success(function (response, status, headers, config) {
-					angular.forEach(response.values, function (v, k) {
-						this.push(v);
-					}, $scope.ftp_data);
-				}).
-				error(function (data, status, headers, config) {
+				if(data.values == 'USER_ADDED_SUCCESSFULLY'){
 					ngToast.create({
-						className: 'danger',
-						dismissButton:true,
-						content: 'Error while retrieving data'
+						dismissOnTimeout:true,
+						timeout:4000,
+						content:'FTP account has been created successfully',
+						dismissButton:true
 					});
-				});
+					$scope.ftp_data = [];
+					$http.get(Api.root_url+ "api/listftpaccounts").
+					success(function (response, status, headers, config) {
+						angular.forEach(response.values, function (v, k) {
+							this.push(v);
+						}, $scope.ftp_data);
+					}).
+					error(function (data, status, headers, config) {
+						ngToast.create({
+							className: 'danger',
+							dismissButton:true,
+							content: 'Error while retrieving data'
+						});
+					});
+				}
+				else{
+					ngToast.create({
+						dismissOnTimeout:true,
+						timeout:4000,
+						content:data.values,
+						dismissButton:true
+					});
+				}
 			}).
 			error(function (data, status, headers, config) {
 				ngToast.create({
