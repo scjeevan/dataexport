@@ -74,7 +74,7 @@ var ftpAccountsData = {
 					}
 					else{
 						res.json({
-							values: result
+							values: resp
 						});
 					}
 				}
