@@ -46,30 +46,38 @@ var ftpAccountsData = {
 		if (typeof req.body.ftp_account_id == 'undefined'){
 			var command = '/opt/script_sftp/addsftpuser.sh ' + username + ' ' + password;
 			var session = nodemiral.session(HOST, {username: 'jeevan', pem: fs.readFileSync(KEY_PATH).toString('utf8').trim()});
-			/*
-			session.execute('sudo su', function(err, code, logs) {
-				console.log(logs.stdout);
-			});*/
 			session.execute(command, function(err, code, logs) {
-				console.log(logs.stdout);
-				/*
-				query = "INSERT INTO `ftp_accounts` (`title`,`username`,`password`,`ip`,`port`,`location`,`protocol`) VALUES (?,?,?,?,?,?,?)";
-				params = [title, username, password, HOST, PORT, LOCATION+username, PROTOCOL];
-				var formatedQuery = mysql.format(query, params);
-				db.getConnection(function(err, connection){
-					connection.query(formatedQuery, function (err, result) {
-						if (err) {
-							console.log(err);
-						}
-						else {
-							res.json({
-								values: result
+				if (err) {
+					console.log(err);
+				}
+				else {
+					var resp = logs.stdout;
+					resp = resp.trim();
+					console.log(resp);
+					if(resp == 'USER_ADDED_SUCCESSFULLY'){
+						query = "INSERT INTO `ftp_accounts` (`title`,`username`,`password`,`ip`,`port`,`location`,`protocol`) VALUES (?,?,?,?,?,?,?)";
+						params = [title, username, password, HOST, PORT, LOCATION+username, PROTOCOL];
+						var formatedQuery = mysql.format(query, params);
+						db.getConnection(function(err, connection){
+							connection.query(formatedQuery, function (err, result) {
+								if (err) {
+									console.log(err);
+								}
+								else {
+									res.json({
+										values: result
+									});
+								}
 							});
-						}
-					});
-					connection.release();
-				});
-				*/
+							connection.release();
+						});
+					}
+					else{
+						res.json({
+							values: result
+						});
+					}
+				}
 			});
 		}
 		/*
