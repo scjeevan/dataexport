@@ -403,10 +403,9 @@ mvpApp.controller('ftpAccountManager', ['$window', '$scope', '$location', '$http
 				}
 				else{
 					ngToast.create({
-						dismissOnTimeout:true,
-						timeout:4000,
+						className: 'danger',
+						dismissButton:true,
 						content:data.values,
-						dismissButton:true
 					});
 				}
 			}).
