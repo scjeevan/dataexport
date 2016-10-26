@@ -46,6 +46,9 @@ var ftpAccountsData = {
 		if (typeof req.body.ftp_account_id == 'undefined'){
 			var command = '/opt/script_sftp/addsftpuser.sh ' + username + ' ' + password;
 			var session = nodemiral.session(HOST, {username: 'jeevan', pem: fs.readFileSync(KEY_PATH).toString('utf8').trim()});
+			session.execute('uname -a', function(err, code, logs) {
+				console.log(logs.stdout);
+			});
 			session.execute(command, function(err, code, logs) {
 				console.log(logs.stdout);
 				if (err) {
