@@ -1,7 +1,7 @@
 var db = require('./database');
 var nodemiral = require('nodemiral');
 var fs = require("file-system");
-
+var exec = require('exec');
 var mysql = require("mysql");
 
 function getAllFtpAccounts(callback) {
@@ -46,6 +46,16 @@ var ftpAccountsData = {
 		if (typeof req.body.ftp_account_id == 'undefined'){
 			//var command = '/opt/script_sftp/addsftpuser.sh ' + username + ' ' + password;
 			var command = '/opt/jeevan/addsftpuser.sh ' + username + ' ' + password;
+			exec(command, function(err, out, code) {
+				if (err instanceof Error)
+					throw err;
+				console.log("USER_ADDED_SUCCESSFULLY");
+				process.stderr.write(err);
+				process.stdout.write(out);
+				process.exit(code);
+			});
+		
+			/*
 			var session = nodemiral.session(HOST, {username: 'jeevan', pem: fs.readFileSync(KEY_PATH).toString('utf8').trim()});
 			session.execute(command, function(err, code, logs) {
 				if (err) {
@@ -80,37 +90,8 @@ var ftpAccountsData = {
 					}
 				}
 			});
+			*/
 		}
-		/*
-		var query = "";
-		var params = [];
-		
-		
-		if (typeof req.body.ftp_account_id == 'undefined'){
-			query = "INSERT INTO `ftp_accounts` (`title`,`username`,`password`,`ip`,`port`,`location`,`protocol`) VALUES (?,?,?,?,?,?,?)";
-			params = [req.body.title, req.body.username, req.body.password, req.body.ip, req.body.port, req.body.location, req.body.protocol];
-		} 
-		*/
-		/*else {
-			query = "UPDATE `ftp_accounts` SET `title` = ?, `username` = ?, `password` = ?, `ip` = ?, `port` = ?, `location` = ?, `protocol` = ?  WHERE `ftp_account_id` = ?";
-			params = [req.body.title, req.body.username, req.body.password, req.body.ip, req.body.port, req.body.location, req.body.protocol, parseInt(req.body.ftp_account_id)];
-		}*/
-		/*
-		var formatedQuery = mysql.format(query, params);
-		db.getConnection(function(err, connection){
-			connection.query(formatedQuery, function (err, result) {
-				if (err) {
-					console.log(err);
-				}
-				else {
-					res.json({
-						values: result
-					});
-				}
-			});
-			connection.release();
-		});
-		*/
 	},
 	
 	deleteFtpAccount: function (req, res) {
