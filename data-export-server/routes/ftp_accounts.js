@@ -49,8 +49,30 @@ var ftpAccountsData = {
 			exec(command, function(err, out, code) {
 				if (err instanceof Error)
 					throw err;
-				//process.stdout.write(out);
-				console.log(out);
+				var resp = out.trim();
+				if(resp == 'USER_ADDED_SUCCESSFULLY'){
+					query = "INSERT INTO `ftp_accounts` (`title`,`username`,`password`,`ip`,`port`,`location`,`protocol`) VALUES (?,?,?,?,?,?,?)";
+					params = [title, username, password, HOST, PORT, LOCATION+username, PROTOCOL];
+					var formatedQuery = mysql.format(query, params);
+					db.getConnection(function(err, connection){
+						connection.query(formatedQuery, function (err, result) {
+							if (err) {
+								console.log(err);
+							}
+							else {
+								res.json({
+									values: resp
+								});
+							}
+						});
+						connection.release();
+					});
+				}
+				else{
+					res.json({
+						values: resp
+					});
+				}
 			});
 		
 			/*
