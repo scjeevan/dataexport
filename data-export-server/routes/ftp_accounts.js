@@ -45,7 +45,7 @@ var ftpAccountsData = {
 		var password = req.body.password;
 		if (typeof req.body.ftp_account_id == 'undefined'){
 			//var command = '/opt/script_sftp/addsftpuser.sh ' + username + ' ' + password;
-			var command = '/opt/jeevan/addsftpuser.sh ' + username + ' ' + password;
+			var command = '/opt/script_sftp/addsftpuser.sh ' + username + ' ' + password;
 			exec(command, function(err, out, code) {
 				if (err instanceof Error)
 					throw err;
