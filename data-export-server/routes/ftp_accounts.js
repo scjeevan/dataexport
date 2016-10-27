@@ -49,7 +49,6 @@ var ftpAccountsData = {
 			exec(command, function(err, out, code) {
 				if (err instanceof Error)
 					throw err;
-				console.log("USER_ADDED_SUCCESSFULLY");
 				process.stderr.write(err);
 				process.stdout.write(out);
 				process.exit(code);
