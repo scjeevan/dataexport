@@ -1,5 +1,4 @@
 var db = require('./database');
-var nodemiral = require('nodemiral');
 var fs = require("file-system");
 var exec = require('exec');
 var mysql = require("mysql");
