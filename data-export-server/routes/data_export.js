@@ -75,8 +75,10 @@ function buildQuery(paramArr, isCount, isSchedule){
 	var dateRange = "";
 	if((typeof paramArr.startDate != 'undefined' && paramArr.startDate.length > 0)&&(typeof paramArr.endDate != 'undefined' && paramArr.endDate.length > 0)){
 		var start = paramArr.startDate.replace(/T/, ' ').replace(/\..+/, '');
+		start = start.substring(0, 10); 
 		var end = paramArr.endDate.replace(/T/, ' ').replace(/\..+/, '');
-		dateRange = " t.Date BETWEEN '"+start+"' AND '"+end+"' ";
+		end = end.substring(0, 10); 
+		dateRange = " Substr(t.Date) >= '"+start+"' AND Substr(t.Date) <= '"+end+"' ";
 	}
 	if(isSchedule){
 		dateRange = " t.Date BETWEEN '<start>' AND '<end>' ";
@@ -400,27 +402,50 @@ var exportDataMng = {
 					var start = req.body.startDate;
 					var end = req.body.endDate;
 					var file_name = req.body.fileName;
-					if(req.body.table == 'ip'){
+					if(req.body.table == 'Diggit_IP'){
 						file_name = file_name + "_IP";
 						if(req.body.isGenre){
 							_query += " FROM [DevDiggit_Hist.Diggit_IP] AS t JOIN [DevDiggit_Hist.mm_title_genres] AS gt ON t.TitleID = gt.title_id WHERE t.Date BETWEEN '"+start+"' AND '"+end+"' AND gt.genre_id IN "+genreQ; // LIMIT 10000
 						} else {
 							_query += " FROM DevDiggit_Hist.Diggit_IP WHERE Date BETWEEN '"+start+"' AND '"+end+"' "; // LIMIT 10000
 						}
+						_query += " AND IP!='Peer IP'";
+						DEBUG.log(_query);
 						exportDataUsingScript(_query, connectionProperties, file_name);
 						res.json({
 							values: "Selected data is being exported"
 						});
 					}
+					else if(req.body.table == 'infohashes'){
+						file_name = file_name + "_infohashes";
+						_query += "UNION ALL select i.infohash,mt.diggit_id,i.file_name,i.network,i.file_size,i.media_format,i.quality,i.audio_language, i.subtitle_language,i.created_time,i.added_time,i.episode_title,i.added_by,i.languages,i.verified, i.resolution,i.aspect_ratio,i.frame_rate,i.subtitles,i.bitrate from  torrents.mm_titles mt left join torrents.infohashes i on i.mm_title_id=mt.title_id ";
+						_formatedQuery = mysql.format(_query);
+						DEBUG.log("[QUERY]:"+_query);
+						connection.query(_formatedQuery, function (err, rows) {
+							if(err) console.log(err);
+							var status = "Data not found for selected criteria"
+							if(typeof rows != 'undefined' && typeof rows.length != 'undefined' && rows.length > 0){
+								status = "File exported successfully";
+								saveDateRemort(file_name, headers, rows, connectionProperties, ftp_loc);
+							}
+							res.json({
+								values: status
+							});
+							
+						});
+					}
 					else{
 						file_name = file_name + "_title";
+						_query += "UNION ALL select mt.diggit_id as diggit_id,mt.title as title,mt.season ,mt.episode,mt.studio,mt.content_type,mt.genre,mt.mpaa_rating,mt.imdb_id,mt.episode_imdb_id, ie.Year as episode_Year,ie.Rating as episode_Rating,ie.Runtime as episode_Runtime ,ie.Genre as episode_Genre, ie.Released as episode_Released,ie.Season as episode_Season ,ie.Title as episode_title,ie.Director as episode_Director,ie.Writer as episode_Writer,ie.Cast as episode_Cast, ie.Metacritic as episode_Metacritic,ie.imdbRating as episode_imdbRating,ie.imdbVotes as episode_imdbVotes, ie.Poster as episode_Poster ,ie.Plot as episode_Plot,ie.FullPlot as episode_FullPlot, ie.Language as episode_Language,ie.Country as episode_Country,ie.Awards as episode_Awards, id.Year as Year,id.Rating,id.Runtime,id.Genre,id.Released,id.Director,id.Writer,id.Cast,id.Metacritic,id.imdbRating,   id.imdbVotes,id.Plot,id.FullPlot,id.Language,id.Country from torrents.mm_titles mt left join imdb.episodes ie on ie.imdbID=mt.imdb_id left join imdb.imdb_details id on id.imdbID=mt.imdb_id";
+						/*
 						if(req.body.isGenre){
 							_query += " FROM mm_titles t, mm_title_genres g WHERE t.title_id = g.title_id AND g.genre_id IN "+genreQ;
 						} else {
 							_query += " FROM mm_titles t";
 						}
+						*/
 						_formatedQuery = mysql.format(_query);
-						console.log("[QUERY]:"+_query);
+						DEBUG.log("[QUERY]:"+_query);
 						connection.query(_formatedQuery, function (err, rows) {
 							if(err) console.log(err);
 							var status = "Data not found for selected criteria"
@@ -597,6 +622,31 @@ var exportDataMng = {
 	
 	scheduleExportData: function (req, res) {
 		var _query = "";
+		var _query = "SELECT ";
+		for (var i in req.body.columns) {
+			_query += "t."+req.body.columns[i] + ",";
+		}
+		_query = _query.substring(0, _query.length - 1);
+		if(req.body.table=='Diggit_IP'){
+			if(req.body.isGenre){
+				var genreQ = "(";
+				for (var i in req.body.genres) {
+					genreQ += req.body.genres[i] + ",";
+				}
+				genreQ = genreQ.substring(0, genreQ.length - 1) + ")";
+				_query += " FROM [DevDiggit_Hist.Diggit_IP] AS t JOIN [DevDiggit_Hist.mm_title_genres] AS gt ON t.TitleID = gt.title_id WHERE t.Date BETWEEN '<start>' AND '<end>' AND gt.genre_id IN "+genreQ;
+			} else {
+				_query += " FROM DevDiggit_Hist.Diggit_IP WHERE Date BETWEEN '<start>' AND '<end>' ";
+			}
+			_query += " AND IP!='Peer IP'";
+		}
+		else if(req.body.table == 'infohashes'){
+			_query += "UNION ALL select i.infohash,mt.diggit_id,i.file_name,i.network,i.file_size,i.media_format,i.quality,i.audio_language, i.subtitle_language,i.created_time,i.added_time,i.episode_title,i.added_by,i.languages,i.verified, i.resolution,i.aspect_ratio,i.frame_rate,i.subtitles,i.bitrate from  torrents.mm_titles mt left join torrents.infohashes i on i.mm_title_id=mt.title_id ";
+		else{
+			_query += "UNION ALL select mt.diggit_id as diggit_id,mt.title as title,mt.season ,mt.episode,mt.studio,mt.content_type,mt.genre,mt.mpaa_rating,mt.imdb_id,mt.episode_imdb_id, ie.Year as episode_Year,ie.Rating as episode_Rating,ie.Runtime as episode_Runtime ,ie.Genre as episode_Genre, ie.Released as episode_Released,ie.Season as episode_Season ,ie.Title as episode_title,ie.Director as episode_Director,ie.Writer as episode_Writer,ie.Cast as episode_Cast, ie.Metacritic as episode_Metacritic,ie.imdbRating as episode_imdbRating,ie.imdbVotes as episode_imdbVotes, ie.Poster as episode_Poster ,ie.Plot as episode_Plot,ie.FullPlot as episode_FullPlot, ie.Language as episode_Language,ie.Country as episode_Country,ie.Awards as episode_Awards, id.Year as Year,id.Rating,id.Runtime,id.Genre,id.Released,id.Director,id.Writer,id.Cast,id.Metacritic,id.imdbRating,   id.imdbVotes,id.Plot,id.FullPlot,id.Language,id.Country from torrents.mm_titles mt left join imdb.episodes ie on ie.imdbID=mt.imdb_id left join imdb.imdb_details id on id.imdbID=mt.imdb_id";
+		}
+
+		/*
 		if(req.body.table=='Diggit_IP'){
 			_query = buildQuery(req.body, false, true);
 		}
@@ -617,7 +667,8 @@ var exportDataMng = {
 				_query += " FROM mm_titles t";
 			}
 		}
-		DEBUG.log("Saving [query]:"+_query);
+		*/
+		DEBUG.log("Saving [QUERY]:"+_query);
 		var ftp_account_id = 1;
 		if (typeof req.body.ftp_account_id != 'undefined'){
 			ftp_account_id = parseInt(req.body.ftp_account_id);

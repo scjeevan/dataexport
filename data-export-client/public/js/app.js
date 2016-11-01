@@ -5,9 +5,17 @@ var server_path = 'http://104.197.10.155:80/';
 
 var mvpApp = angular.module('dataExportApp', ['ngCookies', 'ngAnimate', 'ngRoute', 'googlechart', 'ui.bootstrap', 'infinite-scroll', 'smart-table', 'ngToast', 'angularSpinner', 'checklist-model', 'angucomplete-alt', 'ivh.treeview', 'angularUtils.directives.dirPagination', 'ngMaterial']);
 
-var titleColumns = ["mm_title_id", "title", "season", "episode", "studio", "content_type", "genre", "mpaa_rating", "imdb_id", "episode_imdb_id", "diggit_id"];
-var infohashesColumns = ["infohash", "file_name", "created_by", "created_time", "added_time", "updated_time", "episode_title", "added_by", "languages", "verified", "media_format", "resolution", "aspect_ratio", "frame_rate", "subtitles", "bitrate", "quality", "no_of_files", "episode_id", "episode_airdate", "season", "source", "category", "torrent_url", "mm_hash_id", "mm_title_id", "file_size", "audio_language", "subtitle_language", "network", "metadata_source", "is_tracked"];
-var ipColumns = ["Infohash", "TitleID", "Date", "IP", "Port", "Continent", "Country", "Region", "State", "City", "Latitude", "Longitude", "ISP", "OrganizationType", "NameofProtocol", "UniqueDownloads", "source"];
+var titleColumns = ['diggit_id' ,'title','season' ,'episode','studio','content_type','genre','mpaa_rating','imdb_id','episode_imdb_id',
+	'episode_Year','episode_Rating','episode_Runtime' ,'episode_Genre','episode_Released','episode_Season','episode_title',
+	'episode_Director','episode_Writer','episode_Cast','episode_Metacritic','episode_imdbRating','episode_imdbVotes','episode_Poster',
+	'episode_Plot','episode_FullPlot','episode_Language','episode_Country','episode_Awards','Year','Rating','Runtime','Genre','Released',
+	'Director','Writer','Cast','Metacritic','imdbRating','imdbVotes','Plot','FullPlot','Language','Country'];
+
+var infohashesColumns = ['infohash','diggit_id','file_name','network','file_size','media_format','quality','audio_language','subtitle_language',
+	'created_time','added_time','episode_title','added_by','languages','verified','resolution','aspect_ratio','frame_rate','subtitles','bitrate'];
+
+var ipColumns = ['IP','Infohash','diggit_id','Port','Date','Continent','Country','Region','State','City','Latitude','Longitude','ISP',
+	'OrganizationType','NameofProtocol'];
 
 
 mvpApp.constant('root_url', server_path).service('Api', function(root_url) {
@@ -421,65 +429,85 @@ mvpApp.controller('ftpAccountManager', ['$window', '$scope', '$location', '$http
 }]);
 
 mvpApp.config(function(ivhTreeviewOptionsProvider) {
-	ivhTreeviewOptionsProvider.set({
+		ivhTreeviewOptionsProvider.set({
 		idAttribute: 'id',
 		labelAttribute: 'label',
 		childrenAttribute: 'children',
 		selectedAttribute: 'selected',
-		useCheckboxes: false,
+		useCheckboxes: true,
 		expandToDepth: 0,
 		indeterminateAttribute: '__ivhTreeviewIndeterminate',
 		expandedAttribute: '__ivhTreeviewExpanded',
 		defaultSelectedState: true,
 		validate: true,
-		twistieExpandedTpl: '(-)',
-		twistieCollapsedTpl: '(+)',
-		twistieLeafTpl: 'o'
+		twistieExpandedTpl: '-',
+		twistieCollapsedTpl: '+',
+		twistieLeafTpl: '<leaf></leaf>'
 	});
+});
+
+/*
+mvpApp.directive('leaf', function($rootScope, makeTree) {
+	return {
+		restrict: 'AE',
+		link: function(scope, element, attrs) {
+			console.log(scope)
+			element.text('#');
+			element.on('click', function() {
+				//element.text('@');
+				setTimeout(function() {
+					//element.text('#');
+					scope.$apply(function() {
+						Array.prototype.push.apply(scope.node.children,  makeTree(3, 3));
+					});
+				}, 500);
+			});
+		}
+	};
 });
 
 mvpApp.controller('DemoCtrl', function($scope, ivhTreeviewBfs, ivhTreeviewMgr) {
 	$scope.exp = {};
 	var data = [{
-		label: 'asia',
-		value: 'asia',
-		children: []
-	},
-	{
-		label: 'europe',
-		value: 'europe',
-		children: []
-	},
-	{
-		label: 'north america',
-		value: 'north america',
-		children: []
-	},
-	{
-		label: 'south america',
-		value: 'south america',
-		children: []
-	},
-	{
-		label: 'oceania',
-		value: 'oceania',
-		children: []
-	},
-	{
-		label: 'other',
-		value: 'other',
-		children: []
-	},
-	{
-		label: 'africa',
-		value: 'africa',
-		children: []
-	}
-	];
+			label: 'Asia',
+			value: 'Asia',
+			children: []
+		},
+		{
+			label: 'Europe',
+			value: 'Europe',
+			children: []
+		},
+		{
+			label: 'North America',
+			value: 'North America',
+			children: []
+		},
+		{
+			label: 'South America',
+			value: 'South America',
+			children: []
+		},
+		{
+			label: 'Oceania',
+			value: 'Oceania',
+			children: []
+		},
+		{
+			label: 'Other',
+			value: 'Other',
+			children: []
+		},
+		{
+			label: 'Africa',
+			value: 'Africa',
+			children: []
+		}
+		];
 	
 	$scope.exp.locations = [{
 		label: 'Global',
-		value: 'global', 
+		value: 'Global', 
 		children: data
 	}];
 	
@@ -492,23 +520,35 @@ mvpApp.controller('DemoCtrl', function($scope, ivhTreeviewBfs, ivhTreeviewMgr) {
 		}
 	});
 	
-	this.selectHats = function() {
-		var tree = getTree()
-	  , parent = getParent()
-	  , newNodes = [{label: 'Hello'},{label: 'World'}];
-
-	// Attach new children to parent node
-	parent.children = newNodes;
-
-	// Force revalidate on tree given parent node's selected status
-	ivhTreeviewMgr.select(myTree, parent, parent.selected);
 	
-		//ivhTreeviewMgr.select(stuff, 'hats');
+});
+
+mvpApp.service('makeTree', function() {
+	var t = [ 'Mustachio','Cane','Monacle','Umbrella','Headphones','Top hat','Fedora','Flat cap','Phone','Wallet','Squirrel','Wizard hat','Great sword',   'Playing cards','Post-it notes','Stickers','Tea','Patch'];
+  
+	var makeNode = function(label) {
+		return {
+			label: label,
+			children: []
+		};
 	};
-	this.deselectGel = function() {
-		ivhTreeviewMgr.deselect(stuff, stuff[1].children[1]);
+  
+	return function(arity, count) {
+		var list = count ? t.slice(0, count) : t.slice(0);
+		var node = makeNode(list.shift())
+			, nodes = [node]
+			, tree = [node];
+		while(list.length && nodes.length) {
+			node = nodes.shift();
+			while(list.length && node.children.length < arity) {
+				node.children.push(makeNode(list.shift()));
+			}
+			Array.prototype.push.apply(nodes, node.children);
+		}
+		return tree;
 	};
 });
+*/
 
 mvpApp.controller('dataExportFilter', ['ivhTreeviewBfs', '$window', '$scope', '$location', '$http', 'Api', 'ngToast', function(ivhTreeviewBfs, $window, $scope, $location, $http, Api, ngToast) {
 	$scope.columns = ipColumns;
@@ -565,14 +605,6 @@ mvpApp.controller('dataExportFilter', ['ivhTreeviewBfs', '$window', '$scope', '$
 		}
 	};
 	
-	getLocations(function(data){
-        $scope.exp.locations = [{
-			label: 'Global',
-			value: 'global',
-			children: data
-		}];
-    });
-	
 	getMovies(function(data){
         $scope.movies = data;
     });
@@ -580,6 +612,13 @@ mvpApp.controller('dataExportFilter', ['ivhTreeviewBfs', '$window', '$scope', '$
         $scope.groups = data;
     });
 	
+	getLocations(function(data){
+        $scope.exp.locations = [{
+			label: 'Global',
+			value: 'global',
+			children: data
+		}];
+    });
 	function getLocations(callback){
 		var data = [{
 			label: 'Asia',
@@ -777,24 +816,6 @@ mvpApp.controller('dataExportFilter', ['ivhTreeviewBfs', '$window', '$scope', '$
 	$scope.getData($scope.pageno);
 }
 ]);
-
-mvpApp.config(function(ivhTreeviewOptionsProvider) {
-		ivhTreeviewOptionsProvider.set({
-		idAttribute: 'id',
-		labelAttribute: 'label',
-		childrenAttribute: 'children',
-		selectedAttribute: 'selected',
-		useCheckboxes: true,
-		expandToDepth: 0,
-		indeterminateAttribute: '__ivhTreeviewIndeterminate',
-		expandedAttribute: '__ivhTreeviewExpanded',
-		defaultSelectedState: true,
-		validate: true,
-		twistieExpandedTpl: '-',
-		twistieCollapsedTpl: '+',
-		twistieLeafTpl: '&nbsp;&nbsp;'
-	});
-});
 
 mvpApp.config(function($mdDateLocaleProvider) {
     $mdDateLocaleProvider.formatDate = function(date) {
