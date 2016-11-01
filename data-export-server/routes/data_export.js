@@ -75,10 +75,10 @@ function buildQuery(paramArr, isCount, isSchedule){
 	var dateRange = "";
 	if((typeof paramArr.startDate != 'undefined' && paramArr.startDate.length > 0)&&(typeof paramArr.endDate != 'undefined' && paramArr.endDate.length > 0)){
 		var start = paramArr.startDate.replace(/T/, ' ').replace(/\..+/, '');
-		start = start.substring(0, 10); 
+		start = start.substring(0, 10)+' 00:00:00'; 
 		var end = paramArr.endDate.replace(/T/, ' ').replace(/\..+/, '');
-		end = end.substring(0, 10); 
-		dateRange = " Substr(t.Date) >= '"+start+"' AND Substr(t.Date) <= '"+end+"' ";
+		end = end.substring(0, 10)+' 23:59:59'; 
+		dateRange = " t.Date >= '"+start+"' AND t.Date <= '"+end+"' ";
 	}
 	if(isSchedule){
 		dateRange = " t.Date BETWEEN '<start>' AND '<end>' ";
