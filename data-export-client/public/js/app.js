@@ -552,6 +552,8 @@ mvpApp.service('makeTree', function() {
 
 mvpApp.controller('dataExportFilter', ['ivhTreeviewBfs', '$window', '$scope', '$location', '$http', 'Api', 'ngToast', function(ivhTreeviewBfs, $window, $scope, $location, $http, Api, ngToast) {
 	$scope.columns = ipColumns;
+	$scope.titleColumns = titleColumns;
+	$scope.infohashesColumns = infohashesColumns;
 	$scope.selectedMovies = [];
 	$scope.selectedGroups = [];
 	$scope.ftp_acc_list = [];
@@ -594,6 +596,22 @@ mvpApp.controller('dataExportFilter', ['ivhTreeviewBfs', '$window', '$scope', '$
 		}
 		else{
 			$scope.exp.genres = [];
+		}
+	};
+	$scope.toggleAllTitleColumns = function() {
+		if($scope.exp.columns_all_title == '1'){
+			$scope.exp.tColumns = $scope.titleColumns.map(function(item) { return item; });
+		}
+		else{
+			$scope.exp.tColumns = [];
+		}
+	};
+	$scope.toggleAllInfohashColumns = function() {
+		if($scope.exp.columns_all_infohash == '1'){
+			$scope.exp.infColumns = $scope.infohashesColumns.map(function(item) { return item; });
+		}
+		else{
+			$scope.exp.infColumns = [];
 		}
 	};
 	$scope.toggleAllColumns = function() {
@@ -770,6 +788,7 @@ mvpApp.controller('dataExportFilter', ['ivhTreeviewBfs', '$window', '$scope', '$
 		
 	};
 	$scope.getData = function(pageno){
+		console.log("file_format : " + $scope.exp.file_format);
 		$scope.dataCount = 0;
         $scope.ip_values = [];
 		$scope.exp.itemsPerPage = 20;

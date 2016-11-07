@@ -145,18 +145,41 @@
 													<div class="" style="max-height:150px; padding:5px; overflow:auto;">
 													<label>
 													<input type="radio" value="1" name="file_format" ng-model="exp.file_format" class="ng-pristine ng-untouched ng-valid">
-													Separate IP and Title Files</label>
+													Separate IP, Title and Infohash Files</label>
 													<br>
 													<label>
 													<input type="radio" value="0" name="file_format" ng-model="exp.file_format" class="ng-pristine ng-untouched ng-valid">
-													Merged IP and Title Files</label>
+													Merged IP, Title and Infohash Files</label>
 													</div>
 													<br>
 													<b class="required">Fields</b>
+													<div class="row">
+													<div class="column">
+													<b class="required">Title</b>
+													<div class="" style="max-height:150px; padding:5px; overflow:auto;">
+													<label style="font-weight: bold;"><input type="checkbox" checklist-model="exp.columns_all_title" checklist-value="1" ng-click="toggleAllTitleColumns()" class="ng-scope ng-pristine ng-untouched ng-valid"> Select All</label>
+													<div class="checkbox" ng-repeat="tColumn in titleColumns">
+														<label><input type="checkbox" checklist-model="exp.tColumns" checklist-value="tColumn" class="ng-scope ng-pristine ng-untouched ng-valid checkbox_ck"> {{tColumn}}</label>
+													</div>
+													</div>
+													</div>
+													<div class="column">
+													<b class="required">Infohashes</b>
+													<div class="" style="max-height:150px; padding:5px; overflow:auto;">
+													<label style="font-weight: bold;"><input type="checkbox" checklist-model="exp.columns_all_infohash" checklist-value="1" ng-click="toggleAllInfohashColumns()" class="ng-scope ng-pristine ng-untouched ng-valid"> Select All</label>
+													<div class="checkbox" ng-repeat="infColumn in infohashesColumns">
+														<label><input type="checkbox" checklist-model="exp.infColumns" checklist-value="infColumn" class="ng-scope ng-pristine ng-untouched ng-valid checkbox_ck"> {{infColumn}}</label>
+													</div>
+													</div>
+													</div>
+													<div class="column">
+													<b class="required">Diggit_IP</b>
 													<div class="" style="max-height:150px; padding:5px; overflow:auto;">
 													<label style="font-weight: bold;"><input type="checkbox" checklist-model="exp.columns_all" checklist-value="1" ng-click="toggleAllColumns()" class="ng-scope ng-pristine ng-untouched ng-valid"> Select All</label>
 													<div class="checkbox" ng-repeat="column in columns">
 														<label><input type="checkbox" checklist-model="exp.columns" checklist-value="column" class="ng-scope ng-pristine ng-untouched ng-valid checkbox_ck"> {{column}}</label>
+													</div>
+													</div>
 													</div>
 													</div>
 												</div>
@@ -227,26 +250,30 @@
 			<div class="box-body">
 				<div class="panel-body">
 					<div class="bs-component">
-						<table class="table table-striped table-hover">
-							<thead ng-if="headers.length > 0" class="ng-scope">
-								<tr>
-									<th class="ng-binding ng-scope" ng-repeat="h in headers">{{h}}</th>
-								</tr>
-							</thead>
-							<tbody>
-								<tr class="ng-scope" ng-show="dataCount < 0"><td colspan="{{headers.length}}" >Data not found for selected criteria</td></tr>
-								<tr class="ng-scope" ng-show="dataCount == 0"><td colspan="{{headers.length}}" >Loading data</td></tr>
-								<tr class="ng-scope" dir-paginate="item in ip_values|itemsPerPage:itemsPerPage" total-items="total_count">
-									<td class="ng-binding ng-scope" ng-repeat="h in headers">{{item[h]}}</td>
-								</tr>
-							</tbody>
-						</table>
-						<dir-pagination-controls
-						   max-size="8"
-						   direction-links="true"
-						   boundary-links="true"
-						   on-page-change="getData(newPageNumber)" >
-						</dir-pagination-controls>
+						<tabset>
+							<tab heading="Diggit_IP">
+							<table class="table table-striped table-hover">
+								<thead ng-if="headers.length > 0" class="ng-scope">
+									<tr>
+										<th class="ng-binding ng-scope" ng-repeat="h in headers">{{h}}</th>
+									</tr>
+								</thead>
+								<tbody>
+									<tr class="ng-scope" ng-show="dataCount < 0"><td colspan="{{headers.length}}" >Data not found for selected criteria</td></tr>
+									<tr class="ng-scope" ng-show="dataCount == 0"><td colspan="{{headers.length}}" >Loading data</td></tr>
+									<tr class="ng-scope" dir-paginate="item in ip_values|itemsPerPage:itemsPerPage" total-items="total_count">
+										<td class="ng-binding ng-scope" ng-repeat="h in headers">{{item[h]}}</td>
+									</tr>
+								</tbody>
+							</table>
+							<dir-pagination-controls
+							   max-size="8"
+							   direction-links="true"
+							   boundary-links="true"
+							   on-page-change="getData(newPageNumber)" >
+							</dir-pagination-controls>
+							</tab>
+						</tabset>
 					</div>
 				</div>
 			</div>

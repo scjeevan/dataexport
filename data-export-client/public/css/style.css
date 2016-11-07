@@ -3927,5 +3927,12 @@ text-align:left !important;
 top: 43%;
 }
 .md-datepicker-calendar-pane {z-index: 1151 !important ;}
-
+.row{
+    display: table;
+    width: 100%; /*Optional*/
+    border-spacing: 10px; /*Optional*/
+}
+.column{
+    display: table-cell;
+}
 
