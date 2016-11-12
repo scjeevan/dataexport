@@ -205,7 +205,6 @@ function saveDateRemort(file_name, headers, rows, connectionProperties, ftl_loc)
 			console.log( "- SFTP started" );
 			var readStream = fs.createReadStream(act_file);
 			var destPath = ftl_loc +"/"+ file_name;
-			console.log(destPath);
 			var writeStream = sftp.createWriteStream(destPath);
 			writeStream.on(
 				'close',
@@ -423,7 +422,7 @@ var exportDataMng = {
 					}
 					else if(req.body.table == 'infohashes'){
 						file_name = file_name + "_infohashes";
-						_query += " UNION ALL select i.infohash,mt.diggit_title_id, i.file_name,i.network,i.file_size,i.media_format,i.quality,i.audio_language, i.subtitle_language,i.created_time,i.added_time,i.episode_title,i.added_by,i.languages,i.verified, i.resolution,i.aspect_ratio,i.frame_rate,i.subtitles,i.bitrate from  torrents.mm_titles mt left join torrents.infohashes i on i.mm_title_id=mt.title_id ";
+						_query += " UNION ALL select i.infohash,mt.diggit_title_id, i.file_name,i.network,i.file_size,i.media_format,i.quality,i.audio_language, i.subtitle_language,i.created_time,i.added_time,i.episode_title,i.added_by,i.languages,i.verified, i.resolution,i.aspect_ratio,i.frame_rate,i.subtitles,i.bitrate from  torrents.mm_titles mt left join torrents.infohashes i on i.mm_title_id=mt.mm_title_id ";
 						if(req.body.isGenre){
 							_query += " left join torrents.mm_title_genres g on g.title_id = mt.mm_title_id where g.genre_id in "+genreQ;
 						}
