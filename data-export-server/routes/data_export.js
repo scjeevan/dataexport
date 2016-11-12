@@ -160,9 +160,9 @@ function saveDateRemort(file_name, headers, rows, connectionProperties, ftl_loc)
 	var act_file = process.env.DATAEXPORT_CSV_SAVE_PATH + file_name;
 	var writer = csvWriter({ 
 		headers: headers,
-		separator: ',',
+		separator: '\t',
 		newline: '\n',
-		sendHeaders: true
+		sendHeaders: false
 	});
 	writer.pipe(fs.createWriteStream( act_file ));
 	rows.forEach(function (row) {
@@ -204,6 +204,7 @@ function saveDateRemort(file_name, headers, rows, connectionProperties, ftl_loc)
 			}
 			console.log( "- SFTP started" );
 			var readStream = fs.createReadStream(act_file);
+			console.log(ftl_loc + file_name);
 			var writeStream = sftp.createWriteStream(ftl_loc + file_name);
 			writeStream.on(
 				'close',
