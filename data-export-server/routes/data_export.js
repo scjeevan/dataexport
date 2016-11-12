@@ -818,6 +818,22 @@ var j = schedule.scheduleJob('0 0 0 * * *', function(){
 });
 
 function exportDataUsingScript(_query, connectionProperties, fileName){
+	var exportCommand = process.env.DATAEXPORT_GQ_SCRIPT_PATH + ' -dataset DevDiggit_Hist -query "' + _query + '" -download_local -local_path '+process.env.DATAEXPORT_CSV_SAVE_PATH+' -bucket_name devdiggitbucket -project_id '+process.env.DATAEXPORT_GQ_PROJECT_ID+' -sftp_transfer -ftp_user "'+connectionProperties.user+'"  -ftp_pass \''+connectionProperties.password+'\' -ftp_server "'+connectionProperties.host+'" -ftp_port '+connectionProperties.port+' -export_file_name '+fileName+'';
+	console.log(exportCommand);
+	
+	var workerProcess = child_process.exec(exportCommand,function(error, stdout, stderr){
+		if (error) {
+			console.log(error.stack);
+			console.log('Error code: '+error.code);
+			console.log('Signal received: '+error.signal);
+		}
+		console.log('stdout: ' + stdout);
+		console.log('stderr: ' + stderr);
+	});
+	workerProcess.on('exit', function (code) {
+		console.log('Child process exited with exit code '+code);
+	});
+	/*
 	child_process.execFile(process.env.DATAEXPORT_GQ_SCRIPT_PATH, [
 		'-dataset','DevDiggit_Hist',
 		'-query', _query,
@@ -833,7 +849,7 @@ function exportDataUsingScript(_query, connectionProperties, fileName){
 		'-export_file_name',fileName], function(error, stdout, stderr){
 			console.log(stdout);
 	});
-	/*
+	
 	var exportCommand = process.env.DATAEXPORT_GQ_SCRIPT_PATH + ' -dataset DevDiggit_Hist -query "' + _query + '" -download_local -local_path '+process.env.DATAEXPORT_CSV_SAVE_PATH+' -bucket_name devdiggitbucket -project_id '+process.env.DATAEXPORT_GQ_PROJECT_ID+' -sftp_transfer -ftp_user "'+connectionProperties.user+'"  -ftp_pass \''+connectionProperties.password+'\' -ftp_server "'+connectionProperties.host+'" -ftp_port '+connectionProperties.port+' -export_file_name '+fileName+'';
 	console.log(exportCommand);
 	
