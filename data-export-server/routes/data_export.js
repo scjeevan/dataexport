@@ -818,11 +818,10 @@ var j = schedule.scheduleJob('0 0 0 * * *', function(){
 });
 
 function exportDataUsingScript(_query, connectionProperties, fileName){
-	
-	child_process.execFile('ls', ['-lah', '/tmp'], function(error, stdout, stderr){
-		console.log(stdout);
+	child_process.execFile(process.env.DATAEXPORT_GQ_SCRIPT_PATH, ['-dataset DevDiggit_Hist -query "' + _query + '" -download_local -local_path '+process.env.DATAEXPORT_CSV_SAVE_PATH+' -bucket_name devdiggitbucket -project_id '+process.env.DATAEXPORT_GQ_PROJECT_ID+' -sftp_transfer -ftp_user "'+connectionProperties.user+'"  -ftp_pass \''+connectionProperties.password+'\' -ftp_server "'+connectionProperties.host+'" -ftp_port '+connectionProperties.port+' -export_file_name '+fileName+''], function(error, stdout, stderr){
+			console.log(stdout);
 	});
-	
+	/*
 	child_process.execFile(process.env.DATAEXPORT_GQ_SCRIPT_PATH, [
 		'-dataset','DevDiggit_Hist',
 		'-query', _query,
@@ -838,6 +837,7 @@ function exportDataUsingScript(_query, connectionProperties, fileName){
 		'-export_file_name',fileName], function(error, stdout, stderr){
 			console.log(stdout);
 	});
+	*/
 	/*
 	var exportCommand = process.env.DATAEXPORT_GQ_SCRIPT_PATH + ' -dataset DevDiggit_Hist -query "' + _query + '" -download_local -local_path '+process.env.DATAEXPORT_CSV_SAVE_PATH+' -bucket_name devdiggitbucket -project_id '+process.env.DATAEXPORT_GQ_PROJECT_ID+' -sftp_transfer -ftp_user "'+connectionProperties.user+'"  -ftp_pass \''+connectionProperties.password+'\' -ftp_server "'+connectionProperties.host+'" -ftp_port '+connectionProperties.port+' -export_file_name '+fileName+'';
 	console.log(exportCommand);
