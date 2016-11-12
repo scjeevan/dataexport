@@ -413,7 +413,7 @@ var exportDataMng = {
 						} else {
 							_query += " FROM DevDiggit_Hist.Diggit_IP WHERE Date BETWEEN '"+start+"' AND '"+end+"' "; // LIMIT 10000
 						}
-						_query += " AND IP!='Peer IP'";
+						_query += " AND IP!='Peer IP' LIMIT 1000";
 						DEBUG.log(_query);
 						exportDataUsingScript(_query, connectionProperties, file_name);
 						res.json({
@@ -422,11 +422,16 @@ var exportDataMng = {
 					}
 					else if(req.body.table == 'infohashes'){
 						file_name = file_name + "_infohashes";
-						_query += " UNION ALL select i.infohash,mt.diggit_title_id, i.file_name,i.network,i.file_size,i.media_format,i.quality,i.audio_language, i.subtitle_language,i.created_time,i.added_time,i.episode_title,i.added_by,i.languages,i.verified, i.resolution,i.aspect_ratio,i.frame_rate,i.subtitles,i.bitrate from  torrents.mm_titles mt left join torrents.infohashes i on i.mm_title_id=mt.mm_title_id WHERE i.added_time BETWEEN '"+start+"' AND '"+end+"'";
+						_query += " UNION ALL select i.infohash,mt.diggit_title_id, i.file_name,i.network,i.file_size,i.media_format,i.quality,i.audio_language, i.subtitle_language,i.created_time,i.added_time,i.episode_title,i.added_by,i.languages,i.verified, i.resolution,i.aspect_ratio,i.frame_rate,i.subtitles,i.bitrate from  torrents.mm_titles mt left join torrents.infohashes i on i.mm_title_id=mt.mm_title_id";
+						if(typeof req.body.startDate != 'undefined' && typeof req.body.endDate != 'undefined'){
+							var start = req.body.startDate;
+							var end = req.body.endDate;
+							_query += " WHERE i.added_time BETWEEN '"+start+"' AND '"+end+"' ";
+						}
 						if(req.body.isGenre){
 							_query += " left join torrents.mm_title_genres g on g.title_id = mt.mm_title_id where g.genre_id in "+genreQ;
 						}
-						_query += " limit 2 ";
+						_query += " limit 5 ";
 						_formatedQuery = mysql.format(_query);
 						DEBUG.log("[QUERY]:"+_query);
 						connection.query(_formatedQuery, function (err, rows) {
@@ -448,7 +453,7 @@ var exportDataMng = {
 						if(req.body.isGenre){
 							_query += " left join torrents.mm_title_genres g on g.title_id = mt.mm_title_id where g.genre_id in "+genreQ;
 						}
-						_query += " limit 2 ";
+						_query += " limit 5 ";
 						_formatedQuery = mysql.format(_query);
 						DEBUG.log("[QUERY]:"+_query);
 						connection.query(_formatedQuery, function (err, rows) {
