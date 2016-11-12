@@ -4,7 +4,8 @@ var fs = require("file-system");
 var Client = require('ssh2').Client;
 var csvWriter = require('csv-write-stream');
 var schedule = require('node-schedule');
-var exec = require('exec');
+var child_process = require('child_process');
+//var exec = require('exec');
 //var exec = require('child-process-promise').exec;
 var writer = csvWriter();
 var conn = new Client();
@@ -817,8 +818,30 @@ var j = schedule.scheduleJob('0 0 0 * * *', function(){
 });
 
 function exportDataUsingScript(_query, connectionProperties, fileName){
+	
+	child_process.execFile('ls', ['-lah', '/tmp'], function(error, stdout, stderr){
+		console.log(stdout);
+	});
+	
+	child_process.execFile(process.env.DATAEXPORT_GQ_SCRIPT_PATH, [
+		'-dataset DevDiggit_Hist',
+		'-query '+ _query,
+		'-download_local',
+		'-local_path '+process.env.DATAEXPORT_CSV_SAVE_PATH,
+		'-bucket_name devdiggitbucket',
+		'-project_id '+process.env.DATAEXPORT_GQ_PROJECT_ID,
+		'-sftp_transfer',
+		'-ftp_user '+connectionProperties.user,
+		'-ftp_pass '+connectionProperties.password,
+		'-ftp_server '+connectionProperties.host,
+		'-ftp_port '+connectionProperties.port,
+		'-export_file_name '+fileName], function(error, stdout, stderr){
+			console.log(stdout);
+	});
+	/*
 	var exportCommand = process.env.DATAEXPORT_GQ_SCRIPT_PATH + ' -dataset DevDiggit_Hist -query "' + _query + '" -download_local -local_path '+process.env.DATAEXPORT_CSV_SAVE_PATH+' -bucket_name devdiggitbucket -project_id '+process.env.DATAEXPORT_GQ_PROJECT_ID+' -sftp_transfer -ftp_user "'+connectionProperties.user+'"  -ftp_pass \''+connectionProperties.password+'\' -ftp_server "'+connectionProperties.host+'" -ftp_port '+connectionProperties.port+' -export_file_name '+fileName+'';
 	console.log(exportCommand);
+	
 	exec(exportCommand, function(err, out, code) {
 		if (err instanceof Error)
 			throw err;
@@ -827,6 +850,7 @@ function exportDataUsingScript(_query, connectionProperties, fileName){
 		process.stdout.write(out);
 		process.exit(code);
 	});
+	*/
 }
 
 function processToExport(row, startDate, endDate, callback) {
