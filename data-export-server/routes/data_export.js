@@ -204,8 +204,9 @@ function saveDateRemort(file_name, headers, rows, connectionProperties, ftl_loc)
 			}
 			console.log( "- SFTP started" );
 			var readStream = fs.createReadStream(act_file);
-			console.log("/home"+ftl_loc +"/"+ file_name);
-			var writeStream = sftp.createWriteStream(ftl_loc + file_name);
+			var destPath = ftl_loc +"/"+ file_name;
+			console.log(destPath);
+			var writeStream = sftp.createWriteStream(destPath);
 			writeStream.on(
 				'close',
 				function () {
