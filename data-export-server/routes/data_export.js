@@ -635,7 +635,7 @@ var exportDataMng = {
 		var _query = "";
 		var _query = "SELECT ";
 		for (var i in req.body.columns) {
-			_query += "t."+req.body.columns[i] + ",";
+			_query += "'"+req.body.columns[i] + "',";
 		}
 		_query = _query.substring(0, _query.length - 1);
 		if(req.body.table=='Diggit_IP'){
