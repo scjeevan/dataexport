@@ -40,16 +40,25 @@ function executeGoogleBigQueryAllRows(sqlQuery, callback){
     });
 }
 function buildTitleQuery(paramArr, isCount, isSchedule){
+	var titleColumns = [diggit_id:'mt.diggit_title_id as diggit_id' ,title:'mt.title as title' ,season:'mt.season as season' ,episode:'mt.episode as episode',studio:'mt.studio as studio',content_type:'mt.category as content_type',genre:'mt.genre as genre',mpaa_rating:'mt.mpaa_rating as mpaa_rating', imdb_id:'mt.imdb_id as imdb_id',episode_imdb_id:'mt.episode_imdb_id as episode_imdb_id', 
+	episode_Year:'ie.Year as episode_Year',episode_Rating:'ie.Rating as episode_Rating',episode_Runtime:'ie.Runtime as episode_Runtime' ,episode_Genre:'ie.Genre as episode_Genre' ,episode_Released:'ie.Released as episode_Released',episode_Season:'ie.Season as episode_Season',episode_title:'ie.Title as episode_title',
+	episode_Director:'ie.Director as episode_Director',episode_Writer:'ie.Writer as episode_Writer',episode_Cast:'ie.Cast as episode_Cast',episode_Metacritic:'ie.Metacritic as episode_Metacritic',episode_imdbRating:'ie.imdbRating as episode_imdbRating',episode_imdbVotes:'ie.imdbVotes as episode_imdbVotes',episode_Poster:'ie.Poster as episode_Poster',
+	episode_Plot:'ie.Plot as episode_Plot',episode_FullPlot:'ie.FullPlot as episode_FullPlot',episode_Language:'ie.Language as episode_Language',episode_Country:'ie.Country as episode_Country',episode_Awards:'ie.Awards as episode_Awards',Year:'id.Year as Year',Rating:'id.Rating as Rating',Runtime:'id.Runtime as Runtime',Genre:'id.Genre as Genre',Released:'id.Released as Released',
+	Director:'id.Director as Director',Writer:'id.Writer as Writer',Cast:'id.Cast as Cast',Metacritic:'id.Metacritic as Metacritic',imdbRating:'id.imdbRating as imdbRating',imdbVotes:'id.imdbVotes as imdbVotes',Plot:'id.Plot as Plot',FullPlot:'id.FullPlot as FullPlot',Language:'id.Language as Language',Country:'id.Country as Country'];
 	var _query = "SELECT ";
 	if(isCount){
 		_query += " COUNT(mt.diggit_title_id) AS c from torrents.mm_titles mt ";
 	}
 	else{
+		var fields = "";
 		for (var i in paramArr.tColumns) {
 			_query += "'"+paramArr.tColumns[i] + "',";
+			fields += titleColumns[paramArr.tColumns[i]] + ",";
 		}
 		_query = _query.substring(0, _query.length - 1);
-		_query += " UNION ALL select mt.diggit_title_id as diggit_id,mt.title as title,mt.season ,mt.episode,mt.studio,mt.category, mt.genre,mt.mpaa_rating,mt.imdb_id,mt.episode_imdb_id, ie.Year as episode_Year,ie.Rating as episode_Rating,ie.Runtime as episode_Runtime ,ie.Genre as episode_Genre, ie.Released as episode_Released,ie.Season as episode_Season ,ie.Title as episode_title,ie.Director as episode_Director,ie.Writer as episode_Writer,ie.Cast as episode_Cast, ie.Metacritic as episode_Metacritic,ie.imdbRating as episode_imdbRating,ie.imdbVotes as episode_imdbVotes, ie.Poster as episode_Poster ,ie.Plot as episode_Plot,ie.FullPlot as episode_FullPlot, ie.Language as episode_Language,ie.Country as episode_Country,ie.Awards as episode_Awards, id.Year as Year,id.Rating,id.Runtime,id.Genre,id.Released,id.Director,id.Writer,id.Cast,id.Metacritic,id.imdbRating,   id.imdbVotes,id.Plot,id.FullPlot,id.Language,id.Country from torrents.mm_titles mt left join imdb.episodes ie on ie.imdbID=mt.imdb_id left join imdb.imdb_details id on id.imdbID=mt.imdb_id";
+		fields = fields.substring(0, fields.length - 1);
+		_query += " UNION ALL select " + fields;
+		_query += " from torrents.mm_titles mt left join imdb.episodes ie on ie.imdbID=mt.imdb_id left join imdb.imdb_details id on id.imdbID=mt.imdb_id";
 	}
 	DEBUG.log("TITLE_QUERY : " + _query);
 	return _query;

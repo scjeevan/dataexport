@@ -836,12 +836,12 @@ mvpApp.controller('dataExportFilter', ['ivhTreeviewBfs', '$window', '$scope', '$
 		success(function (data, status, headers, config) {
 			$scope.title_values = data.values;
 			$scope.total_title_count = data.total_count / $scope.itemsPerPage;
-			$scope.headers = data.headers;
+			$scope.tHeaders = data.headers;
 			if(data.total_count > 0){
-				$scope.dataCount = 1;
+				$scope.tDataCount = 1;
 			}
 			else{
-				$scope.dataCount = -1;
+				$scope.tDataCount = -1;
 			}
 		}).
 		error(function (data, status, headers, config) {
@@ -880,12 +880,12 @@ mvpApp.controller('dataExportFilter', ['ivhTreeviewBfs', '$window', '$scope', '$
 		success(function (data, status, headers, config) {
 			$scope.title_values = data.values;
 			$scope.total_title_count = data.total_count / $scope.itemsPerPage;
-			$scope.headers = data.headers;
+			$scope.tHeaders = data.headers;
 			if(data.total_count > 0){
-				$scope.dataCount = 1;
+				$scope.tDataCount = 1;
 			}
 			else{
-				$scope.dataCount = -1;
+				$scope.tDataCount = -1;
 			}
 		}).
 		error(function (data, status, headers, config) {
