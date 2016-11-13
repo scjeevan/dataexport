@@ -652,34 +652,19 @@ var exportDataMng = {
 			_query += " AND IP!='Peer IP'";
 		}
 		else if(req.body.table == 'infohashes'){
-			_query += "UNION ALL select i.infohash,mt.diggit_id,i.file_name,i.network,i.file_size,i.media_format,i.quality,i.audio_language, i.subtitle_language,i.created_time,i.added_time,i.episode_title,i.added_by,i.languages,i.verified, i.resolution,i.aspect_ratio,i.frame_rate,i.subtitles,i.bitrate from  torrents.mm_titles mt left join torrents.infohashes i on i.mm_title_id=mt.title_id ";
-		}
-		else{
-			_query += "UNION ALL select mt.diggit_id as diggit_id,mt.title as title,mt.season ,mt.episode,mt.studio,mt.content_type,mt.genre,mt.mpaa_rating,mt.imdb_id,mt.episode_imdb_id, ie.Year as episode_Year,ie.Rating as episode_Rating,ie.Runtime as episode_Runtime ,ie.Genre as episode_Genre, ie.Released as episode_Released,ie.Season as episode_Season ,ie.Title as episode_title,ie.Director as episode_Director,ie.Writer as episode_Writer,ie.Cast as episode_Cast, ie.Metacritic as episode_Metacritic,ie.imdbRating as episode_imdbRating,ie.imdbVotes as episode_imdbVotes, ie.Poster as episode_Poster ,ie.Plot as episode_Plot,ie.FullPlot as episode_FullPlot, ie.Language as episode_Language,ie.Country as episode_Country,ie.Awards as episode_Awards, id.Year as Year,id.Rating,id.Runtime,id.Genre,id.Released,id.Director,id.Writer,id.Cast,id.Metacritic,id.imdbRating,   id.imdbVotes,id.Plot,id.FullPlot,id.Language,id.Country from torrents.mm_titles mt left join imdb.episodes ie on ie.imdbID=mt.imdb_id left join imdb.imdb_details id on id.imdbID=mt.imdb_id";
-		}
-
-		/*
-		if(req.body.table=='Diggit_IP'){
-			_query = buildQuery(req.body, false, true);
-		}
-		else{
-			_query = "SELECT ";
-			for (var i in req.body.columns) {
-				_query += "t."+req.body.columns[i] + ",";
-			}
-			_query = _query.substring(0, _query.length - 1);
+			_query += " UNION ALL select i.infohash,mt.diggit_title_id, i.file_name,i.network,i.file_size,i.media_format,i.quality,i.audio_language, i.subtitle_language,i.created_time,i.added_time,i.episode_title,i.added_by,i.languages,i.verified, i.resolution,i.aspect_ratio,i.frame_rate,i.subtitles,i.bitrate from  torrents.mm_titles mt left join torrents.infohashes i on i.mm_title_id=mt.mm_title_id WHERE i.added_time BETWEEN '<start>' AND '<end> ";
 			if(req.body.isGenre){
-				var genreQ = "(";
-				for (var i in req.body.genres) {
-					genreQ += req.body.genres[i] + ",";
-				}
-				genreQ = genreQ.substring(0, genreQ.length - 1) + ")";
-				_query += " FROM mm_titles t, mm_title_genres g WHERE t.mm_title_id = g.title_id AND g.genre_id IN "+genreQ;
-			} else {
-				_query += " FROM mm_titles t";
+				_query += " left join torrents.mm_title_genres g on g.title_id = mt.mm_title_id where g.genre_id in "+genreQ;
 			}
+			_query += " limit 5 ";
 		}
-		*/
+		else{
+			_query += " UNION ALL select mt.diggit_title_id as diggit_id,mt.title as title,mt.season ,mt.episode,mt.studio,mt.category, mt.genre,mt.mpaa_rating,mt.imdb_id,mt.episode_imdb_id, ie.Year as episode_Year,ie.Rating as episode_Rating,ie.Runtime as episode_Runtime ,ie.Genre as episode_Genre, ie.Released as episode_Released,ie.Season as episode_Season ,ie.Title as episode_title,ie.Director as episode_Director,ie.Writer as episode_Writer,ie.Cast as episode_Cast, ie.Metacritic as episode_Metacritic,ie.imdbRating as episode_imdbRating,ie.imdbVotes as episode_imdbVotes, ie.Poster as episode_Poster ,ie.Plot as episode_Plot,ie.FullPlot as episode_FullPlot, ie.Language as episode_Language,ie.Country as episode_Country,ie.Awards as episode_Awards, id.Year as Year,id.Rating,id.Runtime,id.Genre,id.Released,id.Director,id.Writer,id.Cast,id.Metacritic,id.imdbRating,   id.imdbVotes,id.Plot,id.FullPlot,id.Language,id.Country from torrents.mm_titles mt left join imdb.episodes ie on ie.imdbID=mt.imdb_id left join imdb.imdb_details id on id.imdbID=mt.imdb_id";
+			if(req.body.isGenre){
+				_query += " left join torrents.mm_title_genres g on g.title_id = mt.mm_title_id where g.genre_id in "+genreQ;
+			}
+			_query += " limit 5 ";
+		}
 		DEBUG.log("Saving [QUERY]:"+_query);
 		var ftp_account_id = 1;
 		if (typeof req.body.ftp_account_id != 'undefined'){
