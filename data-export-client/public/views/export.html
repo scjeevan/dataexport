@@ -142,16 +142,6 @@
 											</tab>
 											<tab heading="Output Format" >
 												<div style="padding: 10px 10px 10px 10px;" class="panel-body"> <b class="required">FIle Format</b>
-													<div class="" style="max-height:150px; padding:5px; overflow:auto;">
-													<label>
-													<input type="radio" value="1" name="file_format" ng-model="exp.file_format" class="ng-pristine ng-untouched ng-valid">
-													Separate IP, Title and Infohash Files</label>
-													<br>
-													<label>
-													<input type="radio" value="0" name="file_format" ng-model="exp.file_format" class="ng-pristine ng-untouched ng-valid">
-													Merged IP, Title and Infohash Files</label>
-													</div>
-													<br>
 													<b class="required">Fields</b>
 													<div class="row">
 													<div class="column">
@@ -237,7 +227,7 @@
 							</div>
 							<!-- Modal Content Ends * Modal Content Ends * Modal Content Ends * Modal Content Ends * Modal Content Ends * Modal Content Ends * -->
 							<div class="modal-footer">
-								<button type="button" class="btn btn-secondary" ng-click="getData('1')" data-dismiss="modal">Reload Table</button>
+								<button type="button" class="btn btn-secondary" ng-click="getAllData()" data-dismiss="modal">Reload Table</button>
 								<button type="button" class="btn btn-primary" ng-click="submitForm()">
 									{{exp.export_type == '0'? 'Save Job' : 'Export'}}
 								</button>
@@ -261,16 +251,63 @@
 								<tbody>
 									<tr class="ng-scope" ng-show="dataCount < 0"><td colspan="{{headers.length}}" >Data not found for selected criteria</td></tr>
 									<tr class="ng-scope" ng-show="dataCount == 0"><td colspan="{{headers.length}}" >Loading data</td></tr>
-									<tr class="ng-scope" dir-paginate="item in ip_values|itemsPerPage:itemsPerPage" total-items="total_count">
+									<tr class="ng-scope" dir-paginate="item in ip_values|itemsPerPage:itemsPerPage" total-items="total_count" pagination-id="ip">
 										<td class="ng-binding ng-scope" ng-repeat="h in headers">{{item[h]}}</td>
 									</tr>
 								</tbody>
 							</table>
 							<dir-pagination-controls
-							   max-size="8"
-							   direction-links="true"
-							   boundary-links="true"
-							   on-page-change="getData(newPageNumber)" >
+								max-size="8"
+								direction-links="true"
+								boundary-links="true"
+								on-page-change="getIPData(newPageNumber)"
+								pagination-id="ip">
+							</dir-pagination-controls>
+							</tab>
+							<tab heading="Title">
+							<table class="table table-striped table-hover">
+								<thead ng-if="tHeaders.length > 0" class="ng-scope">
+									<tr>
+										<th class="ng-binding ng-scope" ng-repeat="h in tHeaders">{{h}}</th>
+									</tr>
+								</thead>
+								<tbody>
+									<tr class="ng-scope" ng-show="tDataCount < 0"><td colspan="{{tHeaders.length}}" >Data not found for selected criteria</td></tr>
+									<tr class="ng-scope" ng-show="tDataCount == 0"><td colspan="{{tHeaders.length}}" >Loading data</td></tr>
+									<tr class="ng-scope" dir-paginate="item in title_values|itemsPerPage:itemsPerPage" total-items="total_title_count" pagination-id="title">
+										<td class="ng-binding ng-scope" ng-repeat="h in tHeaders">{{item[h]}}</td>
+									</tr>
+								</tbody>
+							</table>
+							<dir-pagination-controls
+								max-size="8"
+								direction-links="true"
+								boundary-links="true"
+								on-page-change="getTitleData(newPageNumber)"
+								pagination-id="title">
+							</dir-pagination-controls>
+							</tab>
+							<tab heading="Infohashes">
+							<table class="table table-striped table-hover">
+								<thead ng-if="iHeaders.length > 0" class="ng-scope">
+									<tr>
+										<th class="ng-binding ng-scope" ng-repeat="h in iHeaders">{{h}}</th>
+									</tr>
+								</thead>
+								<tbody>
+									<tr class="ng-scope" ng-show="iDataCount < 0"><td colspan="{{iHeaders.length}}" >Data not found for selected criteria</td></tr>
+									<tr class="ng-scope" ng-show="iDataCount == 0"><td colspan="{{iHeaders.length}}" >Loading data</td></tr>
+									<tr class="ng-scope" dir-paginate="item in infohashes_values|itemsPerPage:itemsPerPage" total-items="total_infohashes_count" pagination-id="infohashes">
+										<td class="ng-binding ng-scope" ng-repeat="h in iHeaders">{{item[h]}}</td>
+									</tr>
+								</tbody>
+							</table>
+							<dir-pagination-controls
+								max-size="8"
+								direction-links="true"
+								boundary-links="true"
+								on-page-change="getInfohashesData(newPageNumber)"
+								pagination-id="infohashes" >
 							</dir-pagination-controls>
 							</tab>
 						</tabset>

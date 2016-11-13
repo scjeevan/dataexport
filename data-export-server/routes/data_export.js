@@ -39,6 +39,21 @@ function executeGoogleBigQueryAllRows(sqlQuery, callback){
         else{console.log(err);}
     });
 }
+function buildTitleQuery(paramArr, isCount, isSchedule){
+	var _query = "SELECT ";
+	if(isCount){
+		_query += " COUNT(mt.diggit_title_id) AS c from torrents.mm_titles mt ";
+	}
+	else{
+		for (var i in paramArr.tColumns) {
+			_query += "'"+paramArr.tColumns[i] + "',";
+		}
+		_query = _query.substring(0, _query.length - 1);
+		_query += " UNION ALL select mt.diggit_title_id as diggit_id,mt.title as title,mt.season ,mt.episode,mt.studio,mt.category, mt.genre,mt.mpaa_rating,mt.imdb_id,mt.episode_imdb_id, ie.Year as episode_Year,ie.Rating as episode_Rating,ie.Runtime as episode_Runtime ,ie.Genre as episode_Genre, ie.Released as episode_Released,ie.Season as episode_Season ,ie.Title as episode_title,ie.Director as episode_Director,ie.Writer as episode_Writer,ie.Cast as episode_Cast, ie.Metacritic as episode_Metacritic,ie.imdbRating as episode_imdbRating,ie.imdbVotes as episode_imdbVotes, ie.Poster as episode_Poster ,ie.Plot as episode_Plot,ie.FullPlot as episode_FullPlot, ie.Language as episode_Language,ie.Country as episode_Country,ie.Awards as episode_Awards, id.Year as Year,id.Rating,id.Runtime,id.Genre,id.Released,id.Director,id.Writer,id.Cast,id.Metacritic,id.imdbRating,   id.imdbVotes,id.Plot,id.FullPlot,id.Language,id.Country from torrents.mm_titles mt left join imdb.episodes ie on ie.imdbID=mt.imdb_id left join imdb.imdb_details id on id.imdbID=mt.imdb_id";
+	}
+	DEBUG.log("TITLE_QUERY : " + _query);
+	return _query;
+}
 
 function buildQuery(paramArr, isCount, isSchedule){
 	var genreQ = "";
@@ -509,12 +524,41 @@ var exportDataMng = {
 				});
 			}
 		});
-
-		
+	},
+	filterTitleData: function (req, res) {
+		var _query = buildTitleQuery(req.body, false, false);
+		var _countQuery = buildTitleQuery(req.body, true, false);
+		var formatedQuery = mysql.format(_countQuery);
+		db.getConnection(function(err, connection){
+			connection.query(formatedQuery, function (err, rows) {
+				if(rows[0].c > 0){
+					var pagenumber = req.body.tPagenumber;
+					var itemsPerPage = req.body.itemsPerPage;
+					var lim1 = (pagenumber-1)*itemsPerPage;
+					console.log("pagenumber:"+pagenumber+", itemsPerPage:"+itemsPerPage+", lim1:"+lim1);
+					_query += " LIMIT "+itemsPerPage+" OFFSET "+lim1;
+					var formatedQuery2 = mysql.format(_query);
+					connection.query(formatedQuery2, function (err, rows) {
+						res.json({
+							headers: req.body.tColumns,
+							values: rows,
+							total_count:rows[0].c
+						});
+					});
+				}
+				else{
+					res.json({
+						headers: req.body.tColumns,
+						values: [],
+						total_count:0
+					});
+				}
+			});
+			connection.release();
+		});
 	},
 	
 	exportAndSave: function (req, res) {
-		var isTitle = (req.body.file_format == '1')?true:false;
 		var isSchedule = (req.body.export_type == '0')?true:false;
 		var _query = buildQuery(req.body, false, isSchedule);
 		var ftp_account_id = 1;
@@ -525,7 +569,7 @@ var exportDataMng = {
 		var params = [];
 		var connectionProperties = {};
 		var ftp_loc = "";
-		if(typeof req.body.export_type != 'undefined' && typeof req.body.file_format != 'undefined'){
+		if(typeof req.body.export_type != 'undefined'){
 			if(req.body.export_type == '1'){
 				DEBUG.log("Exporting Data to FTP Location");
 				query = "SELECT `title`, `username`, `password`, `ip`, `port`, `location` ,`protocol` FROM `ftp_accounts` WHERE `ftp_account_id`=?";
@@ -547,7 +591,7 @@ var exportDataMng = {
 							};
 							DEBUG.log("Start to export IP data to : " + ftpTitle);
 							exportDataUsingScript(_query, connectionProperties, req.body.fileName+"_IP");
-							if(isTitle){
+							/*
 								DEBUG.log("Start to export title data");
 								var selTitles = "";
 								if(typeof req.body.selected_titles != 'undefined' && req.body.selected_titles.length > 0){
@@ -560,7 +604,7 @@ var exportDataMng = {
 								}
 								var titleQuery = "SELECT * FROM title_title_id WHERE title IN ("+selTitles+")";
 								exportDataUsingScript(titleQuery, connectionProperties, req.body.fileName+"_TITLE");
-							}
+							*/
 							res.json({
 								values: "Selected data is being exported"
 							});
@@ -571,7 +615,6 @@ var exportDataMng = {
 			}
 			else{
 				var now = new Date();
-				var fileFormat = req.body.file_format;
 				var frequency = req.body.frequency;
 				var fileName = req.body.fileName;
 				var scheduleTitle = req.body.schedule_title
@@ -592,7 +635,7 @@ var exportDataMng = {
 				}
 				DEBUG.log("Saving data export job : " + frequency);
 				var _inQuery = "INSERT INTO data_export_schedules (title, frequency,table_name,selected_columns,added_date,ftp_account_id, filename, file_format, titles, query) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-				var _formatedQuery = mysql.format(_inQuery, [scheduleTitle, frequency, 'Diggit_IP', fields, now, ftp_account_id, fileName, fileFormat, selTitles, _query]);
+				var _formatedQuery = mysql.format(_inQuery, [scheduleTitle, frequency, 'Diggit_IP', fields, now, ftp_account_id, fileName, 1, selTitles, _query]);
 				db.getConnection(function(err, connection){
 					connection.query(_formatedQuery, function (err, rows) {
 						DEBUG.log("Job has been saved successfully");
@@ -632,19 +675,21 @@ var exportDataMng = {
 	},
 	
 	scheduleExportData: function (req, res) {
-		var _query = "";
 		var _query = "SELECT ";
 		for (var i in req.body.columns) {
 			_query += "'"+req.body.columns[i] + "',";
 		}
 		_query = _query.substring(0, _query.length - 1);
+		var genreQ = "";
+		if(req.body.isGenre){
+			genreQ = "(";
+			for (var i in req.body.genres) {
+				genreQ += req.body.genres[i] + ",";
+			}
+			genreQ = genreQ.substring(0, genreQ.length - 1) + ")";
+		}
 		if(req.body.table=='Diggit_IP'){
 			if(req.body.isGenre){
-				var genreQ = "(";
-				for (var i in req.body.genres) {
-					genreQ += req.body.genres[i] + ",";
-				}
-				genreQ = genreQ.substring(0, genreQ.length - 1) + ")";
 				_query += " FROM [DevDiggit_Hist.Diggit_IP] AS t JOIN [DevDiggit_Hist.mm_title_genres] AS gt ON t.TitleID = gt.title_id WHERE t.Date BETWEEN '<start>' AND '<end>' AND gt.genre_id IN "+genreQ;
 			} else {
 				_query += " FROM DevDiggit_Hist.Diggit_IP WHERE Date BETWEEN '<start>' AND '<end>' ";
@@ -652,7 +697,7 @@ var exportDataMng = {
 			_query += " AND IP!='Peer IP'";
 		}
 		else if(req.body.table == 'infohashes'){
-			_query += " UNION ALL select i.infohash,mt.diggit_title_id, i.file_name,i.network,i.file_size,i.media_format,i.quality,i.audio_language, i.subtitle_language,i.created_time,i.added_time,i.episode_title,i.added_by,i.languages,i.verified, i.resolution,i.aspect_ratio,i.frame_rate,i.subtitles,i.bitrate from  torrents.mm_titles mt left join torrents.infohashes i on i.mm_title_id=mt.mm_title_id WHERE i.added_time BETWEEN '<start>' AND '<end> ";
+			_query += " UNION ALL select i.infohash,mt.diggit_title_id, i.file_name,i.network,i.file_size,i.media_format,i.quality,i.audio_language, i.subtitle_language,i.created_time,i.added_time,i.episode_title,i.added_by,i.languages,i.verified, i.resolution,i.aspect_ratio,i.frame_rate,i.subtitles,i.bitrate from  torrents.mm_titles mt left join torrents.infohashes i on i.mm_title_id=mt.mm_title_id WHERE i.added_time BETWEEN '<start>' AND '<end>' ";
 			if(req.body.isGenre){
 				_query += " left join torrents.mm_title_genres g on g.title_id = mt.mm_title_id where g.genre_id in "+genreQ;
 			}
@@ -854,7 +899,6 @@ function processToExport(row, startDate, endDate, callback) {
 		var jobId = row.data_export_schedule_id;
 		DEBUG.log("Running Job #"+jobId);
 		var fileName = row.filename;
-		var fileFormat = row.file_format;
 		var tableName = row.table_name;
 		var title = row.titles;
 		var query = row.query;

@@ -787,13 +787,21 @@ mvpApp.controller('dataExportFilter', ['ivhTreeviewBfs', '$window', '$scope', '$
 		
 		
 	};
-	$scope.getData = function(pageno){
-		console.log("file_format : " + $scope.exp.file_format);
-		$scope.dataCount = 0;
-        $scope.ip_values = [];
-		$scope.exp.itemsPerPage = 20;
-		$scope.exp.pagenumber = pageno;
-		$scope.headers = [];
+	
+	$scope.dataCount = 0;
+	$scope.ip_values = [];
+	$scope.title_values = [];
+	$scope.infohashes_values = [];
+	$scope.exp.itemsPerPage = 20;
+	$scope.exp.pagenumber = 1;
+	$scope.exp.tPagenumber = 1;
+	$scope.exp.iPagenumber = 1;
+	$scope.exp.tColumns = ['diggit_id' ,'title','season' ,'episode','studio','content_type'];
+	$scope.headers = [];
+	$scope.getAllData = function(){
+		$scope.exp.pagenumber = 1;
+		$scope.exp.tPagenumber = 1;
+		$scope.exp.iPagenumber = 1;
 		if($scope.selectedMovies.length > 0){
 			$scope.exp.selected_titles = $scope.selectedMovies;
 		}
@@ -824,6 +832,90 @@ mvpApp.controller('dataExportFilter', ['ivhTreeviewBfs', '$window', '$scope', '$
 				content: 'Error while saving data'
 			});
 		});
+		$http.post(Api.root_url+ "api/filterTitleData", $scope.exp).
+		success(function (data, status, headers, config) {
+			$scope.title_values = data.values;
+			$scope.total_title_count = data.total_count / $scope.itemsPerPage;
+			$scope.headers = data.headers;
+			if(data.total_count > 0){
+				$scope.dataCount = 1;
+			}
+			else{
+				$scope.dataCount = -1;
+			}
+		}).
+		error(function (data, status, headers, config) {
+			ngToast.create({
+				className: 'danger',
+				dismissButton:true,
+				content: 'Error while saving data'
+			});
+		});
+    };	
+	$scope.getIPData = function(pageno){
+		console.log("pageno : " + pageno);
+		$scope.exp.pagenumber = pageno;
+		$http.post(Api.root_url+ "api/filterData", $scope.exp).
+		success(function (data, status, headers, config) {
+			$scope.ip_values = data.values;
+			$scope.total_count = data.total_count / $scope.itemsPerPage;
+			if(data.total_count > 0){
+				$scope.dataCount = 1;
+			}
+			else{
+				$scope.dataCount = -1;
+			}
+		}).
+		error(function (data, status, headers, config) {
+			ngToast.create({
+				className: 'danger',
+				dismissButton:true,
+				content: 'Error while saving data'
+			});
+		});
+    };
+	$scope.getTitleData = function(pageno){
+		$scope.exp.tPagenumber = pageno;
+		$http.post(Api.root_url+ "api/filterTitleData", $scope.exp).
+		success(function (data, status, headers, config) {
+			$scope.title_values = data.values;
+			$scope.total_title_count = data.total_count / $scope.itemsPerPage;
+			$scope.headers = data.headers;
+			if(data.total_count > 0){
+				$scope.dataCount = 1;
+			}
+			else{
+				$scope.dataCount = -1;
+			}
+		}).
+		error(function (data, status, headers, config) {
+			ngToast.create({
+				className: 'danger',
+				dismissButton:true,
+				content: 'Error while saving data'
+			});
+		});
+    };
+	$scope.getInfohashesData = function(pageno){
+		$scope.exp.iPagenumber = pageno;
+		$http.post(Api.root_url+ "api/filterData", $scope.exp).
+		success(function (data, status, headers, config) {
+			$scope.infohashes_values = data.values;
+			$scope.total_infohashes_count = data.total_count / $scope.itemsPerPage;
+			if(data.total_count > 0){
+				$scope.iDataCount = 1;
+			}
+			else{
+				$scope.iDataCount = -1;
+			}
+		}).
+		error(function (data, status, headers, config) {
+			ngToast.create({
+				className: 'danger',
+				dismissButton:true,
+				content: 'Error while saving data'
+			});
+		});
     };
 	$scope.dateOptions = {
 		dateFormat:'dd-mm-yy',
@@ -832,7 +924,7 @@ mvpApp.controller('dataExportFilter', ['ivhTreeviewBfs', '$window', '$scope', '$
 	$scope.changeTab = function(tab) {
 		$scope.view_tab = tab;
 	}
-	$scope.getData($scope.pageno);
+	$scope.getAllData();
 }
 ]);
 
