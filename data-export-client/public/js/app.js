@@ -918,10 +918,11 @@ mvpApp.controller('dataExportFilter', ['ivhTreeviewBfs', '$window', '$scope', '$
     };
 	$scope.getInfohashesData = function(pageno){
 		$scope.exp.iPagenumber = pageno;
-		$http.post(Api.root_url+ "api/filterData", $scope.exp).
+		$http.post(Api.root_url+ "api/filterInfohashesData", $scope.exp).
 		success(function (data, status, headers, config) {
 			$scope.infohashes_values = data.values;
 			$scope.total_infohashes_count = data.total_count / $scope.itemsPerPage;
+			$scope.iHeaders = data.headers;
 			if(data.total_count > 0){
 				$scope.iDataCount = 1;
 			}
