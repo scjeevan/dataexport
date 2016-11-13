@@ -60,6 +60,28 @@ function buildTitleQuery(paramArr, isCount, isSchedule){
 	return _query;
 }
 
+function buildInfohashesQuery(paramArr, isCount, isSchedule){
+	var infohashesColumns = {infohash:'i.infohash',diggit_id:'mt.diggit_title_id',file_name:'i.file_name',network:'i.network',file_size:'i.file_size',media_format:'i.media_format',quality:'i.quality',audio_language:'i.audio_language',subtitle_language:'i.subtitle_language',
+	created_time:'i.created_time',added_time:'i.added_time',episode_title:'i.episode_title',added_by:'i.added_by',languages:'i.languages',verified:'i.verified',resolution:'i.resolution',aspect_ratio:'i.aspect_ratio',frame_rate:'i.frame_rate',subtitles:'i.subtitles',bitrate:'i.bitrate'};
+	var _query = "SELECT ";
+	if(isCount){
+		_query += " COUNT(i.infohash) AS c from torrents.mm_titles mt left join torrents.infohashes i on i.mm_title_id=mt.mm_title_id";
+	}
+	else{
+		var fields = "";
+		for (var i in paramArr.infColumns) {
+			_query += "'"+paramArr.infColumns[i] + "',";
+			fields += infohashesColumns[paramArr.infColumns[i]] + ",";
+		}
+		_query = _query.substring(0, _query.length - 1);
+		fields = fields.substring(0, fields.length - 1);
+		_query += " UNION ALL select " + fields;
+		_query += " from torrents.mm_titles mt left join torrents.infohashes i on i.mm_title_id=mt.mm_title_id";
+	}
+	DEBUG.log("INFOHASHES_QUERY : " + _query);
+	return _query;
+}
+
 function buildQuery(paramArr, isCount, isSchedule){
 	var genreQ = "";
 	if(typeof paramArr.genres_all == 'undefined' || paramArr.genres_all != '1') {
@@ -554,6 +576,38 @@ var exportDataMng = {
 				else{
 					res.json({
 						headers: req.body.tColumns,
+						values: [],
+						total_count:0
+					});
+				}
+			});
+			connection.release();
+		});
+	},
+	filterInfohashesData: function (req, res) {
+		var _query = buildInfohashesQuery(req.body, false, false);
+		var _countQuery = buildInfohashesQuery(req.body, true, false);
+		var formatedQuery = mysql.format(_countQuery);
+		db.getConnection(function(err, connection){
+			connection.query(formatedQuery, function (err, r) {
+				if(r[0].c > 0){
+					var pagenumber = req.body.iPagenumber;
+					var itemsPerPage = req.body.itemsPerPage;
+					var lim1 = (pagenumber-1)*itemsPerPage;
+					console.log("pagenumber:"+pagenumber+", itemsPerPage:"+itemsPerPage+", lim1:"+lim1);
+					_query += " LIMIT "+itemsPerPage+" OFFSET "+lim1;
+					var formatedQuery2 = mysql.format(_query);
+					connection.query(formatedQuery2, function (err, rows) {
+						res.json({
+							headers: req.body.infColumns,
+							values: rows,
+							total_count:r[0].c
+						});
+					});
+				}
+				else{
+					res.json({
+						headers: req.body.infColumns,
 						values: [],
 						total_count:0
 					});

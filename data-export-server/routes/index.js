@@ -30,6 +30,7 @@ router.get('/api/getlocations', dataExportManager.getLocations);
 router.get('/api/listjobs', dataExportManager.listJobs);
 router.post('/api/filterData', dataExportManager.filterData);
 router.post('/api/filterTitleData', dataExportManager.filterTitleData);
+router.post('/api/filterInfohashesData', dataExportManager.filterInfohashesData);
 
 router.post('/api/continents', dataExportManager.continents);
 router.post('/api/countries', dataExportManager.countries);

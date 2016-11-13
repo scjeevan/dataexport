@@ -797,6 +797,7 @@ mvpApp.controller('dataExportFilter', ['ivhTreeviewBfs', '$window', '$scope', '$
 	$scope.exp.tPagenumber = 1;
 	$scope.exp.iPagenumber = 1;
 	$scope.exp.tColumns = ['diggit_id' ,'title','season' ,'episode','studio','content_type'];
+	$scope.exp.infColumns = ['infohash','diggit_id','file_name','network'];
 	$scope.headers = [];
 	$scope.getAllData = function(){
 		$scope.exp.pagenumber = 1;
@@ -842,6 +843,25 @@ mvpApp.controller('dataExportFilter', ['ivhTreeviewBfs', '$window', '$scope', '$
 			}
 			else{
 				$scope.tDataCount = -1;
+			}
+		}).
+		error(function (data, status, headers, config) {
+			ngToast.create({
+				className: 'danger',
+				dismissButton:true,
+				content: 'Error while saving data'
+			});
+		});
+		$http.post(Api.root_url+ "api/filterInfohashesData", $scope.exp).
+		success(function (data, status, headers, config) {
+			$scope.infohashes_values = data.values;
+			$scope.total_infohashes_count = data.total_count / $scope.itemsPerPage;
+			$scope.iHeaders = data.headers;
+			if(data.total_count > 0){
+				$scope.iDataCount = 1;
+			}
+			else{
+				$scope.iDataCount = -1;
 			}
 		}).
 		error(function (data, status, headers, config) {
