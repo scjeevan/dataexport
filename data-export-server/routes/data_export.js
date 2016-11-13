@@ -530,8 +530,8 @@ var exportDataMng = {
 		var _countQuery = buildTitleQuery(req.body, true, false);
 		var formatedQuery = mysql.format(_countQuery);
 		db.getConnection(function(err, connection){
-			connection.query(formatedQuery, function (err, rows) {
-				if(rows[0].c > 0){
+			connection.query(formatedQuery, function (err, r) {
+				if(r[0].c > 0){
 					var pagenumber = req.body.tPagenumber;
 					var itemsPerPage = req.body.itemsPerPage;
 					var lim1 = (pagenumber-1)*itemsPerPage;
@@ -542,7 +542,7 @@ var exportDataMng = {
 						res.json({
 							headers: req.body.tColumns,
 							values: rows,
-							total_count:rows[0].c
+							total_count:r[0].c
 						});
 					});
 				}
