@@ -640,7 +640,6 @@ var exportDataMng = {
 							DEBUG.log(err);
 						}
 						else {
-							var headers = [];
 							var ftpTitle = rows[0].title;
 							ftp_loc = rows[0].location;
 							connectionProperties = {
@@ -657,21 +656,29 @@ var exportDataMng = {
 							var _tquery = buildInfohashesQuery(req.body, false, false);
 							_tquery += " limit 5 ";
 							var _tformatedQuery = mysql.format(_tquery);
+							var tHeaders = [];
+							for (var i in req.body.infColumns) {
+								tHeaders.push(req.body.infColumns[i]);
+							}
 							connection.query(_tformatedQuery, function (err, rows1) {
 								if(err) console.log(err);
 								if(typeof rows1 != 'undefined' && typeof rows1.length != 'undefined' && rows1.length > 0){
-									saveDateRemort(req.body.fileName, headers, rows1, connectionProperties, ftp_loc);
+									saveDateRemort(req.body.fileName, tHeaders, rows1, connectionProperties, ftp_loc);
 								}
 							});
 							DEBUG.log("[DONE - EXPORT INFOHASHES]");
 							DEBUG.log("[START - EXPORT TITLE]");
 							var _iquery = buildTitleQuery(req.body, false, false);
 							_iquery += " limit 5 ";
+							var iHeaders = [];
+							for (var i in req.body.tColumns) {
+								iHeaders.push(req.body.tColumns[i]);
+							}
 							var _iformatedQuery = mysql.format(_iquery);
 							connection.query(_iformatedQuery, function (err, rows2) {
 								if(err) console.log(err);
 								if(typeof rows2 != 'undefined' && typeof rows2.length != 'undefined' && rows2.length > 0){
-									saveDateRemort(req.body.fileName, headers, rows2, connectionProperties, ftp_loc);
+									saveDateRemort(req.body.fileName, iHeaders, rows2, connectionProperties, ftp_loc);
 								}
 							});
 							DEBUG.log("[DONE - EXPORT TITLE]");
