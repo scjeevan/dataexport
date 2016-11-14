@@ -742,7 +742,7 @@ mvpApp.controller('dataExportFilter', ['ivhTreeviewBfs', '$window', '$scope', '$
 	
 	$scope.submitForm = function() {
 		if(typeof $scope.exp.columns == 'undefined' || $scope.exp.columns.length == 0){
-			alert("Please select atleast one field");
+			alert("Please select atleast one table field");
 		}
 		else if(typeof $scope.exp.export_type == 'undefined' || $scope.exp.export_type.length == 0){
 			alert("Please select Export Type");
@@ -798,6 +798,7 @@ mvpApp.controller('dataExportFilter', ['ivhTreeviewBfs', '$window', '$scope', '$
 	$scope.exp.iPagenumber = 1;
 	$scope.exp.tColumns = ['diggit_id' ,'title','season' ,'episode','studio','content_type'];
 	$scope.exp.infColumns = ['infohash','diggit_id','file_name','network'];
+	$scope.exp.columns = ["Infohash", "TitleID", "Date", "IP", "Port"];
 	$scope.headers = [];
 	$scope.getAllData = function(){
 		$scope.exp.pagenumber = 1;
