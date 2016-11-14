@@ -14,7 +14,7 @@ var titleColumns = ['diggit_id' ,'title','season' ,'episode','studio','content_t
 var infohashesColumns = ['infohash','diggit_id','file_name','network','file_size','media_format','quality','audio_language','subtitle_language',
 	'created_time','added_time','episode_title','added_by','languages','verified','resolution','aspect_ratio','frame_rate','subtitles','bitrate'];
 
-var ipColumns = ['IP','Infohash','diggit_id','Port','Date','Continent','Country','Region','State','City','Latitude','Longitude','ISP',
+var ipColumns = ['IP','Infohash','Port','Date','Continent','Country','Region','State','City','Latitude','Longitude','ISP',
 	'OrganizationType','NameofProtocol'];
 
 
