@@ -663,7 +663,7 @@ var exportDataMng = {
 							connection.query(_tformatedQuery, function (err, rows1) {
 								if(err) console.log(err);
 								if(typeof rows1 != 'undefined' && typeof rows1.length != 'undefined' && rows1.length > 0){
-									saveDateRemort(req.body.fileName, tHeaders, rows1, connectionProperties, ftp_loc);
+									saveDateRemort(req.body.fileName+"_INFOHASHES", tHeaders, rows1, connectionProperties, ftp_loc);
 								}
 							});
 							DEBUG.log("[DONE - EXPORT INFOHASHES]");
@@ -678,7 +678,7 @@ var exportDataMng = {
 							connection.query(_iformatedQuery, function (err, rows2) {
 								if(err) console.log(err);
 								if(typeof rows2 != 'undefined' && typeof rows2.length != 'undefined' && rows2.length > 0){
-									saveDateRemort(req.body.fileName, iHeaders, rows2, connectionProperties, ftp_loc);
+									saveDateRemort(req.body.fileName+"_TITLE", iHeaders, rows2, connectionProperties, ftp_loc);
 								}
 							});
 							DEBUG.log("[DONE - EXPORT TITLE]");
