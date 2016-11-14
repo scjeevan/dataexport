@@ -640,6 +640,7 @@ var exportDataMng = {
 							DEBUG.log(err);
 						}
 						else {
+							var headers = [];
 							var ftpTitle = rows[0].title;
 							ftp_loc = rows[0].location;
 							connectionProperties = {
@@ -648,8 +649,31 @@ var exportDataMng = {
 								port: rows[0].port,
 								password: rows[0].password
 							};
-							DEBUG.log("Start to export IP data to : " + ftpTitle);
+							DEBUG.log("[START - EXPORT DIGGIT_IP]");
 							exportDataUsingScript(_query, connectionProperties, req.body.fileName+"_IP");
+							DEBUG.log("[DONE - EXPORT DIGGIT_IP]");
+							DEBUG.log("[START - EXPORT INFOHASHES]");
+							var _tquery = buildInfohashesQuery(req.body, false, false);
+							_tquery += " limit 5 ";
+							var _tformatedQuery = mysql.format(_tquery);
+							connection.query(_tformatedQuery, function (err, rows1) {
+								if(err) console.log(err);
+								if(typeof rows1 != 'undefined' && typeof rows1.length != 'undefined' && rows1.length > 0){
+									saveDateRemort(req.body.fileName, headers, rows1, connectionProperties, ftp_loc);
+								}
+							});
+							DEBUG.log("[DONE - EXPORT INFOHASHES]");
+							DEBUG.log("[START - EXPORT TITLE]");
+							var _iquery = buildTitleQuery(req.body, false, false);
+							_iquery += " limit 5 ";
+							var _iformatedQuery = mysql.format(_iquery);
+							connection.query(_iformatedQuery, function (err, rows2) {
+								if(err) console.log(err);
+								if(typeof rows2 != 'undefined' && typeof rows2.length != 'undefined' && rows2.length > 0){
+									saveDateRemort(req.body.fileName, headers, rows2, connectionProperties, ftp_loc);
+								}
+							});
+							DEBUG.log("[DONE - EXPORT TITLE]");
 							/*
 								DEBUG.log("Start to export title data");
 								var selTitles = "";
