@@ -650,6 +650,7 @@ var exportDataMng = {
 								password: rows[0].password
 							};
 							DEBUG.log("[START - EXPORT DIGGIT_IP]");
+							_query += " AND IP!='Peer IP' LIMIT 100";
 							exportDataUsingScript(_query, connectionProperties, req.body.fileName+"_IP");
 							DEBUG.log("[DONE - EXPORT DIGGIT_IP]");
 							DEBUG.log("[START - EXPORT INFOHASHES]");
