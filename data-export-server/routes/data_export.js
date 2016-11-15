@@ -125,7 +125,7 @@ function buildInfohashesQuery(paramArr, isCount, isSchedule){
 		_query = _query.substring(0, _query.length - 1);
 		fields = fields.substring(0, fields.length - 1);
 		//_query += " UNION ALL select " + fields;
-		_query += "SELECT " + fields;
+		_query = "SELECT " + fields;
 		_query += " from torrents.mm_titles mt left join torrents.infohashes i on i.mm_title_id=mt.mm_title_id";
 	}
 	if(genreQ.length > 0){
