@@ -90,6 +90,25 @@ function buildTitleQuery(paramArr, isCount, isSchedule){
 }
 
 function buildInfohashesQuery(paramArr, isCount, isSchedule){
+	var appendedParams = 0;
+	var genreQ = "";
+	if(typeof paramArr.genres_all == 'undefined' || paramArr.genres_all != '1') {
+		if(typeof paramArr.genres != 'undefined' && paramArr.genres.length > 0){
+			genreQ += "(";
+			for (var i in paramArr.genres) {
+				genreQ += paramArr.genres[i] + ",";
+			}
+			genreQ = genreQ.substring(0, genreQ.length - 1) + ")";
+		}
+	}
+	var selTitles = "";
+	if(typeof paramArr.selected_titles != 'undefined' && paramArr.selected_titles.length > 0){
+		selTitles += "(";
+		for (var i in paramArr.selected_titles) {
+			selTitles += "'"+paramArr.selected_titles[i].title + "',";
+		}
+		selTitles = selTitles.substring(0, selTitles.length - 1) + ")";
+	}
 	var infohashesColumns = {infohash:'i.infohash',diggit_id:'mt.diggit_title_id',file_name:'i.file_name',network:'i.network',file_size:'i.file_size',media_format:'i.media_format',quality:'i.quality',audio_language:'i.audio_language',subtitle_language:'i.subtitle_language',
 	created_time:'i.created_time',added_time:'i.added_time',episode_title:'i.episode_title',added_by:'i.added_by',languages:'i.languages',verified:'i.verified',resolution:'i.resolution',aspect_ratio:'i.aspect_ratio',frame_rate:'i.frame_rate',subtitles:'i.subtitles',bitrate:'i.bitrate'};
 	var _query = "SELECT ";
@@ -106,6 +125,15 @@ function buildInfohashesQuery(paramArr, isCount, isSchedule){
 		fields = fields.substring(0, fields.length - 1);
 		_query += " UNION ALL select " + fields;
 		_query += " from torrents.mm_titles mt left join torrents.infohashes i on i.mm_title_id=mt.mm_title_id";
+	}
+	if(genreQ.length > 0){
+		appendedParams++;
+		_query += " left join torrents.mm_title_genres g on g.title_id = mt.mm_title_id where g.genre_id in "+genreQ;
+	}
+	if(selTitles.length > 0){
+		var join = (appendedParams == 0) ? " WHERE ":" AND ";
+		_query += join + " mt.title IN "+selTitles;
+		appendedParams++;
 	}
 	DEBUG.log("INFOHASHES_QUERY : " + _query);
 	return _query;
