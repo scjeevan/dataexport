@@ -816,7 +816,7 @@ mvpApp.controller('dataExportFilter', ['ivhTreeviewBfs', '$window', '$scope', '$
 		success(function (data, status, headers, config) {
 			$scope.loading = false;
 			$scope.ip_values = data.values;
-			$scope.total_count = data.total_count / $scope.itemsPerPage;
+			$scope.total_count = data.total_count;
 			if((typeof data.headers == 'undefined') || (data.headers.length == 0)){
 				$scope.headers = ["Infohash", "TitleID", "Date", "IP", "Port"];
 			}
@@ -834,13 +834,13 @@ mvpApp.controller('dataExportFilter', ['ivhTreeviewBfs', '$window', '$scope', '$
 			ngToast.create({
 				className: 'danger',
 				dismissButton:true,
-				content: 'Error while saving data'
+				content: 'Error while retrieving data'
 			});
 		});
 		$http.post(Api.root_url+ "api/filterTitleData", $scope.exp).
 		success(function (data, status, headers, config) {
 			$scope.title_values = data.values;
-			$scope.total_title_count = data.total_count / $scope.itemsPerPage;
+			$scope.total_title_count = data.total_count;
 			$scope.tHeaders = data.headers;
 			if(data.total_count > 0){
 				$scope.tDataCount = 1;
@@ -853,13 +853,13 @@ mvpApp.controller('dataExportFilter', ['ivhTreeviewBfs', '$window', '$scope', '$
 			ngToast.create({
 				className: 'danger',
 				dismissButton:true,
-				content: 'Error while saving data'
+				content: 'Error while retrieving data'
 			});
 		});
 		$http.post(Api.root_url+ "api/filterInfohashesData", $scope.exp).
 		success(function (data, status, headers, config) {
 			$scope.infohashes_values = data.values;
-			$scope.total_infohashes_count = data.total_count / $scope.itemsPerPage;
+			$scope.total_infohashes_count = data.total_count;
 			$scope.iHeaders = data.headers;
 			if(data.total_count > 0){
 				$scope.iDataCount = 1;
@@ -872,20 +872,20 @@ mvpApp.controller('dataExportFilter', ['ivhTreeviewBfs', '$window', '$scope', '$
 			ngToast.create({
 				className: 'danger',
 				dismissButton:true,
-				content: 'Error while saving data'
+				content: 'Error while retrieving data'
 			});
 		});
 		
     };	
 	$scope.getIPData = function(pageno){
-		$scope.loading = true;
+		//$scope.loading = true;
 		console.log("pageno : " + pageno);
 		$scope.exp.pagenumber = pageno;
 		$http.post(Api.root_url+ "api/filterData", $scope.exp).
 		success(function (data, status, headers, config) {
-			$scope.loading = false;
+			//$scope.loading = false;
 			$scope.ip_values = data.values;
-			$scope.total_count = data.total_count / $scope.itemsPerPage;
+			$scope.total_count = data.total_count;
 			if(data.total_count > 0){
 				$scope.dataCount = 1;
 			}
@@ -897,18 +897,18 @@ mvpApp.controller('dataExportFilter', ['ivhTreeviewBfs', '$window', '$scope', '$
 			ngToast.create({
 				className: 'danger',
 				dismissButton:true,
-				content: 'Error while saving data'
+				content: 'Error while retrieving data'
 			});
 		});
     };
 	$scope.getTitleData = function(pageno){
-		$scope.loading = true;
+		//$scope.loading = true;
 		$scope.exp.tPagenumber = pageno;
 		$http.post(Api.root_url+ "api/filterTitleData", $scope.exp).
 		success(function (data, status, headers, config) {
-			$scope.loading = false;
+			//$scope.loading = false;
 			$scope.title_values = data.values;
-			$scope.total_title_count = data.total_count / $scope.itemsPerPage;
+			$scope.total_title_count = data.total_count;
 			$scope.tHeaders = data.headers;
 			if(data.total_count > 0){
 				$scope.tDataCount = 1;
@@ -921,18 +921,18 @@ mvpApp.controller('dataExportFilter', ['ivhTreeviewBfs', '$window', '$scope', '$
 			ngToast.create({
 				className: 'danger',
 				dismissButton:true,
-				content: 'Error while saving data'
+				content: 'Error while retrieving data'
 			});
 		});
     };
 	$scope.getInfohashesData = function(pageno){
-		$scope.loading = true;
+		//$scope.loading = true;
 		$scope.exp.iPagenumber = pageno;
 		$http.post(Api.root_url+ "api/filterInfohashesData", $scope.exp).
 		success(function (data, status, headers, config) {
-			$scope.loading = false;
+			//$scope.loading = false;
 			$scope.infohashes_values = data.values;
-			$scope.total_infohashes_count = data.total_count / $scope.itemsPerPage;
+			$scope.total_infohashes_count = data.total_count;
 			$scope.iHeaders = data.headers;
 			if(data.total_count > 0){
 				$scope.iDataCount = 1;
@@ -945,7 +945,7 @@ mvpApp.controller('dataExportFilter', ['ivhTreeviewBfs', '$window', '$scope', '$
 			ngToast.create({
 				className: 'danger',
 				dismissButton:true,
-				content: 'Error while saving data'
+				content: 'Error while retrieving data'
 			});
 		});
     };

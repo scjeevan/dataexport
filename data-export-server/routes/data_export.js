@@ -72,7 +72,8 @@ function buildTitleQuery(paramArr, isCount, isSchedule){
 		}
 		_query = _query.substring(0, _query.length - 1);
 		fields = fields.substring(0, fields.length - 1);
-		_query += " UNION ALL select " + fields;
+		//_query += " UNION ALL select " + fields;
+		_query = "SELECT " + fields;
 		_query += " from torrents.mm_titles mt left join imdb.episodes ie on ie.imdbID=mt.imdb_id left join imdb.imdb_details id on id.imdbID=mt.imdb_id";
 	}
 	if(genreQ.length > 0){
@@ -123,7 +124,8 @@ function buildInfohashesQuery(paramArr, isCount, isSchedule){
 		}
 		_query = _query.substring(0, _query.length - 1);
 		fields = fields.substring(0, fields.length - 1);
-		_query += " UNION ALL select " + fields;
+		//_query += " UNION ALL select " + fields;
+		_query += "SELECT " + fields;
 		_query += " from torrents.mm_titles mt left join torrents.infohashes i on i.mm_title_id=mt.mm_title_id";
 	}
 	if(genreQ.length > 0){
