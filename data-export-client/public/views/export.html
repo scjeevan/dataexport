@@ -242,7 +242,7 @@
 					<div class="bs-component">
 						<tabset>
 							<tab heading="Diggit_IP">
-							<table class="table table-striped table-hover col-md-12">
+							<table class="table table-striped table-hover">
 								<thead ng-if="headers.length > 0" class="ng-scope">
 									<tr>
 										<th class="ng-binding ng-scope" ng-repeat="h in headers">{{h}}</th>
@@ -315,5 +315,8 @@
 				</div>
 			</div>
 		</div>
+	</div>
+	<div id="spinner" ng-show="loading">
+		<img class="spinner-cls" src="img/spinner.gif" />
 	</div>
 </div>

@@ -3940,3 +3940,22 @@ top: 43%;
 	table-layout: fixed;
 	word-wrap: break-word;
 }
+#spinner {  
+    position:absolute;
+    top:0;
+    left:0;
+    width:100%;
+    height:100%;
+    z-index:1000;
+    background-color:grey;
+    opacity: .8;
+ }
+
+.spinner-cls {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    margin-left: -80px; /* -1 * image width / 2 */
+    margin-top: -80px;  /* -1 * image height / 2 */
+    display: block;     
+}

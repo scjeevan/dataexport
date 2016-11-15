@@ -800,7 +800,9 @@ mvpApp.controller('dataExportFilter', ['ivhTreeviewBfs', '$window', '$scope', '$
 	$scope.exp.infColumns = ['infohash','diggit_id','file_name','network'];
 	$scope.exp.columns = ["Infohash", "TitleID", "Date", "IP", "Port"];
 	$scope.headers = [];
+	$scope.loading = false;
 	$scope.getAllData = function(){
+		$scope.loading = true;
 		$scope.exp.pagenumber = 1;
 		$scope.exp.tPagenumber = 1;
 		$scope.exp.iPagenumber = 1;
@@ -812,6 +814,7 @@ mvpApp.controller('dataExportFilter', ['ivhTreeviewBfs', '$window', '$scope', '$
 		}
 		$http.post(Api.root_url+ "api/filterData", $scope.exp).
 		success(function (data, status, headers, config) {
+			$scope.loading = false;
 			$scope.ip_values = data.values;
 			$scope.total_count = data.total_count / $scope.itemsPerPage;
 			if((typeof data.headers == 'undefined') || (data.headers.length == 0)){
@@ -872,12 +875,15 @@ mvpApp.controller('dataExportFilter', ['ivhTreeviewBfs', '$window', '$scope', '$
 				content: 'Error while saving data'
 			});
 		});
+		
     };	
 	$scope.getIPData = function(pageno){
+		$scope.loading = true;
 		console.log("pageno : " + pageno);
 		$scope.exp.pagenumber = pageno;
 		$http.post(Api.root_url+ "api/filterData", $scope.exp).
 		success(function (data, status, headers, config) {
+			$scope.loading = false;
 			$scope.ip_values = data.values;
 			$scope.total_count = data.total_count / $scope.itemsPerPage;
 			if(data.total_count > 0){
@@ -896,9 +902,11 @@ mvpApp.controller('dataExportFilter', ['ivhTreeviewBfs', '$window', '$scope', '$
 		});
     };
 	$scope.getTitleData = function(pageno){
+		$scope.loading = true;
 		$scope.exp.tPagenumber = pageno;
 		$http.post(Api.root_url+ "api/filterTitleData", $scope.exp).
 		success(function (data, status, headers, config) {
+			$scope.loading = false;
 			$scope.title_values = data.values;
 			$scope.total_title_count = data.total_count / $scope.itemsPerPage;
 			$scope.tHeaders = data.headers;
@@ -918,9 +926,11 @@ mvpApp.controller('dataExportFilter', ['ivhTreeviewBfs', '$window', '$scope', '$
 		});
     };
 	$scope.getInfohashesData = function(pageno){
+		$scope.loading = true;
 		$scope.exp.iPagenumber = pageno;
 		$http.post(Api.root_url+ "api/filterInfohashesData", $scope.exp).
 		success(function (data, status, headers, config) {
+			$scope.loading = false;
 			$scope.infohashes_values = data.values;
 			$scope.total_infohashes_count = data.total_count / $scope.itemsPerPage;
 			$scope.iHeaders = data.headers;
