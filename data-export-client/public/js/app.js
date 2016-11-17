@@ -878,12 +878,12 @@ mvpApp.controller('dataExportFilter', ['ivhTreeviewBfs', '$window', '$scope', '$
 		
     };	
 	$scope.getIPData = function(pageno){
-		//$scope.loading = true;
+		$scope.loading = true;
 		console.log("pageno : " + pageno);
 		$scope.exp.pagenumber = pageno;
 		$http.post(Api.root_url+ "api/filterData", $scope.exp).
 		success(function (data, status, headers, config) {
-			//$scope.loading = false;
+			$scope.loading = false;
 			$scope.ip_values = data.values;
 			$scope.total_count = data.total_count;
 			if(data.total_count > 0){
@@ -902,11 +902,11 @@ mvpApp.controller('dataExportFilter', ['ivhTreeviewBfs', '$window', '$scope', '$
 		});
     };
 	$scope.getTitleData = function(pageno){
-		//$scope.loading = true;
+		$scope.loading = true;
 		$scope.exp.tPagenumber = pageno;
 		$http.post(Api.root_url+ "api/filterTitleData", $scope.exp).
 		success(function (data, status, headers, config) {
-			//$scope.loading = false;
+			$scope.loading = false;
 			$scope.title_values = data.values;
 			$scope.total_title_count = data.total_count;
 			$scope.tHeaders = data.headers;
@@ -926,11 +926,11 @@ mvpApp.controller('dataExportFilter', ['ivhTreeviewBfs', '$window', '$scope', '$
 		});
     };
 	$scope.getInfohashesData = function(pageno){
-		//$scope.loading = true;
+		$scope.loading = true;
 		$scope.exp.iPagenumber = pageno;
 		$http.post(Api.root_url+ "api/filterInfohashesData", $scope.exp).
 		success(function (data, status, headers, config) {
-			//$scope.loading = false;
+			$scope.loading = false;
 			$scope.infohashes_values = data.values;
 			$scope.total_infohashes_count = data.total_count;
 			$scope.iHeaders = data.headers;

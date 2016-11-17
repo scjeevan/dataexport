@@ -5,6 +5,7 @@ var Client = require('ssh2').Client;
 var csvWriter = require('csv-write-stream');
 var schedule = require('node-schedule');
 var child_process = require('child_process');
+var async = require('async');
 //var exec = require('exec');
 //var exec = require('child-process-promise').exec;
 var writer = csvWriter();
@@ -91,6 +92,14 @@ function buildTitleQuery(paramArr, isCount, isSchedule){
 
 function buildInfohashesQuery(paramArr, isCount, isSchedule){
 	var appendedParams = 0;
+	var selGroups = "";
+	if(typeof paramArr.selected_groups != 'undefined' && paramArr.selected_groups.length > 0){
+		selGroups += "(";
+		for (var i in paramArr.selected_groups) {
+			selGroups += paramArr.selected_groups[i].title + ",";
+		}
+		selGroups = selGroups.substring(0, selGroups.length - 1) + ")";
+	}
 	var genreQ = "";
 	if(typeof paramArr.genres_all == 'undefined' || paramArr.genres_all != '1') {
 		if(typeof paramArr.genres != 'undefined' && paramArr.genres.length > 0){
@@ -127,6 +136,9 @@ function buildInfohashesQuery(paramArr, isCount, isSchedule){
 		_query = "SELECT " + fields;
 		_query += " from torrents.mm_titles mt left join torrents.infohashes i on i.mm_title_id=mt.mm_title_id";
 	}
+	if(selGroups.length > 0){
+		_query += " left join torrents.group_infohashes gi on gi.infohash=i.infohash";
+	}
 	if(genreQ.length > 0){
 		appendedParams++;
 		_query += " left join torrents.mm_title_genres g on g.title_id = mt.mm_title_id where g.genre_id in "+genreQ;
@@ -134,6 +146,11 @@ function buildInfohashesQuery(paramArr, isCount, isSchedule){
 	if(selTitles.length > 0){
 		var join = (appendedParams == 0) ? " WHERE ":" AND ";
 		_query += join + " mt.title IN "+selTitles;
+		appendedParams++;
+	}
+	if(selGroups.length > 0){
+		var join = (appendedParams == 0) ? " WHERE ":" AND ";
+		_query += join + " gi.diggit_group_id IN "+selGroups;
 		appendedParams++;
 	}
 	DEBUG.log("INFOHASHES_QUERY : " + _query);
@@ -721,7 +738,7 @@ var exportDataMng = {
 							connection.query(_tformatedQuery, function (err, rows1) {
 								if(err) console.log(err);
 								if(typeof rows1 != 'undefined' && typeof rows1.length != 'undefined' && rows1.length > 0){
-									//saveDateRemort(req.body.fileName+"_INFOHASHES", tHeaders, rows1, connectionProperties, ftp_loc);
+									saveDateRemort(req.body.fileName+"_INFOHASHES", tHeaders, rows1, connectionProperties, ftp_loc);
 								}
 							});
 							DEBUG.log("[DONE - EXPORT INFOHASHES]");
