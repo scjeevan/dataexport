@@ -723,54 +723,53 @@ var exportDataMng = {
 								port: rows[0].port,
 								password: rows[0].password
 							};
-							DEBUG.log("[START - EXPORT DIGGIT_IP]");
-							_query += " AND IP!='Peer IP' LIMIT 100";
-							exportDataUsingScript(_query, connectionProperties, req.body.fileName+"_IP");
-							DEBUG.log("[DONE - EXPORT DIGGIT_IP]");
-							DEBUG.log("[START - EXPORT INFOHASHES]");
-							var _tquery = buildInfohashesQuery(req.body, false, false);
-							_tquery += " limit 5 ";
-							var _tformatedQuery = mysql.format(_tquery);
-							var tHeaders = [];
-							for (var i in req.body.infColumns) {
-								tHeaders.push(req.body.infColumns[i]);
-							}
-							connection.query(_tformatedQuery, function (err, rows1) {
-								if(err) console.log(err);
-								if(typeof rows1 != 'undefined' && typeof rows1.length != 'undefined' && rows1.length > 0){
-									saveDateRemort(req.body.fileName+"_INFOHASHES", tHeaders, rows1, connectionProperties, ftp_loc);
-								}
-							});
-							DEBUG.log("[DONE - EXPORT INFOHASHES]");
-							DEBUG.log("[START - EXPORT TITLE]");
-							var _iquery = buildTitleQuery(req.body, false, false);
-							_iquery += " limit 5 ";
-							var iHeaders = [];
-							for (var i in req.body.tColumns) {
-								iHeaders.push(req.body.tColumns[i]);
-							}
-							var _iformatedQuery = mysql.format(_iquery);
-							connection.query(_iformatedQuery, function (err, rows2) {
-								if(err) console.log(err);
-								if(typeof rows2 != 'undefined' && typeof rows2.length != 'undefined' && rows2.length > 0){
-									saveDateRemort(req.body.fileName+"_TITLE", iHeaders, rows2, connectionProperties, ftp_loc);
-								}
-							});
-							DEBUG.log("[DONE - EXPORT TITLE]");
-							/*
-								DEBUG.log("Start to export title data");
-								var selTitles = "";
-								if(typeof req.body.selected_titles != 'undefined' && req.body.selected_titles.length > 0){
-									selTitles += "(";
-									for (var i in req.body.selected_titles) {
-										selTitles += "'"+req.body.selected_titles[i].title + "',";
+							async.parallel({
+								one: function(callback) {
+									DEBUG.log("[START - EXPORT DIGGIT_IP]");
+									_query += " AND IP!='Peer IP' LIMIT 100";
+									exportDataUsingScript(_query, connectionProperties, req.body.fileName+"_IP");
+									DEBUG.log("[DONE - EXPORT DIGGIT_IP]");
+									callback(null, 'abc\n');
+								},
+								two: function(callback) {
+									DEBUG.log("[START - EXPORT INFOHASHES]");
+									var _tquery = buildInfohashesQuery(req.body, false, false);
+									_tquery += " limit 5 ";
+									var _tformatedQuery = mysql.format(_tquery);
+									var tHeaders = [];
+									for (var i in req.body.infColumns) {
+										tHeaders.push(req.body.infColumns[i]);
 									}
-									selTitles = selTitles.substring(0, selTitles.length - 1) + ")";
-									
+									connection.query(_tformatedQuery, function (err, rows1) {
+										if(err) console.log(err);
+										if(typeof rows1 != 'undefined' && typeof rows1.length != 'undefined' && rows1.length > 0){
+											saveDateRemort(req.body.fileName+"_INFOHASHES", tHeaders, rows1, connectionProperties, ftp_loc);
+										}
+									});
+									DEBUG.log("[DONE - EXPORT INFOHASHES]");
+									callback(null, 'xyz\n');
+								},
+								three: function(callback) {
+									DEBUG.log("[START - EXPORT TITLE]");
+									var _iquery = buildTitleQuery(req.body, false, false);
+									_iquery += " limit 5 ";
+									var iHeaders = [];
+									for (var i in req.body.tColumns) {
+										iHeaders.push(req.body.tColumns[i]);
+									}
+									var _iformatedQuery = mysql.format(_iquery);
+									connection.query(_iformatedQuery, function (err, rows2) {
+										if(err) console.log(err);
+										if(typeof rows2 != 'undefined' && typeof rows2.length != 'undefined' && rows2.length > 0){
+											saveDateRemort(req.body.fileName+"_TITLE", iHeaders, rows2, connectionProperties, ftp_loc);
+										}
+									});
+									DEBUG.log("[DONE - EXPORT TITLE]");
+									callback(null, 'xyz\n');
 								}
-								var titleQuery = "SELECT * FROM title_title_id WHERE title IN ("+selTitles+")";
-								exportDataUsingScript(titleQuery, connectionProperties, req.body.fileName+"_TITLE");
-							*/
+							}, function(err, results) {
+								// results is now equals to: {one: 'abc\n', two: 'xyz\n'}
+							});
 							res.json({
 								values: "Selected data is being exported"
 							});
