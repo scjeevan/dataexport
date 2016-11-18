@@ -137,7 +137,7 @@ function buildInfohashesQuery(paramArr, isCount, isSchedule){
 		_query += " from torrents.mm_titles mt left join torrents.infohashes i on i.mm_title_id=mt.mm_title_id";
 	}
 	if(selGroups.length > 0){
-		_query += " left join torrents.group_infohashes gi on gi.infohash=i.infohash";
+		_query += " left join torrents.group_infohashes gi on gi.infohash=i.infohash left join torrents.groups grp on gi.diggit_group_id = grp.diggit_group_id ";
 	}
 	if(genreQ.length > 0){
 		appendedParams++;
