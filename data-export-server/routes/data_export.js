@@ -96,7 +96,7 @@ function buildInfohashesQuery(paramArr, isCount, isSchedule){
 	if(typeof paramArr.selected_groups != 'undefined' && paramArr.selected_groups.length > 0){
 		selGroups += "(";
 		for (var i in paramArr.selected_groups) {
-			selGroups += paramArr.selected_groups[i].title + ",";
+			selGroups += "'"+paramArr.selected_groups[i].title + "',";
 		}
 		selGroups = selGroups.substring(0, selGroups.length - 1) + ")";
 	}
@@ -150,7 +150,7 @@ function buildInfohashesQuery(paramArr, isCount, isSchedule){
 	}
 	if(selGroups.length > 0){
 		var join = (appendedParams == 0) ? " WHERE ":" AND ";
-		_query += join + " gi.diggit_group_id IN "+selGroups;
+		_query += join + " grp.group_name IN "+selGroups;
 		appendedParams++;
 	}
 	DEBUG.log("INFOHASHES_QUERY : " + _query);
