@@ -96,8 +96,8 @@ function buildInfohashesQuery(paramArr, isCount, isSchedule){
 	if(typeof paramArr.selected_groups != 'undefined' && paramArr.selected_groups.length > 0){
 		selGroups += "(";
 		for (var i in paramArr.selected_groups) {
-			console.log("[GRP]:"+JSON.stringify(paramArr.selected_groups[i]));
-			selGroups += "'"+paramArr.selected_groups[i].title + "',";
+			console.log("[GRP]:"+paramArr.selected_groups[i].originalObject.diggit_group_id);
+			selGroups += "'"+paramArr.selected_groups[i].originalObject.diggit_group_id + "',";
 		}
 		selGroups = selGroups.substring(0, selGroups.length - 1) + ")";
 	}
