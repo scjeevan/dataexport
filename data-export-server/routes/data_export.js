@@ -469,7 +469,7 @@ var exportDataMng = {
     },
 	
 	getGroups : function(req, res){
-		var query = "SELECT `group_name` FROM `groups` GROUP BY `group_name`";
+		var query = "SELECT `diggit_group_id`, `group_name` FROM `groups`";
 		var formatedQuery = mysql.format(query);
 		db.getConnection(function(err, connection){
 			connection.query(formatedQuery, function (err, rows) {
