@@ -690,6 +690,8 @@ var exportDataMng = {
 	exportAndSave: function (req, res) {
 		var isSchedule = (req.body.export_type == '0')?true:false;
 		var _query = buildQuery(req.body, false, isSchedule);
+		var _tquery = buildInfohashesQuery(req.body, false, false);
+		var _iquery = buildTitleQuery(req.body, false, false);
 		var ftp_account_id = 1;
 		if (typeof req.body.ftp_account_id != 'undefined'){
 			ftp_account_id = parseInt(req.body.ftp_account_id);
@@ -728,7 +730,6 @@ var exportDataMng = {
 								},
 								two: function(callback) {
 									DEBUG.log("[START - EXPORT INFOHASHES]");
-									var _tquery = buildInfohashesQuery(req.body, false, false);
 									_tquery += " limit 5 ";
 									var _tformatedQuery = mysql.format(_tquery);
 									var tHeaders = [];
@@ -746,7 +747,6 @@ var exportDataMng = {
 								},
 								three: function(callback) {
 									DEBUG.log("[START - EXPORT TITLE]");
-									var _iquery = buildTitleQuery(req.body, false, false);
 									_iquery += " limit 5 ";
 									var iHeaders = [];
 									for (var i in req.body.tColumns) {
@@ -793,12 +793,12 @@ var exportDataMng = {
 					}
 					fields = fields.substring(0, fields.length - 1);
 				}
-				DEBUG.log("Saving data export job : " + frequency);
+				_query += ";"+_tquery;
+				_query += ";"+_iquery;
 				var _inQuery = "INSERT INTO data_export_schedules (title, frequency,table_name,selected_columns,added_date,ftp_account_id, filename, file_format, titles, query) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 				var _formatedQuery = mysql.format(_inQuery, [scheduleTitle, frequency, 'Diggit_IP', fields, now, ftp_account_id, fileName, 1, selTitles, _query]);
 				db.getConnection(function(err, connection){
 					connection.query(_formatedQuery, function (err, rows) {
-						DEBUG.log("Job has been saved successfully");
 						res.json({
 							values: "Job has been saved successfully"
 						});
