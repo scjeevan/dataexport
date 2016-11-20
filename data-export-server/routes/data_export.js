@@ -1061,10 +1061,7 @@ function processToExport(row, startDate, endDate, callback) {
 		var jobId = row.data_export_schedule_id;
 		DEBUG.log("Running Job #"+jobId);
 		var fileName = row.filename;
-		var tableName = row.table_name;
-		var title = row.titles;
-		var query = row.query;
-		var qArr = query.split(";");
+		var qObj = JSON.parse(row.query);
 		var ftpLocation = row.location;
 		var connProps = {
 			host: row.ip,
@@ -1072,21 +1069,27 @@ function processToExport(row, startDate, endDate, callback) {
 			port: row.port,
 			password: row.password
 		};
-		for(var i=0; i<qArr.length; i++) {
-			var q = qArr[i];
-			if(q.indexOf('Diggit_IP') > -1) {
-				q = q.replace("<start>", startDate);
-				q = q.replace("<end>", endDate);
-				console.log(q);
-				exportDataUsingScript(q, connProps, fileName+"_IP");
-				DEBUG.log("Completed Job #"+jobId);
-			}
-			else{
-				
-			}
+		if(typeof qObj.DIGGIT_IP != 'undefined'){
+			var q = qObj.DIGGIT_IP;
+			q = q.replace("<start>", startDate);
+			q = q.replace("<end>", endDate);
+			console.log(q);
+			//exportDataUsingScript(q, connProps, fileName+"_IP");
+			DEBUG.log("Completed Job #"+jobId);
+		}
+		if(typeof qObj.INFOHASHES != 'undefined'){
+			var q = qObj.INFOHASHES;
+			q = q.replace("<start>", startDate);
+			q = q.replace("<end>", endDate);
+			console.log(q);
+		}
+		if(typeof qObj.TITLE != 'undefined'){
+			var q = qObj.TITLE;
+			q = q.replace("<start>", startDate);
+			q = q.replace("<end>", endDate);
+			console.log(q);
 		}
 	}
-	
 }
 
 function responseAll(query, res) {
