@@ -42,6 +42,14 @@ function executeGoogleBigQueryAllRows(sqlQuery, callback){
 }
 function buildTitleQuery(paramArr, isCount, isSchedule){
 	var appendedParams = 0;
+	var selGroups = "";
+	if(typeof paramArr.selected_groups != 'undefined' && paramArr.selected_groups.length > 0){
+		selGroups += "(";
+		for (var i in paramArr.selected_groups) {
+			selGroups += paramArr.selected_groups[i].originalObject.diggit_group_id + ",";
+		}
+		selGroups = selGroups.substring(0, selGroups.length - 1) + ")";
+	}
 	var genreQ = "";
 	if(typeof paramArr.genres_all == 'undefined' || paramArr.genres_all != '1') {
 		if(typeof paramArr.genres != 'undefined' && paramArr.genres.length > 0){
@@ -77,9 +85,17 @@ function buildTitleQuery(paramArr, isCount, isSchedule){
 		_query = "SELECT " + fields;
 		_query += " from torrents.mm_titles mt left join imdb.episodes ie on ie.imdbID=mt.imdb_id left join imdb.imdb_details id on id.imdbID=mt.imdb_id";
 	}
+	if(selGroups.length > 0){
+		_query += " left join torrents.groups_infohash_titles gi on gi.diggit_title_id = mt.diggit_title_id ";
+	}
 	if(genreQ.length > 0){
 		appendedParams++;
 		_query += " left join torrents.mm_title_genres g on g.title_id = mt.mm_title_id where g.genre_id in "+genreQ;
+	}
+	if(selGroups.length > 0){
+		var join = (appendedParams == 0) ? " WHERE ":" AND ";
+		_query += join + " gi.diggit_group_id IN "+selGroups;
+		appendedParams++;
 	}
 	if(selTitles.length > 0){
 		var join = (appendedParams == 0) ? " WHERE ":" AND ";
