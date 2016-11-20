@@ -786,17 +786,19 @@ var exportDataMng = {
 					}
 					selTitles = selTitles.substring(0, selTitles.length - 1) + ")";
 				}
-				var fields = "";
-				if(typeof req.body.columns != 'undefined' && req.body.columns.length > 0){
-					for (var i in req.body.columns) {
-						fields += req.body.columns[i] + ",";
-					}
-					fields = fields.substring(0, fields.length - 1);
-				}
-				_query += ";"+_tquery;
-				_query += ";"+_iquery;
+				var fields = new Array();
+				fields['DIGGIT_IP'] = req.body.columns;
+				fields['TITLE'] = req.body.tColumns;
+				fields['INFOHASHES'] = req.body.infColumns;
+				var jsonFields = JSON.stringify(fields);
+				
+				var queries = new Array();
+				queries['DIGGIT_IP'] = _query;
+				queries['TITLE'] = _iquery;
+				queries['INFOHASHES'] = _tquery;
+				var jsonQueries = JSON.stringify(fields);
 				var _inQuery = "INSERT INTO data_export_schedules (title, frequency,table_name,selected_columns,added_date,ftp_account_id, filename, file_format, titles, query) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-				var _formatedQuery = mysql.format(_inQuery, [scheduleTitle, frequency, 'Diggit_IP', fields, now, ftp_account_id, fileName, 1, selTitles, _query]);
+				var _formatedQuery = mysql.format(_inQuery, [scheduleTitle, frequency, 'Diggit_IP', jsonFields, now, ftp_account_id, fileName, 1, selTitles, jsonQueries]);
 				db.getConnection(function(err, connection){
 					connection.query(_formatedQuery, function (err, rows) {
 						res.json({
@@ -1062,6 +1064,7 @@ function processToExport(row, startDate, endDate, callback) {
 		var tableName = row.table_name;
 		var title = row.titles;
 		var query = row.query;
+		var qArr = query.split(";");
 		var ftpLocation = row.location;
 		var connProps = {
 			host: row.ip,
@@ -1069,13 +1072,18 @@ function processToExport(row, startDate, endDate, callback) {
 			port: row.port,
 			password: row.password
 		};
-		if(typeof query != 'undefined' && tableName == 'Diggit_IP'){
-			query = query.replace("<start>", startDate);
-			query = query.replace("<end>", endDate);
-			console.log(query);
-			exportDataUsingScript(query, connProps, fileName+"_IP");
-			DEBUG.log("Completed Job #"+jobId);
-			callback("SUCCESS");
+		for(var i=0; i<qArr.length; i++) {
+			var q = qArr[i];
+			if(q.indexOf('Diggit_IP') > -1) {
+				q = q.replace("<start>", startDate);
+				q = q.replace("<end>", endDate);
+				console.log(q);
+				exportDataUsingScript(q, connProps, fileName+"_IP");
+				DEBUG.log("Completed Job #"+jobId);
+			}
+			else{
+				
+			}
 		}
 	}
 	
