@@ -150,7 +150,7 @@ function buildInfohashesQuery(paramArr, isCount, isSchedule){
 	}
 	if(selGroups.length > 0){
 		var join = (appendedParams == 0) ? " WHERE ":" AND ";
-		_query += join + " grp.group_name IN "+selGroups;
+		_query += join + " gi.diggit_group_id IN "+selGroups;
 		appendedParams++;
 	}
 	DEBUG.log("INFOHASHES_QUERY : " + _query);
