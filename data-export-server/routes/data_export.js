@@ -796,7 +796,7 @@ var exportDataMng = {
 				queries['DIGGIT_IP'] = _query;
 				queries['TITLE'] = _iquery;
 				queries['INFOHASHES'] = _tquery;
-				var jsonQueries = JSON.stringify(fields);
+				var jsonQueries = JSON.stringify(queries);
 				var _inQuery = "INSERT INTO data_export_schedules (title, frequency,table_name,selected_columns,added_date,ftp_account_id, filename, file_format, titles, query) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 				var _formatedQuery = mysql.format(_inQuery, [scheduleTitle, frequency, 'Diggit_IP', jsonFields, now, ftp_account_id, fileName, 1, selTitles, jsonQueries]);
 				db.getConnection(function(err, connection){
