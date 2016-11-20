@@ -786,16 +786,10 @@ var exportDataMng = {
 					}
 					selTitles = selTitles.substring(0, selTitles.length - 1) + ")";
 				}
-				var fields = new Array();
-				fields['DIGGIT_IP'] = req.body.columns;
-				fields['TITLE'] = req.body.tColumns;
-				fields['INFOHASHES'] = req.body.infColumns;
+				var fields = {DIGGIT_IP:req.body.columns, TITLE:req.body.tColumns, INFOHASHES:req.body.infColumns};
 				var jsonFields = JSON.stringify(fields);
 				DEBUG.log("[jsonFields]"+jsonFields);
-				var queries = new Array();
-				queries['DIGGIT_IP'] = _query;
-				queries['TITLE'] = _iquery;
-				queries['INFOHASHES'] = _tquery;
+				var queries = {DIGGIT_IP:_query, TITLE:_iquery, INFOHASHES:_tquery};
 				var jsonQueries = JSON.stringify(queries);
 				DEBUG.log("[jsonQueries]"+jsonQueries);
 				/*
