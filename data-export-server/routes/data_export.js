@@ -1089,6 +1089,7 @@ function processToExport(row, startDate, endDate, callback) {
 			q = q.replace("<end>", endDate);
 			console.log(q);
 		}
+		callback("Completed Job #"+jobId);
 	}
 }
 
