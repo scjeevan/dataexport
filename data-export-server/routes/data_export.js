@@ -788,11 +788,8 @@ var exportDataMng = {
 				}
 				var fields = {DIGGIT_IP:req.body.columns, TITLE:req.body.tColumns, INFOHASHES:req.body.infColumns};
 				var jsonFields = JSON.stringify(fields);
-				DEBUG.log("[jsonFields]"+jsonFields);
 				var queries = {DIGGIT_IP:_query, TITLE:_iquery, INFOHASHES:_tquery};
 				var jsonQueries = JSON.stringify(queries);
-				DEBUG.log("[jsonQueries]"+jsonQueries);
-				/*
 				var _inQuery = "INSERT INTO data_export_schedules (title, frequency,table_name,selected_columns,added_date,ftp_account_id, filename, file_format, titles, query) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 				var _formatedQuery = mysql.format(_inQuery, [scheduleTitle, frequency, 'Diggit_IP', jsonFields, now, ftp_account_id, fileName, 1, selTitles, jsonQueries]);
 				db.getConnection(function(err, connection){
@@ -803,7 +800,6 @@ var exportDataMng = {
 					});
 					connection.release();
 				});
-				*/
 			}
 		}
 		else{
@@ -846,6 +842,8 @@ var exportDataMng = {
 			}
 			genreQ = genreQ.substring(0, genreQ.length - 1) + ")";
 		}
+		var jsonFields = "";
+		var jsonQueries = "";
 		if(req.body.table=='Diggit_IP'){
 			if(req.body.isGenre){
 				_query += " FROM [DevDiggit_Hist.Diggit_IP] AS t JOIN [DevDiggit_Hist.mm_title_genres] AS gt ON t.TitleID = gt.title_id WHERE t.Date BETWEEN '<start>' AND '<end>' AND gt.genre_id IN "+genreQ;
@@ -853,6 +851,10 @@ var exportDataMng = {
 				_query += " FROM DevDiggit_Hist.Diggit_IP WHERE Date BETWEEN '<start>' AND '<end>' ";
 			}
 			_query += " AND IP!='Peer IP'";
+			var fields = {DIGGIT_IP:req.body.columns};
+			jsonFields = JSON.stringify(fields);
+			var queries = {DIGGIT_IP:_query};
+			jsonQueries = JSON.stringify(queries);
 		}
 		else if(req.body.table == 'infohashes'){
 			_query += " UNION ALL select i.infohash,mt.diggit_title_id, i.file_name,i.network,i.file_size,i.media_format,i.quality,i.audio_language, i.subtitle_language,i.created_time,i.added_time,i.episode_title,i.added_by,i.languages,i.verified, i.resolution,i.aspect_ratio,i.frame_rate,i.subtitles,i.bitrate from  torrents.mm_titles mt left join torrents.infohashes i on i.mm_title_id=mt.mm_title_id WHERE i.added_time BETWEEN '<start>' AND '<end>' ";
@@ -860,6 +862,10 @@ var exportDataMng = {
 				_query += " left join torrents.mm_title_genres g on g.title_id = mt.mm_title_id where g.genre_id in "+genreQ;
 			}
 			_query += " limit 5 ";
+			var fields = {INFOHASHES:req.body.columns};
+			jsonFields = JSON.stringify(fields);
+			var queries = {INFOHASHES:_query};
+			jsonQueries = JSON.stringify(queries);
 		}
 		else{
 			_query += " UNION ALL select mt.diggit_title_id as diggit_id,mt.title as title,mt.season ,mt.episode,mt.studio,mt.category, mt.genre,mt.mpaa_rating,mt.imdb_id,mt.episode_imdb_id, ie.Year as episode_Year,ie.Rating as episode_Rating,ie.Runtime as episode_Runtime ,ie.Genre as episode_Genre, ie.Released as episode_Released,ie.Season as episode_Season ,ie.Title as episode_title,ie.Director as episode_Director,ie.Writer as episode_Writer,ie.Cast as episode_Cast, ie.Metacritic as episode_Metacritic,ie.imdbRating as episode_imdbRating,ie.imdbVotes as episode_imdbVotes, ie.Poster as episode_Poster ,ie.Plot as episode_Plot,ie.FullPlot as episode_FullPlot, ie.Language as episode_Language,ie.Country as episode_Country,ie.Awards as episode_Awards, id.Year as Year,id.Rating,id.Runtime,id.Genre,id.Released,id.Director,id.Writer,id.Cast,id.Metacritic,id.imdbRating,   id.imdbVotes,id.Plot,id.FullPlot,id.Language,id.Country from torrents.mm_titles mt left join imdb.episodes ie on ie.imdbID=mt.imdb_id left join imdb.imdb_details id on id.imdbID=mt.imdb_id";
@@ -867,20 +873,18 @@ var exportDataMng = {
 				_query += " left join torrents.mm_title_genres g on g.title_id = mt.mm_title_id where g.genre_id in "+genreQ;
 			}
 			_query += " limit 5 ";
+			var fields = {TITLE:req.body.columns};
+			jsonFields = JSON.stringify(fields);
+			var queries = {TITLE:_query};
+			jsonQueries = JSON.stringify(queries);
 		}
-		DEBUG.log("Saving [QUERY]:"+_query);
 		var ftp_account_id = 1;
 		if (typeof req.body.ftp_account_id != 'undefined'){
 			ftp_account_id = parseInt(req.body.ftp_account_id);
-		}		
-		var _columns = "";
-		for (var i in req.body.columns) {
-			_columns += req.body.columns[i] + ",";
 		}
-		_columns = _columns.substring(0, _columns.length - 1);
 		var now = new Date();
 		var _insQuery = "INSERT INTO data_export_schedules (title, frequency,table_name,selected_columns,added_date,ftp_account_id, filename, file_format, query) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
-		var _formatedQuery = mysql.format(_insQuery, [req.body.schedule_title, req.body.switch_3, req.body.table, _columns, now, ftp_account_id, req.body.fileName, '1' ,_query]);
+		var _formatedQuery = mysql.format(_insQuery, [req.body.schedule_title, req.body.switch_3, req.body.table, jsonFields, now, ftp_account_id, req.body.fileName, '1' ,jsonQueries]);
 		db.getConnection(function(err, connection){
 			connection.query(_formatedQuery, function (err, rows) {
 				console.log("SAVED");
