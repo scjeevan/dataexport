@@ -96,8 +96,7 @@ function buildInfohashesQuery(paramArr, isCount, isSchedule){
 	if(typeof paramArr.selected_groups != 'undefined' && paramArr.selected_groups.length > 0){
 		selGroups += "(";
 		for (var i in paramArr.selected_groups) {
-			console.log("[GRP]:"+paramArr.selected_groups[i].originalObject.diggit_group_id);
-			selGroups += "'"+paramArr.selected_groups[i].originalObject.diggit_group_id + "',";
+			selGroups += paramArr.selected_groups[i].originalObject.diggit_group_id + ",";
 		}
 		selGroups = selGroups.substring(0, selGroups.length - 1) + ")";
 	}
@@ -138,7 +137,7 @@ function buildInfohashesQuery(paramArr, isCount, isSchedule){
 		_query += " from torrents.mm_titles mt left join torrents.infohashes i on i.mm_title_id=mt.mm_title_id";
 	}
 	if(selGroups.length > 0){
-		_query += " left join torrents.group_infohashes gi on gi.infohash=i.infohash left join torrents.groups grp on gi.diggit_group_id = grp.diggit_group_id ";
+		_query += " left join torrents.group_infohashes gi on gi.infohash=i.infohash ";
 	}
 	if(genreQ.length > 0){
 		appendedParams++;
@@ -168,9 +167,7 @@ function buildQuery(paramArr, isCount, isSchedule){
 			}
 			genreQ = genreQ.substring(0, genreQ.length - 1) + ")";
 		}
-		DEBUG.log("GENRES : " + genreQ);
 	}
-	
 	var selTitles = "";
 	if(typeof paramArr.selected_titles != 'undefined' && paramArr.selected_titles.length > 0){
 		selTitles += "(";
@@ -178,19 +175,15 @@ function buildQuery(paramArr, isCount, isSchedule){
 			selTitles += "'"+paramArr.selected_titles[i].title + "',";
 		}
 		selTitles = selTitles.substring(0, selTitles.length - 1) + ")";
-		DEBUG.log("TITLES : " + selTitles);
 	}
-	
 	var selGroups = "";
 	if(typeof paramArr.selected_groups != 'undefined' && paramArr.selected_groups.length > 0){
 		selGroups += "(";
 		for (var i in paramArr.selected_groups) {
-			selGroups += paramArr.selected_groups[i].title + ",";
+			selGroups += paramArr.selected_groups[i].originalObject.diggit_group_id + ",";
 		}
 		selGroups = selGroups.substring(0, selGroups.length - 1) + ")";
-		DEBUG.log("GROUPS : " + selGroups);
 	}
-	
 	var dateRange = "";
 	if((typeof paramArr.startDate != 'undefined' && paramArr.startDate.length > 0)&&(typeof paramArr.endDate != 'undefined' && paramArr.endDate.length > 0)){
 		var start = paramArr.startDate.replace(/T/, ' ').replace(/\..+/, '');
@@ -211,7 +204,6 @@ function buildQuery(paramArr, isCount, isSchedule){
 			}
 		});
 		continents = continents.substring(0, continents.length - 2);
-		DEBUG.log("CONTINENTS : " + continents);
 	}
 	var appendedParams = 0;
 	var _query = "SELECT ";
@@ -229,49 +221,35 @@ function buildQuery(paramArr, isCount, isSchedule){
 			_query += " * ";
 		}
 	}
+	_query += " FROM DevDiggit_Hist.Diggit_IP AS t ";
 	if(selTitles.length > 0 && genreQ.length > 0){ /*** NEED TO BE MODIFIED ***/
-		_query += " FROM DevDiggit_Hist.Diggit_IP AS t JOIN DevDiggit_Hist.title_title_id AS gt ON t.TitleID = gt.title_id WHERE gt.title IN "+selTitles+" ";
+		_query += " JOIN DevDiggit_Hist.title_title_id AS gt ON t.TitleID = gt.title_id WHERE gt.title IN "+selTitles+" ";
 		appendedParams++;
 	}
 	else if(selTitles.length > 0 && genreQ.length == 0){
-		_query += " FROM DevDiggit_Hist.Diggit_IP AS t JOIN DevDiggit_Hist.title_title_id AS gt ON t.TitleID = gt.title_id WHERE gt.title IN "+selTitles+" ";
+		_query += " JOIN DevDiggit_Hist.title_title_id AS gt ON t.TitleID = gt.title_id WHERE gt.title IN "+selTitles+" ";
 		appendedParams++;
 	}
 	else if(genreQ.length > 0 && selTitles.length == 0){
-		_query += " FROM DevDiggit_Hist.Diggit_IP AS t JOIN DevDiggit_Hist.mm_title_genres AS gt ON t.TitleID = gt.title_id WHERE gt.genre_id IN "+genreQ+" ";
+		_query += " JOIN DevDiggit_Hist.mm_title_genres AS gt ON t.TitleID = gt.title_id WHERE gt.genre_id IN "+genreQ+" ";
 		appendedParams++;
-	} else {
-		_query += " FROM DevDiggit_Hist.Diggit_IP AS t ";
+	}
+	if(selGroups.length > 0){
+		var join = (appendedParams == 0) ? " WHERE ":" AND ";
+		_query += join + " t.group_id IN "+selGroups+" ";
+		appendedParams++;
 	}
 	if(dateRange != ""){
-		if(appendedParams == 0){
-			_query += " WHERE " + dateRange;
-			appendedParams++;
-		}
-		else{
-			_query += " AND " + dateRange;
-		}
+		var join = (appendedParams == 0) ? " WHERE ":" AND ";
+		_query += join + dateRange;
+		appendedParams++;
 	}
 	if(continents != ""){
-		if(appendedParams == 0){
-			_query += " WHERE " + continents ;
-		}
-		else{
-			_query += " AND " + continents ;
-		}
+		var join = (appendedParams == 0) ? " WHERE ":" AND ";
+		_query += join + continents ;
+		appendedParams++;
 	}
-	/*
-	if(selGroups != ""){
-		if(appendedParams == 0){
-			_query += " WHERE group_id IN " + selGroups ;
-			appendedParams++;
-		}
-		else{
-			_query += " AND group_id IN " + selGroups ;
-		}
-	}
-	*/
-	DEBUG.log("QUERY : " + _query);
+	DEBUG.log("IP_QUERY : " + _query);
 	return _query;
 }
 
