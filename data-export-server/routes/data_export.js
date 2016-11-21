@@ -812,7 +812,7 @@ var exportDataMng = {
 									DEBUG.log("[DONE - EXPORT DIGGIT_IP]");
 									callback(null, 'abc\n');
 								},
-								two: function(arg1, callback) {
+								two: function(callback) {
 									DEBUG.log("[START - EXPORT INFOHASHES]");
 									_tquery += " limit 5 ";
 									var _tformatedQuery = mysql.format(_tquery);
@@ -829,7 +829,7 @@ var exportDataMng = {
 									DEBUG.log("[DONE - EXPORT INFOHASHES]");
 									callback(null, 'xyz\n');
 								},
-								three: function(arg1, callback) {
+								three: function(callback) {
 									DEBUG.log("[START - EXPORT TITLE]");
 									_iquery += " limit 5 ";
 									var iHeaders = [];
