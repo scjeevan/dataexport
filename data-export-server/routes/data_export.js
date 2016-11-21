@@ -728,6 +728,7 @@ var exportDataMng = {
 									DEBUG.log("[DONE - EXPORT DIGGIT_IP]");
 									callback(null, 'abc\n');
 								},
+								/*
 								function(arg1, callback) {
 									DEBUG.log("[START - EXPORT INFOHASHES]");
 									_tquery += " limit 5 ";
@@ -745,6 +746,7 @@ var exportDataMng = {
 									DEBUG.log("[DONE - EXPORT INFOHASHES]");
 									callback(null, 'xyz\n');
 								},
+								*/
 								function(arg1, callback) {
 									DEBUG.log("[START - EXPORT TITLE]");
 									_iquery += " limit 5 ";
