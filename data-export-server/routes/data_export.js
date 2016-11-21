@@ -728,7 +728,7 @@ var exportDataMng = {
 									DEBUG.log("[DONE - EXPORT DIGGIT_IP]");
 									callback(null, 'abc\n');
 								},
-								/*
+								
 								function(arg1, callback) {
 									DEBUG.log("[START - EXPORT INFOHASHES]");
 									_tquery += " limit 5 ";
@@ -740,13 +740,14 @@ var exportDataMng = {
 									connection.query(_tformatedQuery, function (err, rows1) {
 										if(err) console.log(err);
 										if(typeof rows1 != 'undefined' && typeof rows1.length != 'undefined' && rows1.length > 0){
+											DEBUG.log("[SIZE - INFOHASHES]:"+rows1.length);
 											//saveDateRemort(req.body.fileName+"_INFOHASHES", tHeaders, rows1, connectionProperties, ftp_loc);
 										}
 									});
 									DEBUG.log("[DONE - EXPORT INFOHASHES]");
 									callback(null, 'xyz\n');
 								},
-								*/
+								
 								function(arg1, callback) {
 									DEBUG.log("[START - EXPORT TITLE]");
 									_iquery += " limit 5 ";
@@ -758,6 +759,7 @@ var exportDataMng = {
 									connection.query(_iformatedQuery, function (err, rows2) {
 										if(err) console.log(err);
 										if(typeof rows2 != 'undefined' && typeof rows2.length != 'undefined' && rows2.length > 0){
+											DEBUG.log("[SIZE - TITLE]:"+rows2.length);
 											saveDateRemort(req.body.fileName+"_TITLE", iHeaders, rows2, connectionProperties, ftp_loc);
 										}
 									});
