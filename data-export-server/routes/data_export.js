@@ -750,7 +750,7 @@ var exportDataMng = {
 								}
 							}
 							*/
-							/*
+							
 							async.waterfall([
 								function(callback) {
 									DEBUG.log("[START - EXPORT DIGGIT_IP]");
@@ -768,6 +768,12 @@ var exportDataMng = {
 									for (var i in req.body.infColumns) {
 										tHeaders.push(req.body.infColumns[i]);
 									}
+									var rows1 = connection.query(_tformatedQuery);
+									if(typeof rows1 != 'undefined' && typeof rows1.length != 'undefined' && rows1.length > 0){
+										DEBUG.log("[SIZE - INFOHASHES]:"+rows1.length);
+										saveDateRemort(req.body.fileName+"_INFOHASHES", tHeaders, rows1, connectionProperties, ftp_loc);
+									}
+									/*
 									connection.query(_tformatedQuery, function (err, rows1) {
 										if(err) console.log(err);
 										if(typeof rows1 != 'undefined' && typeof rows1.length != 'undefined' && rows1.length > 0){
@@ -775,6 +781,7 @@ var exportDataMng = {
 											//saveDateRemort(req.body.fileName+"_INFOHASHES", tHeaders, rows1, connectionProperties, ftp_loc);
 										}
 									});
+									*/
 									DEBUG.log("[DONE - EXPORT INFOHASHES]");
 									callback(null, 'xyz\n');
 								},
@@ -787,6 +794,12 @@ var exportDataMng = {
 										iHeaders.push(req.body.tColumns[i]);
 									}
 									var _iformatedQuery = mysql.format(_iquery);
+									var rows2 = connection.query(_iformatedQuery);
+									if(typeof rows2 != 'undefined' && typeof rows2.length != 'undefined' && rows2.length > 0){
+										DEBUG.log("[SIZE - TITLE]:"+rows2.length);
+										saveDateRemort(req.body.fileName+"_TITLE", iHeaders, rows2, connectionProperties, ftp_loc);
+									}
+									/*
 									connection.query(_iformatedQuery, function (err, rows2) {
 										if(err) console.log(err);
 										if(typeof rows2 != 'undefined' && typeof rows2.length != 'undefined' && rows2.length > 0){
@@ -794,6 +807,7 @@ var exportDataMng = {
 											saveDateRemort(req.body.fileName+"_TITLE", iHeaders, rows2, connectionProperties, ftp_loc);
 										}
 									});
+									*/
 									DEBUG.log("[DONE - EXPORT TITLE]");
 									callback(null, 'ijk\n');
 								}
@@ -802,9 +816,8 @@ var exportDataMng = {
 								if(err) return console.log(err);
 								console.log('Result : ' + result);
 							});
-							*/
-							
-							async.parallel({
+							/*
+							({
 								one: function(callback) {
 									DEBUG.log("[START - EXPORT DIGGIT_IP]");
 									_query += " AND IP!='Peer IP' LIMIT 100";
@@ -849,7 +862,7 @@ var exportDataMng = {
 							}, function(err, results) {
 								
 							});
-							
+							*/
 							res.json({
 								values: "Selected data is being exported"
 							});
