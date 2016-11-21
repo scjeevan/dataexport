@@ -720,6 +720,37 @@ var exportDataMng = {
 								port: rows[0].port,
 								password: rows[0].password
 							};
+							/*
+							var create = function (req, res) {
+								async.waterfall([
+									_function1(req),
+									_function2,
+									_function3
+								], function (error, success) {
+									if (error) { alert('Something is wrong!'); }
+									return alert('Done!');
+								});
+							};
+							function _function1 (req) {
+								return function (callback) {
+									var something = req.body;
+									callback (null, something);
+							   }
+							}
+							function _function2 (something, callback) {
+								return function (callback) {
+								   var somethingelse = function () { // do something here };
+								   callback (err, somethingelse);
+								}
+							}
+							function _function3 (something, callback) {
+								return function (callback) {
+								  var somethingmore = function () { // do something here };
+								  callback (err, somethingmore);
+								}
+							}
+							*/
+							/*
 							async.waterfall([
 								function(callback) {
 									DEBUG.log("[START - EXPORT DIGGIT_IP]");
@@ -771,8 +802,9 @@ var exportDataMng = {
 								if(err) return console.log(err);
 								console.log('Result : ' + result);
 							});
-							/*
-							({
+							*/
+							
+							async.parallel({
 								one: function(callback) {
 									DEBUG.log("[START - EXPORT DIGGIT_IP]");
 									_query += " AND IP!='Peer IP' LIMIT 100";
@@ -780,7 +812,7 @@ var exportDataMng = {
 									DEBUG.log("[DONE - EXPORT DIGGIT_IP]");
 									callback(null, 'abc\n');
 								},
-								two: function(callback) {
+								two: function(arg1, callback) {
 									DEBUG.log("[START - EXPORT INFOHASHES]");
 									_tquery += " limit 5 ";
 									var _tformatedQuery = mysql.format(_tquery);
@@ -797,7 +829,7 @@ var exportDataMng = {
 									DEBUG.log("[DONE - EXPORT INFOHASHES]");
 									callback(null, 'xyz\n');
 								},
-								three: function(callback) {
+								three: function(arg1, callback) {
 									DEBUG.log("[START - EXPORT TITLE]");
 									_iquery += " limit 5 ";
 									var iHeaders = [];
@@ -817,7 +849,7 @@ var exportDataMng = {
 							}, function(err, results) {
 								
 							});
-							*/
+							
 							res.json({
 								values: "Selected data is being exported"
 							});
