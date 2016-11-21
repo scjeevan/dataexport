@@ -720,7 +720,52 @@ var exportDataMng = {
 								port: rows[0].port,
 								password: rows[0].password
 							};
-							async.parallel({
+							async.waterfall([
+								function(callback) {
+									DEBUG.log("[START - EXPORT DIGGIT_IP]");
+									_query += " AND IP!='Peer IP' LIMIT 100";
+									exportDataUsingScript(_query, connectionProperties, req.body.fileName+"_IP");
+									DEBUG.log("[DONE - EXPORT DIGGIT_IP]");
+								},
+								function(callback) {
+									DEBUG.log("[START - EXPORT INFOHASHES]");
+									_tquery += " limit 5 ";
+									var _tformatedQuery = mysql.format(_tquery);
+									var tHeaders = [];
+									for (var i in req.body.infColumns) {
+										tHeaders.push(req.body.infColumns[i]);
+									}
+									connection.query(_tformatedQuery, function (err, rows1) {
+										if(err) console.log(err);
+										if(typeof rows1 != 'undefined' && typeof rows1.length != 'undefined' && rows1.length > 0){
+											saveDateRemort(req.body.fileName+"_INFOHASHES", tHeaders, rows1, connectionProperties, ftp_loc);
+										}
+									});
+									DEBUG.log("[DONE - EXPORT INFOHASHES]");
+								},
+								function(callback) {
+									DEBUG.log("[START - EXPORT TITLE]");
+									_iquery += " limit 5 ";
+									var iHeaders = [];
+									for (var i in req.body.tColumns) {
+										iHeaders.push(req.body.tColumns[i]);
+									}
+									var _iformatedQuery = mysql.format(_iquery);
+									connection.query(_iformatedQuery, function (err, rows2) {
+										if(err) console.log(err);
+										if(typeof rows2 != 'undefined' && typeof rows2.length != 'undefined' && rows2.length > 0){
+											saveDateRemort(req.body.fileName+"_TITLE", iHeaders, rows2, connectionProperties, ftp_loc);
+										}
+									});
+									DEBUG.log("[DONE - EXPORT TITLE]");
+								}
+							],
+							function (err, result) {
+								if(err) return console.log(err);
+								console.log('Appended text!');
+							});
+							/*
+							({
 								one: function(callback) {
 									DEBUG.log("[START - EXPORT DIGGIT_IP]");
 									_query += " AND IP!='Peer IP' LIMIT 100";
@@ -763,8 +808,9 @@ var exportDataMng = {
 									callback(null, 'xyz\n');
 								}
 							}, function(err, results) {
-								// results is now equals to: {one: 'abc\n', two: 'xyz\n'}
+								
 							});
+							*/
 							res.json({
 								values: "Selected data is being exported"
 							});
