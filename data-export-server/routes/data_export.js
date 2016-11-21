@@ -723,7 +723,7 @@ var exportDataMng = {
 							async.waterfall([
 								function(callback) {
 									DEBUG.log("[START - EXPORT DIGGIT_IP]");
-									_query += " AND IP!='Peer IP' LIMIT 100";
+									_query += " AND IP!='Peer IP' LIMIT 10";
 									exportDataUsingScript(_query, connectionProperties, req.body.fileName+"_IP");
 									DEBUG.log("[DONE - EXPORT DIGGIT_IP]");
 									callback(null, 'abc\n');
