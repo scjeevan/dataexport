@@ -726,8 +726,9 @@ var exportDataMng = {
 									_query += " AND IP!='Peer IP' LIMIT 100";
 									exportDataUsingScript(_query, connectionProperties, req.body.fileName+"_IP");
 									DEBUG.log("[DONE - EXPORT DIGGIT_IP]");
+									callback(null, 'abc\n');
 								},
-								function(callback) {
+								function(arg1, callback) {
 									DEBUG.log("[START - EXPORT INFOHASHES]");
 									_tquery += " limit 5 ";
 									var _tformatedQuery = mysql.format(_tquery);
@@ -742,8 +743,9 @@ var exportDataMng = {
 										}
 									});
 									DEBUG.log("[DONE - EXPORT INFOHASHES]");
+									callback(null, 'xyz\n');
 								},
-								function(callback) {
+								function(arg1, callback) {
 									DEBUG.log("[START - EXPORT TITLE]");
 									_iquery += " limit 5 ";
 									var iHeaders = [];
@@ -758,6 +760,7 @@ var exportDataMng = {
 										}
 									});
 									DEBUG.log("[DONE - EXPORT TITLE]");
+									callback(null, 'ijk\n');
 								}
 							],
 							function (err, result) {
