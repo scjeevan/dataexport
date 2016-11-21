@@ -765,7 +765,7 @@ var exportDataMng = {
 							],
 							function (err, result) {
 								if(err) return console.log(err);
-								console.log('Appended text!');
+								console.log('Result : ' + result);
 							});
 							/*
 							({
