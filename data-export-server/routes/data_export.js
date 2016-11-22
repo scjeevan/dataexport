@@ -324,7 +324,7 @@ function saveDateRemort(file_name, headers, rows, connectionProperties, ftl_loc,
 				function () {
 					console.log( "- file transferred" );
 					sftp.end();
-					callback("FINISHED");
+					callback("FINISHED " + file_name);
 				}
 			);
 			readStream.pipe( writeStream );
