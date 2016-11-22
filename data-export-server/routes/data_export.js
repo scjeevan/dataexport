@@ -330,7 +330,6 @@ function saveDateRemort(file_name, headers, rows, connectionProperties, ftl_loc,
 				}
 			);
 			readStream.pipe( writeStream );
-			writeStream.end()
 		});
 	}); 
 	console.log("END METHOD");
