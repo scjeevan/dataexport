@@ -270,7 +270,7 @@ function buildQuery(paramArr, isCount, isSchedule){
 }
 
 function saveDateRemort(file_name, headers, rows, connectionProperties, ftl_loc, callback) {
-	console.log( "CALLING - saveDateRemort()" );
+	console.log( "CALLING - saveDateRemort()"+file_name );
 	var act_file = process.env.DATAEXPORT_CSV_SAVE_PATH + file_name;
 	var writer = csvWriter({ 
 		headers: headers,
