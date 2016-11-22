@@ -269,7 +269,7 @@ function buildQuery(paramArr, isCount, isSchedule){
 	return _query;
 }
 
-function saveDateRemort(file_name, headers, rows, connectionProperties, ftl_loc) {
+function saveDateRemort(file_name, headers, rows, connectionProperties, ftl_loc, callback) {
 	var act_file = process.env.DATAEXPORT_CSV_SAVE_PATH + file_name;
 	var writer = csvWriter({ 
 		headers: headers,
@@ -299,13 +299,14 @@ function saveDateRemort(file_name, headers, rows, connectionProperties, ftl_loc)
 		'error',
 		function (err) {
 			console.log( "- connection error: %s", err );
-			process.exit( 1 );
+			callback("ERROR");
 		}
 	);
 	conn.on(
 		'end',
 		function () {
 			console.log( "- finished" );
+			callback("FINISHED");
 		}
 	);
 	conn.on('ready', function () {
@@ -313,7 +314,7 @@ function saveDateRemort(file_name, headers, rows, connectionProperties, ftl_loc)
 		conn.sftp(function (err, sftp) {
 			if (err) {
 				console.log( "Error, problem starting SFTP: %s", err );
-				process.exit( 2 );
+				callback("ERROR");
 			}
 			console.log( "- SFTP started" );
 			var readStream = fs.createReadStream(act_file);
@@ -324,7 +325,7 @@ function saveDateRemort(file_name, headers, rows, connectionProperties, ftl_loc)
 				function () {
 					console.log( "- file transferred" );
 					sftp.end();
-					process.exit( 0 );
+					//process.exit( 0 );
 				}
 			);
 			readStream.pipe( writeStream );
@@ -755,12 +756,14 @@ var exportDataMng = {
 								function(callback) {
 									DEBUG.log("[START - EXPORT DIGGIT_IP]");
 									_query += " AND IP!='Peer IP' LIMIT 10";
-									exportDataUsingScript(_query, connectionProperties, req.body.fileName+"_IP");
-									DEBUG.log("[DONE - EXPORT DIGGIT_IP]");
-									callback(null, 'abc\n');
+									exportDataUsingScript(_query, connectionProperties, req.body.fileName+"_IP", function(msg){
+										DEBUG.log(msg);
+										DEBUG.log("[DONE - EXPORT DIGGIT_IP]");
+										callback(null);
+									});
 								},
 								
-								function(arg1, callback) {
+								function(callback) {
 									DEBUG.log("[START - EXPORT INFOHASHES]");
 									_tquery += " limit 5 ";
 									var _tformatedQuery = mysql.format(_tquery);
@@ -769,17 +772,24 @@ var exportDataMng = {
 										tHeaders.push(req.body.infColumns[i]);
 									}
 									connection.query(_tformatedQuery, function (err, rows1) {
-										if(err) console.log(err);
-										if(typeof rows1 != 'undefined' && typeof rows1.length != 'undefined' && rows1.length > 0){
+										if(err){
+											console.log(err);
+											DEBUG.log("[DONE - EXPORT INFOHASHES]");
+											callback(null);
+										}
+										else{
 											DEBUG.log("[SIZE - INFOHASHES]:"+rows1.length);
-											//saveDateRemort(req.body.fileName+"_INFOHASHES", tHeaders, rows1, connectionProperties, ftp_loc);
+											saveDateRemort(req.body.fileName+"_INFOHASHES", tHeaders, rows1, connectionProperties, ftp_loc, function(msg){
+												DEBUG.log(msg);
+												DEBUG.log("[DONE - EXPORT INFOHASHES]");
+												callback(null);
+											});
 										}
 									});
-									DEBUG.log("[DONE - EXPORT INFOHASHES]");
-									callback(null, 'xyz\n');
+									
 								},
 								
-								function(arg1, callback) {
+								function(callback) {
 									DEBUG.log("[START - EXPORT TITLE]");
 									_iquery += " limit 5 ";
 									var iHeaders = [];
@@ -788,14 +798,20 @@ var exportDataMng = {
 									}
 									var _iformatedQuery = mysql.format(_iquery);
 									connection.query(_iformatedQuery, function (err, rows2) {
-										if(err) console.log(err);
-										if(typeof rows2 != 'undefined' && typeof rows2.length != 'undefined' && rows2.length > 0){
+										if(err){
+											console.log(err);
+											DEBUG.log("[DONE - EXPORT TITLE]");
+											callback(null);
+										}else{
 											DEBUG.log("[SIZE - TITLE]:"+rows2.length);
-											saveDateRemort(req.body.fileName+"_TITLE", iHeaders, rows2, connectionProperties, ftp_loc);
+											saveDateRemort(req.body.fileName+"_TITLE", iHeaders, rows2, connectionProperties, ftp_loc, function(msg){
+												DEBUG.log(msg);
+												DEBUG.log("[DONE - EXPORT TITLE]");
+												callback(null);
+											});
 										}
 									});
-									DEBUG.log("[DONE - EXPORT TITLE]");
-									callback(null, 'ijk\n');
+									
 								}
 							],
 							function (err, result) {
@@ -803,7 +819,7 @@ var exportDataMng = {
 								console.log('Result : ' + result);
 							});
 							/*
-							({
+							async.waterfall({
 								one: function(callback) {
 									DEBUG.log("[START - EXPORT DIGGIT_IP]");
 									_query += " AND IP!='Peer IP' LIMIT 100";
@@ -1093,7 +1109,7 @@ var j = schedule.scheduleJob('0 0 0 * * *', function(){
 	DEBUG.log("Data export jobs ended");
 });
 
-function exportDataUsingScript(_query, connectionProperties, fileName){
+function exportDataUsingScript(_query, connectionProperties, fileName, callback){
 	var exportCommand = process.env.DATAEXPORT_GQ_SCRIPT_PATH + ' -dataset DevDiggit_Hist -query "' + _query + '" -download_local -local_path '+process.env.DATAEXPORT_CSV_SAVE_PATH+' -bucket_name devdiggitbucket -project_id '+process.env.DATAEXPORT_GQ_PROJECT_ID+' -sftp_transfer -ftp_user "'+connectionProperties.user+'"  -ftp_pass \''+connectionProperties.password+'\' -ftp_server "'+connectionProperties.host+'" -ftp_port '+connectionProperties.port+' -export_file_name '+fileName+'';
 	console.log(exportCommand);
 	
@@ -1107,7 +1123,8 @@ function exportDataUsingScript(_query, connectionProperties, fileName){
 		console.log('stderr: ' + stderr);
 	});
 	workerProcess.on('exit', function (code) {
-		console.log('Child process exited with exit code '+code);
+		//console.log('Child process exited with exit code '+code);
+		callback('Child process exited with exit code '+code);
 	});
 	/*
 	child_process.execFile(process.env.DATAEXPORT_GQ_SCRIPT_PATH, [
