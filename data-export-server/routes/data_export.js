@@ -811,7 +811,9 @@ var exportDataMng = {
 										callback(null);
 									});
 								};
-								exportTitle(exportInfohashes(exportIP()));
+								exportTitle(exportInfohashes(exportIP(function(){
+									DEBUG.log("completed");
+								})));
 								
 								/*
 							],
