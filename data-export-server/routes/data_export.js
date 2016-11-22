@@ -813,11 +813,14 @@ var exportDataMng = {
 										}
 									});
 								};
-								
-								
+								exportIP(function(){
+									DEBUG.log("completed");
+								});
+								/*
 								exportTitle(exportInfohashes(exportIP(function(){
 									DEBUG.log("completed");
 								})));
+								*/
 								
 								/*
 							],
