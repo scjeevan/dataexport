@@ -751,8 +751,8 @@ var exportDataMng = {
 							}
 							*/
 							
-							async.waterfall([
-								function(callback) {
+							//async.waterfall([
+								var exportTitle = function(callback) {
 									DEBUG.log("[START - EXPORT TITLE]");
 									_iquery += " limit 5 ";
 									var iHeaders = [];
@@ -774,9 +774,9 @@ var exportDataMng = {
 											});
 										}
 									});
-								},
+								};
 								
-								function(callback) {
+								var exportInfohashes = function(callback) {
 									DEBUG.log("[START - EXPORT INFOHASHES]");
 									_tquery += " limit 5 ";
 									var _tformatedQuery = mysql.format(_tquery);
@@ -800,9 +800,9 @@ var exportDataMng = {
 										}
 									});
 									
-								},
+								};
 								
-								function(callback) {
+								var exportIP = function(callback) {
 									DEBUG.log("[START - EXPORT DIGGIT_IP]");
 									_query += " AND IP!='Peer IP' LIMIT 10";
 									exportDataUsingScript(_query, connectionProperties, req.body.fileName+"_IP", function(msg){
@@ -810,7 +810,10 @@ var exportDataMng = {
 										DEBUG.log("[DONE - EXPORT DIGGIT_IP]");
 										callback(null);
 									});
-								}
+								};
+								exportTitle(exportInfohashes(exportIP()));
+								
+								/*
 							],
 							function (err, result) {
 								if(err) return console.log(err);
