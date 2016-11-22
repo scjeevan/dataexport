@@ -1123,8 +1123,8 @@ function exportDataUsingScript(_query, connectionProperties, fileName, callback)
 		console.log('stderr: ' + stderr);
 	});
 	workerProcess.on('exit', function (code) {
-		//console.log('Child process exited with exit code '+code);
-		callback('Child process exited with exit code '+code);
+		console.log('1. Child process exited with exit code '+code);
+		callback('2. Child process exited with exit code '+code);
 	});
 	/*
 	child_process.execFile(process.env.DATAEXPORT_GQ_SCRIPT_PATH, [
