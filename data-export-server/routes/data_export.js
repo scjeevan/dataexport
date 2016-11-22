@@ -309,7 +309,7 @@ function saveDateRemort(file_name, headers, rows, connectionProperties, ftl_loc,
 				}
 			);
 			readStream.pipe( writeStream );
-			conn.end();
+			//conn.end();
 		});
 	}).connect(connectionProperties);
 	
