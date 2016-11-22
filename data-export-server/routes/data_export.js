@@ -754,12 +754,26 @@ var exportDataMng = {
 							
 							async.waterfall([
 								function(callback) {
-									DEBUG.log("[START - EXPORT DIGGIT_IP]");
-									_query += " AND IP!='Peer IP' LIMIT 10";
-									exportDataUsingScript(_query, connectionProperties, req.body.fileName+"_IP", function(msg){
-										DEBUG.log(msg);
-										DEBUG.log("[DONE - EXPORT DIGGIT_IP]");
-										callback(null);
+									DEBUG.log("[START - EXPORT TITLE]");
+									_iquery += " limit 5 ";
+									var iHeaders = [];
+									for (var i in req.body.tColumns) {
+										iHeaders.push(req.body.tColumns[i]);
+									}
+									var _iformatedQuery = mysql.format(_iquery);
+									connection.query(_iformatedQuery, function (err, rows2) {
+										if(err){
+											console.log(err);
+											DEBUG.log("[DONE - EXPORT TITLE]");
+											callback(null);
+										}else{
+											DEBUG.log("[SIZE - TITLE]:"+rows2.length);
+											saveDateRemort(req.body.fileName+"_TITLE", iHeaders, rows2, connectionProperties, ftp_loc, function(msg){
+												DEBUG.log(msg);
+												DEBUG.log("[DONE - EXPORT TITLE]");
+												callback(null);
+											});
+										}
 									});
 								},
 								
@@ -790,28 +804,13 @@ var exportDataMng = {
 								},
 								
 								function(callback) {
-									DEBUG.log("[START - EXPORT TITLE]");
-									_iquery += " limit 5 ";
-									var iHeaders = [];
-									for (var i in req.body.tColumns) {
-										iHeaders.push(req.body.tColumns[i]);
-									}
-									var _iformatedQuery = mysql.format(_iquery);
-									connection.query(_iformatedQuery, function (err, rows2) {
-										if(err){
-											console.log(err);
-											DEBUG.log("[DONE - EXPORT TITLE]");
-											callback(null);
-										}else{
-											DEBUG.log("[SIZE - TITLE]:"+rows2.length);
-											saveDateRemort(req.body.fileName+"_TITLE", iHeaders, rows2, connectionProperties, ftp_loc, function(msg){
-												DEBUG.log(msg);
-												DEBUG.log("[DONE - EXPORT TITLE]");
-												callback(null);
-											});
-										}
+									DEBUG.log("[START - EXPORT DIGGIT_IP]");
+									_query += " AND IP!='Peer IP' LIMIT 10";
+									exportDataUsingScript(_query, connectionProperties, req.body.fileName+"_IP", function(msg){
+										DEBUG.log(msg);
+										DEBUG.log("[DONE - EXPORT DIGGIT_IP]");
+										callback(null);
 									});
-									
 								}
 							],
 							function (err, result) {
