@@ -9,7 +9,6 @@ var async = require('async');
 //var exec = require('exec');
 //var exec = require('child-process-promise').exec;
 var writer = csvWriter();
-var conn = new Client();
 
 var BIGQUERY_DATASET_HIST = process.env.DATAEXPORT_GQ_PROJECT_ID.trim();
 
@@ -270,6 +269,7 @@ function buildQuery(paramArr, isCount, isSchedule){
 }
 
 function saveDateRemort(file_name, headers, rows, connectionProperties, ftl_loc, callback) {
+	var conn = new Client();
 	console.log( "CALLING - saveDateRemort()"+file_name );
 	var act_file = process.env.DATAEXPORT_CSV_SAVE_PATH + file_name;
 	var writer = csvWriter({ 
