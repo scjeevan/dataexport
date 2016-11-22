@@ -813,9 +813,9 @@ var exportDataMng = {
 										}
 									});
 								};
-								exportIP(function(){
+								exportTitle(exportInfohashes(function(){
 									DEBUG.log("completed");
-								});
+								}));
 								/*
 								exportTitle(exportInfohashes(exportIP(function(){
 									DEBUG.log("completed");
