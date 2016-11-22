@@ -289,6 +289,31 @@ function saveDateRemort(file_name, headers, rows, connectionProperties, ftl_loc,
 		}
 	});
 	writer.end();
+	conn.on('ready', function () {
+		console.log('Connection :: ready');
+		conn.sftp(function (err, sftp) {
+			if (err) {
+				console.log( "Error, problem starting SFTP: %s", err );
+				callback("ERROR");
+			}
+			console.log( "- SFTP started" );
+			var readStream = fs.createReadStream(act_file);
+			var destPath = ftl_loc +"/"+ file_name;
+			var writeStream = sftp.createWriteStream(destPath);
+			writeStream.on(
+				'close',
+				function () {
+					console.log( "- file transferred" );
+					sftp.end();
+					callback("FINISHED " + file_name);
+				}
+			);
+			readStream.pipe( writeStream );
+			conn.end();
+		});
+	}).connect(connectionProperties);
+	
+	/*
 	conn.connect(connectionProperties);
 	conn.on(
 		'connect',
@@ -325,14 +350,14 @@ function saveDateRemort(file_name, headers, rows, connectionProperties, ftl_loc,
 				function () {
 					console.log( "- file transferred" );
 					sftp.end();
+					conn.end();
 					callback("FINISHED " + file_name);
 				}
 			);
 			readStream.pipe( writeStream );
-			conn.end();
 		});
-		
 	}); 
+	*/
 	console.log("END METHOD");
 }
 
