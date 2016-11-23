@@ -3934,12 +3934,12 @@ top: 43%;
 }
 .column{
     display: table-cell;
-}
+}/*
 .table {
 	max-width: none;
 	table-layout: fixed;
 	word-wrap: break-word;
-}
+}*/
 #spinner {  
     position:fixed;
     top:0;
