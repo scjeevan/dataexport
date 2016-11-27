@@ -846,9 +846,9 @@ var exportDataMng = {
 									DEBUG.log("completed");
 								}));
 								*/
-								exportTitle(exportInfohashes(exportIP(function(){
+								exportInfohashes(exportIP(function(){
 									DEBUG.log("completed");
-								})));
+								}));
 								/*
 							],
 							function (err, result) {
