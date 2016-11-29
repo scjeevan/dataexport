@@ -707,11 +707,25 @@ var exportDataMng = {
 									DEBUG.log("[START - EXPORT DIGGIT_IP]");
 									//_query += " AND IP!='Peer IP' LIMIT 10";
 									_query += " LIMIT 10";
+									var exportCommand = process.env.DATAEXPORT_GQ_SCRIPT_PATH + ' -dataset DevDiggit_Hist -query "' + _query + '" -download_local -local_path '+process.env.DATAEXPORT_CSV_SAVE_PATH+' -bucket_name devdiggitbucket -project_id '+process.env.DATAEXPORT_GQ_PROJECT_ID+' -sftp_transfer -ftp_user "'+connectionProperties.user+'"  -ftp_pass \''+connectionProperties.password+'\' -ftp_server "'+connectionProperties.host+'" -ftp_port '+connectionProperties.port+' -export_file_name '+fileName+'';
+									console.log(exportCommand);
+									
+									exec(exportCommand, function(err, out, code) {
+										if (err instanceof Error)
+											throw err;
+										DEBUG.log("Data Exported Successfully");
+										process.stderr.write(err);
+										process.stdout.write(out);
+										process.exit(code);
+										callback("Completed");
+									});
+									/*
 									exportDataUsingScript(_query, connectionProperties, req.body.fileName+"_IP", function(msg){
 										DEBUG.log(msg);
 										DEBUG.log("[DONE - EXPORT DIGGIT_IP]");
 										callback(null);
 									});
+									*/
 								};
 								
 								
