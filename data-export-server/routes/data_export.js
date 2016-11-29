@@ -312,52 +312,6 @@ function saveDateRemort(file_name, headers, rows, connectionProperties, ftl_loc,
 			//conn.end();
 		});
 	}).connect(connectionProperties);
-	
-	/*
-	conn.connect(connectionProperties);
-	conn.on(
-		'connect',
-		function () {
-			console.log( "- connected" );
-		}
-	);
-	conn.on(
-		'error',
-		function (err) {
-			console.log( "- connection error: %s", err );
-			callback("ERROR");
-		}
-	);
-	conn.on(
-		'end',
-		function () {
-			console.log( "- finished" );
-		}
-	);
-	conn.on('ready', function () {
-		console.log( "- ready" );
-		conn.sftp(function (err, sftp) {
-			if (err) {
-				console.log( "Error, problem starting SFTP: %s", err );
-				callback("ERROR");
-			}
-			console.log( "- SFTP started" );
-			var readStream = fs.createReadStream(act_file);
-			var destPath = ftl_loc +"/"+ file_name;
-			var writeStream = sftp.createWriteStream(destPath);
-			writeStream.on(
-				'close',
-				function () {
-					console.log( "- file transferred" );
-					sftp.end();
-					conn.end();
-					callback("FINISHED " + file_name);
-				}
-			);
-			readStream.pipe( writeStream );
-		});
-	}); 
-	*/
 	console.log("END METHOD");
 }
 
@@ -371,7 +325,6 @@ function isExist(array, value){
 }
 
 var exportDataMng = {
-	
 	executeJob : function(req, res){
 		var jobId = parseInt(req.body.jobid);
 		var query = "SELECT `data_export_schedule_id`, `table_name`, `selected_columns`, `filename`, `frequency`, `file_format`, `titles`, `query`, `username`, `password`, `ip`, `port`, `location` ,`protocol` FROM `data_export_schedules`,`ftp_accounts` WHERE `data_export_schedules`.`ftp_account_id` = `ftp_accounts`.`ftp_account_id` AND `data_export_schedules`.`data_export_schedule_id`=?";
@@ -503,7 +456,6 @@ var exportDataMng = {
     },
 	
 	exportData: function (req, res) {
-		var query = "";
 		var params = [];
 		var connectionProperties = {};
 		var ftp_loc = "";
@@ -520,8 +472,7 @@ var exportDataMng = {
 			}
 			genreQ = genreQ.substring(0, genreQ.length - 1) + ")";
 		}
-		
-		query = "SELECT `title`, `username`, `password`, `ip`, `port`, `location` ,`protocol` FROM `ftp_accounts` WHERE `ftp_account_id`=?";
+		var query = "SELECT `title`, `username`, `password`, `ip`, `port`, `location` ,`protocol` FROM `ftp_accounts` WHERE `ftp_account_id`=?";
 		params = [ftp_account_id];
 		var formatedQuery = mysql.format(query, params);
 		db.getConnection(function(err, connection){
@@ -1111,6 +1062,8 @@ var j = schedule.scheduleJob('0 0 0 * * *', function(){
 });
 
 function exportDataUsingScript(_query, connectionProperties, fileName, callback){
+	DEBUG.log("[START - EXPORT DIGGIT_IP]");
+	/*
 	var exportCommand = process.env.DATAEXPORT_GQ_SCRIPT_PATH + ' -dataset DevDiggit_Hist -query "' + _query + '" -download_local -local_path '+process.env.DATAEXPORT_CSV_SAVE_PATH+' -bucket_name devdiggitbucket -project_id '+process.env.DATAEXPORT_GQ_PROJECT_ID+' -sftp_transfer -ftp_user "'+connectionProperties.user+'"  -ftp_pass \''+connectionProperties.password+'\' -ftp_server "'+connectionProperties.host+'" -ftp_port '+connectionProperties.port+' -export_file_name '+fileName+'';
 	console.log(exportCommand);
 	
@@ -1127,7 +1080,7 @@ function exportDataUsingScript(_query, connectionProperties, fileName, callback)
 		console.log('1. Child process exited with exit code '+code);
 		callback('2. Child process exited with exit code '+code);
 	});
-	/*
+	*/
 	child_process.execFile(process.env.DATAEXPORT_GQ_SCRIPT_PATH, [
 		'-dataset','DevDiggit_Hist',
 		'-query', _query,
@@ -1142,8 +1095,10 @@ function exportDataUsingScript(_query, connectionProperties, fileName, callback)
 		'-ftp_port',connectionProperties.port,
 		'-export_file_name',fileName], function(error, stdout, stderr){
 			console.log(stdout);
+			callback('2. Child process exited with exit code');
 	});
-	
+	DEBUG.log("[END - EXPORT DIGGIT_IP]");
+	/*
 	var exportCommand = process.env.DATAEXPORT_GQ_SCRIPT_PATH + ' -dataset DevDiggit_Hist -query "' + _query + '" -download_local -local_path '+process.env.DATAEXPORT_CSV_SAVE_PATH+' -bucket_name devdiggitbucket -project_id '+process.env.DATAEXPORT_GQ_PROJECT_ID+' -sftp_transfer -ftp_user "'+connectionProperties.user+'"  -ftp_pass \''+connectionProperties.password+'\' -ftp_server "'+connectionProperties.host+'" -ftp_port '+connectionProperties.port+' -export_file_name '+fileName+'';
 	console.log(exportCommand);
 	
