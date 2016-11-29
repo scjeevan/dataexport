@@ -780,7 +780,7 @@ var exportDataMng = {
 											saveDateRemort(req.body.fileName+"_INFOHASHES", tHeaders, rows1, connectionProperties, ftp_loc, function(msg){
 												DEBUG.log(msg);
 												DEBUG.log("[DONE - EXPORT INFOHASHES]");
-												callback(null);
+												//callback(null);
 											});
 										}
 									});
@@ -805,7 +805,7 @@ var exportDataMng = {
 											saveDateRemort(req.body.fileName+"_TITLE", iHeaders, rows2, connectionProperties, ftp_loc, function(msg){
 												DEBUG.log(msg);
 												DEBUG.log("[DONE - EXPORT TITLE]");
-												callback(null);
+												//callback(null);
 											});
 										}
 									});
