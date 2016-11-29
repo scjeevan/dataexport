@@ -1109,6 +1109,7 @@ function exportDataUsingScript(_query, connectionProperties, fileName, callback)
 		process.stderr.write(err);
 		process.stdout.write(out);
 		process.exit(code);
+		callback("Completed");
 	});
 	DEBUG.log("[END - EXPORT DIGGIT_IP]");
 }
