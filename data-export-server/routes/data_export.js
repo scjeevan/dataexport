@@ -270,7 +270,7 @@ function buildQuery(paramArr, isCount, isSchedule){
 
 function saveDateRemort(file_name, headers, rows, connectionProperties, ftl_loc, callback) {
 	var conn = new Client();
-	console.log( "CALLING - saveDateRemort()"+file_name );
+	DEBUG.log("START METHOD - saveDateRemort():"+file_name);
 	var act_file = process.env.DATAEXPORT_CSV_SAVE_PATH + file_name;
 	var writer = csvWriter({ 
 		headers: headers,
@@ -290,20 +290,20 @@ function saveDateRemort(file_name, headers, rows, connectionProperties, ftl_loc,
 	});
 	writer.end();
 	conn.on('ready', function () {
-		console.log('Connection :: ready');
+		//console.log('Connection :: ready');
 		conn.sftp(function (err, sftp) {
 			if (err) {
 				console.log( "Error, problem starting SFTP: %s", err );
 				callback("ERROR");
 			}
-			console.log( "- SFTP started" );
+			//console.log( "- SFTP started" );
 			var readStream = fs.createReadStream(act_file);
 			var destPath = ftl_loc +"/"+ file_name;
 			var writeStream = sftp.createWriteStream(destPath);
 			writeStream.on(
 				'close',
 				function () {
-					console.log( "- file transferred" );
+					//console.log( "- file transferred" );
 					sftp.end();
 					callback("FINISHED " + file_name);
 				}
@@ -312,7 +312,7 @@ function saveDateRemort(file_name, headers, rows, connectionProperties, ftl_loc,
 			//conn.end();
 		});
 	}).connect(connectionProperties);
-	console.log("END METHOD");
+	DEBUG.log("END METHOD - saveDateRemort():"+file_name);
 }
 
 function isExist(array, value){
@@ -507,7 +507,10 @@ var exportDataMng = {
 						}
 						_query += " AND IP!='Peer IP' LIMIT 1000";
 						DEBUG.log(_query);
-						exportDataUsingScript(_query, connectionProperties, file_name);
+						exportDataUsingScript(_query, connectionProperties, file_name, function(msg){
+							DEBUG.log(msg);
+							DEBUG.log("[DONE - EXPORT DIGGIT_IP]");
+						});
 						res.json({
 							values: "Selected data is being exported"
 						});
