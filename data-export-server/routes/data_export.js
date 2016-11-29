@@ -6,7 +6,7 @@ var csvWriter = require('csv-write-stream');
 var schedule = require('node-schedule');
 var child_process = require('child_process');
 var async = require('async');
-//var exec = require('exec');
+var exec = require('exec');
 //var exec = require('child-process-promise').exec;
 var writer = csvWriter();
 
@@ -1080,7 +1080,7 @@ function exportDataUsingScript(_query, connectionProperties, fileName, callback)
 		console.log('1. Child process exited with exit code '+code);
 		callback('2. Child process exited with exit code '+code);
 	});
-	*/
+	
 	child_process.execFile(process.env.DATAEXPORT_GQ_SCRIPT_PATH, [
 		'-dataset','DevDiggit_Hist',
 		'-query', _query,
@@ -1098,7 +1098,7 @@ function exportDataUsingScript(_query, connectionProperties, fileName, callback)
 			callback('2. Child process exited with exit code');
 	});
 	DEBUG.log("[END - EXPORT DIGGIT_IP]");
-	/*
+	*/
 	var exportCommand = process.env.DATAEXPORT_GQ_SCRIPT_PATH + ' -dataset DevDiggit_Hist -query "' + _query + '" -download_local -local_path '+process.env.DATAEXPORT_CSV_SAVE_PATH+' -bucket_name devdiggitbucket -project_id '+process.env.DATAEXPORT_GQ_PROJECT_ID+' -sftp_transfer -ftp_user "'+connectionProperties.user+'"  -ftp_pass \''+connectionProperties.password+'\' -ftp_server "'+connectionProperties.host+'" -ftp_port '+connectionProperties.port+' -export_file_name '+fileName+'';
 	console.log(exportCommand);
 	
@@ -1110,7 +1110,7 @@ function exportDataUsingScript(_query, connectionProperties, fileName, callback)
 		process.stdout.write(out);
 		process.exit(code);
 	});
-	*/
+	DEBUG.log("[END - EXPORT DIGGIT_IP]");
 }
 
 function processToExport(row, startDate, endDate, callback) {
