@@ -748,37 +748,6 @@ var exportDataMng = {
 								port: rows[0].port,
 								password: rows[0].password
 							};
-							/*
-							var create = function (req, res) {
-								async.waterfall([
-									_function1(req),
-									_function2,
-									_function3
-								], function (error, success) {
-									if (error) { alert('Something is wrong!'); }
-									return alert('Done!');
-								});
-							};
-							function _function1 (req) {
-								return function (callback) {
-									var something = req.body;
-									callback (null, something);
-							   }
-							}
-							function _function2 (something, callback) {
-								return function (callback) {
-								   var somethingelse = function () { // do something here };
-								   callback (err, somethingelse);
-								}
-							}
-							function _function3 (something, callback) {
-								return function (callback) {
-								  var somethingmore = function () { // do something here };
-								  callback (err, somethingmore);
-								}
-							}
-							*/
-							
 							//async.waterfall([
 								var exportIP = function(callback) {
 									DEBUG.log("[START - EXPORT DIGGIT_IP]");
@@ -811,7 +780,7 @@ var exportDataMng = {
 											saveDateRemort(req.body.fileName+"_INFOHASHES", tHeaders, rows1, connectionProperties, ftp_loc, function(msg){
 												DEBUG.log(msg);
 												DEBUG.log("[DONE - EXPORT INFOHASHES]");
-												//callback(null);
+												callback(null);
 											});
 										}
 									});
@@ -836,16 +805,11 @@ var exportDataMng = {
 											saveDateRemort(req.body.fileName+"_TITLE", iHeaders, rows2, connectionProperties, ftp_loc, function(msg){
 												DEBUG.log(msg);
 												DEBUG.log("[DONE - EXPORT TITLE]");
-												//callback(null);
+												callback(null);
 											});
 										}
 									});
 								};
-								/*
-								exportTitle(exportInfohashes(function(){
-									DEBUG.log("completed");
-								}));
-								*/
 								exportTitle(exportInfohashes(exportIP(function(msg){
 									DEBUG.log("completed");
 								})));
