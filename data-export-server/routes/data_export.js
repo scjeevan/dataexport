@@ -290,26 +290,22 @@ function saveDateRemort(file_name, headers, rows, connectionProperties, ftl_loc,
 	});
 	writer.end();
 	conn.on('ready', function () {
-		//console.log('Connection :: ready');
 		conn.sftp(function (err, sftp) {
 			if (err) {
 				console.log( "Error, problem starting SFTP: %s", err );
 				callback("ERROR");
 			}
-			//console.log( "- SFTP started" );
 			var readStream = fs.createReadStream(act_file);
 			var destPath = ftl_loc +"/"+ file_name;
 			var writeStream = sftp.createWriteStream(destPath);
 			writeStream.on(
 				'close',
 				function () {
-					//console.log( "- file transferred" );
 					sftp.end();
 					callback("FINISHED " + file_name);
 				}
 			);
 			readStream.pipe( writeStream );
-			//conn.end();
 		});
 	}).connect(connectionProperties);
 	DEBUG.log("END METHOD - saveDateRemort():"+file_name);
@@ -352,9 +348,6 @@ var exportDataMng = {
 						}
 						var start = date.toISOString().replace(/T/, ' ').replace(/\..+/, '')
 						var end = new Date().toISOString().replace(/T/, ' ').replace(/\..+/, '');
-						console.log(start);
-						console.log(end);
-						
 						processToExport(row, start, end, function (result) {
 							console.log(result);
 						});
@@ -505,7 +498,7 @@ var exportDataMng = {
 						} else {
 							_query += " FROM DevDiggit_Hist.Diggit_IP WHERE Date BETWEEN '"+start+"' AND '"+end+"' "; // LIMIT 10000
 						}
-						_query += " AND IP!='Peer IP' LIMIT 1000";
+						_query += " AND IP!='Peer IP'";
 						DEBUG.log(_query);
 						exportDataUsingScript(_query, connectionProperties, file_name, function(msg){
 							DEBUG.log(msg);
@@ -526,7 +519,7 @@ var exportDataMng = {
 						if(req.body.isGenre){
 							_query += " left join torrents.mm_title_genres g on g.title_id = mt.mm_title_id where g.genre_id in "+genreQ;
 						}
-						_query += " limit 5 ";
+						//_query += " limit 5 ";
 						_formatedQuery = mysql.format(_query);
 						DEBUG.log("[QUERY]:"+_query);
 						connection.query(_formatedQuery, function (err, rows) {
@@ -548,7 +541,7 @@ var exportDataMng = {
 						if(req.body.isGenre){
 							_query += " left join torrents.mm_title_genres g on g.title_id = mt.mm_title_id where g.genre_id in "+genreQ;
 						}
-						_query += " limit 5 ";
+						//_query += " limit 5 ";
 						_formatedQuery = mysql.format(_query);
 						DEBUG.log("[QUERY]:"+_query);
 						connection.query(_formatedQuery, function (err, rows) {
@@ -579,7 +572,6 @@ var exportDataMng = {
 				var pagenumber = req.body.pagenumber;
 				var itemsPerPage = req.body.itemsPerPage;
 				var lim1 = (pagenumber-1)*itemsPerPage;
-				console.log("pagenumber:"+pagenumber+", itemsPerPage:"+itemsPerPage+", lim1:"+lim1);
 				_query += " LIMIT "+itemsPerPage+" OFFSET "+lim1;
 				var options = {
 					query: _query,
@@ -614,7 +606,6 @@ var exportDataMng = {
 					var pagenumber = req.body.tPagenumber;
 					var itemsPerPage = req.body.itemsPerPage;
 					var lim1 = (pagenumber-1)*itemsPerPage;
-					console.log("pagenumber:"+pagenumber+", itemsPerPage:"+itemsPerPage+", lim1:"+lim1);
 					_query += " LIMIT "+itemsPerPage+" OFFSET "+lim1;
 					var formatedQuery2 = mysql.format(_query);
 					connection.query(formatedQuery2, function (err, rows) {
@@ -646,7 +637,6 @@ var exportDataMng = {
 					var pagenumber = req.body.iPagenumber;
 					var itemsPerPage = req.body.itemsPerPage;
 					var lim1 = (pagenumber-1)*itemsPerPage;
-					console.log("pagenumber:"+pagenumber+", itemsPerPage:"+itemsPerPage+", lim1:"+lim1);
 					_query += " LIMIT "+itemsPerPage+" OFFSET "+lim1;
 					var formatedQuery2 = mysql.format(_query);
 					connection.query(formatedQuery2, function (err, rows) {
@@ -702,139 +692,80 @@ var exportDataMng = {
 								port: rows[0].port,
 								password: rows[0].password
 							};
-							//async.waterfall([
-								var exportIP = function(callback) {
-									DEBUG.log("[START - EXPORT DIGGIT_IP]");
-									//_query += " AND IP!='Peer IP' LIMIT 10";
-									_query += " LIMIT 10";
-									var exportCommand = process.env.DATAEXPORT_GQ_SCRIPT_PATH + ' -dataset DevDiggit_Hist -query "' + _query + '" -download_local -local_path '+process.env.DATAEXPORT_CSV_SAVE_PATH+' -bucket_name devdiggitbucket -project_id '+process.env.DATAEXPORT_GQ_PROJECT_ID+' -sftp_transfer -ftp_user "'+connectionProperties.user+'"  -ftp_pass \''+connectionProperties.password+'\' -ftp_server "'+connectionProperties.host+'" -ftp_port '+connectionProperties.port+' -export_file_name '+fileName+'';
-									console.log(exportCommand);
-									
-									exec(exportCommand, function(err, out, code) {
-										if (err instanceof Error)
-											throw err;
-										DEBUG.log("Data Exported Successfully");
-										process.stderr.write(err);
-										process.stdout.write(out);
-										process.exit(code);
-										callback("Completed");
-									});
-									/*
-									exportDataUsingScript(_query, connectionProperties, req.body.fileName+"_IP", function(msg){
-										DEBUG.log(msg);
-										DEBUG.log("[DONE - EXPORT DIGGIT_IP]");
-										callback(null);
-									});
-									*/
-								};
+							var exportIP = function(callback) {
+								DEBUG.log("[START - EXPORT DIGGIT_IP]");
+								_query += " AND IP!='Peer IP'";
+								var exportCommand = process.env.DATAEXPORT_GQ_SCRIPT_PATH + ' -dataset DevDiggit_Hist -query "' + _query + '" -download_local -local_path '+process.env.DATAEXPORT_CSV_SAVE_PATH+' -bucket_name devdiggitbucket -project_id '+process.env.DATAEXPORT_GQ_PROJECT_ID+' -sftp_transfer -ftp_user "'+connectionProperties.user+'"  -ftp_pass \''+connectionProperties.password+'\' -ftp_server "'+connectionProperties.host+'" -ftp_port '+connectionProperties.port+' -export_file_name '+fileName+'';
+								DEBUG.log(exportCommand);
 								
-								
-								
-								var exportInfohashes = function(callback) {
-									DEBUG.log("[START - EXPORT INFOHASHES]");
-									_tquery += " limit 5 ";
-									var _tformatedQuery = mysql.format(_tquery);
-									var tHeaders = [];
-									for (var i in req.body.infColumns) {
-										tHeaders.push(req.body.infColumns[i]);
-									}
-									connection.query(_tformatedQuery, function (err, rows1) {
-										if(err){
-											console.log(err);
-											DEBUG.log("[DONE - EXPORT INFOHASHES]");
-											callback(null);
-										}
-										else{
-											DEBUG.log("[SIZE - INFOHASHES]:"+rows1.length);
-											saveDateRemort(req.body.fileName+"_INFOHASHES", tHeaders, rows1, connectionProperties, ftp_loc, function(msg){
-												DEBUG.log(msg);
-												DEBUG.log("[DONE - EXPORT INFOHASHES]");
-												//callback(null);
-											});
-										}
-									});
-									
-								};
-								
-								var exportTitle = function(callback) {
-									DEBUG.log("[START - EXPORT TITLE]");
-									_iquery += " limit 5 ";
-									var iHeaders = [];
-									for (var i in req.body.tColumns) {
-										iHeaders.push(req.body.tColumns[i]);
-									}
-									var _iformatedQuery = mysql.format(_iquery);
-									connection.query(_iformatedQuery, function (err, rows2) {
-										if(err){
-											console.log(err);
-											DEBUG.log("[DONE - EXPORT TITLE]");
-											callback(null);
-										}else{
-											DEBUG.log("[SIZE - TITLE]:"+rows2.length);
-											saveDateRemort(req.body.fileName+"_TITLE", iHeaders, rows2, connectionProperties, ftp_loc, function(msg){
-												DEBUG.log(msg);
-												DEBUG.log("[DONE - EXPORT TITLE]");
-												//callback(null);
-											});
-										}
-									});
-								};
-								exportTitle(exportInfohashes(exportIP(function(msg){
-									DEBUG.log("completed");
-								})));
+								exec(exportCommand, function(err, out, code) {
+									if (err instanceof Error)
+										throw err;
+									DEBUG.log("Data Exported Successfully");
+									process.stderr.write(err);
+									process.stdout.write(out);
+									process.exit(code);
+									callback("Completed");
+								});
 								/*
-							],
-							function (err, result) {
-								if(err) return console.log(err);
-								console.log('Result : ' + result);
-							});
-							/*
-							async.waterfall({
-								one: function(callback) {
-									DEBUG.log("[START - EXPORT DIGGIT_IP]");
-									_query += " AND IP!='Peer IP' LIMIT 100";
-									exportDataUsingScript(_query, connectionProperties, req.body.fileName+"_IP");
+								exportDataUsingScript(_query, connectionProperties, req.body.fileName+"_IP", function(msg){
+									DEBUG.log(msg);
 									DEBUG.log("[DONE - EXPORT DIGGIT_IP]");
-									callback(null, 'abc\n');
-								},
-								two: function(callback) {
-									DEBUG.log("[START - EXPORT INFOHASHES]");
-									_tquery += " limit 5 ";
-									var _tformatedQuery = mysql.format(_tquery);
-									var tHeaders = [];
-									for (var i in req.body.infColumns) {
-										tHeaders.push(req.body.infColumns[i]);
-									}
-									connection.query(_tformatedQuery, function (err, rows1) {
-										if(err) console.log(err);
-										if(typeof rows1 != 'undefined' && typeof rows1.length != 'undefined' && rows1.length > 0){
-											saveDateRemort(req.body.fileName+"_INFOHASHES", tHeaders, rows1, connectionProperties, ftp_loc);
-										}
-									});
-									DEBUG.log("[DONE - EXPORT INFOHASHES]");
-									callback(null, 'xyz\n');
-								},
-								three: function(callback) {
-									DEBUG.log("[START - EXPORT TITLE]");
-									_iquery += " limit 5 ";
-									var iHeaders = [];
-									for (var i in req.body.tColumns) {
-										iHeaders.push(req.body.tColumns[i]);
-									}
-									var _iformatedQuery = mysql.format(_iquery);
-									connection.query(_iformatedQuery, function (err, rows2) {
-										if(err) console.log(err);
-										if(typeof rows2 != 'undefined' && typeof rows2.length != 'undefined' && rows2.length > 0){
-											saveDateRemort(req.body.fileName+"_TITLE", iHeaders, rows2, connectionProperties, ftp_loc);
-										}
-									});
-									DEBUG.log("[DONE - EXPORT TITLE]");
-									callback(null, 'xyz\n');
+									callback(null);
+								});
+								*/
+							};
+							var exportInfohashes = function(callback) {
+								DEBUG.log("[START - EXPORT INFOHASHES]");
+								//_tquery += " limit 5 ";
+								var _tformatedQuery = mysql.format(_tquery);
+								var tHeaders = [];
+								for (var i in req.body.infColumns) {
+									tHeaders.push(req.body.infColumns[i]);
 								}
-							}, function(err, results) {
+								connection.query(_tformatedQuery, function (err, rows1) {
+									if(err){
+										console.log(err);
+										DEBUG.log("[DONE - EXPORT INFOHASHES]");
+										callback(null);
+									}
+									else{
+										DEBUG.log("[SIZE - INFOHASHES]:"+rows1.length);
+										saveDateRemort(req.body.fileName+"_INFOHASHES", tHeaders, rows1, connectionProperties, ftp_loc, function(msg){
+											DEBUG.log(msg);
+											DEBUG.log("[DONE - EXPORT INFOHASHES]");
+											//callback(null);
+										});
+									}
+								});
 								
-							});
-							*/
+							};
+							var exportTitle = function(callback) {
+								DEBUG.log("[START - EXPORT TITLE]");
+								//_iquery += " limit 5 ";
+								var iHeaders = [];
+								for (var i in req.body.tColumns) {
+									iHeaders.push(req.body.tColumns[i]);
+								}
+								var _iformatedQuery = mysql.format(_iquery);
+								connection.query(_iformatedQuery, function (err, rows2) {
+									if(err){
+										console.log(err);
+										DEBUG.log("[DONE - EXPORT TITLE]");
+										callback(null);
+									}else{
+										DEBUG.log("[SIZE - TITLE]:"+rows2.length);
+										saveDateRemort(req.body.fileName+"_TITLE", iHeaders, rows2, connectionProperties, ftp_loc, function(msg){
+											DEBUG.log(msg);
+											DEBUG.log("[DONE - EXPORT TITLE]");
+											//callback(null);
+										});
+									}
+								});
+							};
+							exportTitle(exportInfohashes(exportIP(function(msg){
+								DEBUG.log("completed");
+							})));
 							res.json({
 								values: "Selected data is being exported"
 							});
@@ -931,7 +862,7 @@ var exportDataMng = {
 			if(req.body.isGenre){
 				_query += " left join torrents.mm_title_genres g on g.title_id = mt.mm_title_id where g.genre_id in "+genreQ;
 			}
-			_query += " limit 5 ";
+			//_query += " limit 5 ";
 			var fields = {INFOHASHES:req.body.columns};
 			jsonFields = JSON.stringify(fields);
 			var queries = {INFOHASHES:_query};
@@ -942,7 +873,7 @@ var exportDataMng = {
 			if(req.body.isGenre){
 				_query += " left join torrents.mm_title_genres g on g.title_id = mt.mm_title_id where g.genre_id in "+genreQ;
 			}
-			_query += " limit 5 ";
+			//_query += " limit 5 ";
 			var fields = {TITLE:req.body.columns};
 			jsonFields = JSON.stringify(fields);
 			var queries = {TITLE:_query};
@@ -1139,6 +1070,7 @@ function processToExport(row, startDate, endDate, callback) {
 		var fileName = row.filename;
 		var qObj = JSON.parse(row.query);
 		var ftpLocation = row.location;
+		var fields = JSON.parse(row.selected_columns);
 		var connProps = {
 			host: row.ip,
 			user: row.username,
@@ -1149,21 +1081,77 @@ function processToExport(row, startDate, endDate, callback) {
 			var q = qObj.DIGGIT_IP;
 			q = q.replace("<start>", startDate);
 			q = q.replace("<end>", endDate);
-			console.log(q);
-			//exportDataUsingScript(q, connProps, fileName+"_IP");
+			DEBUG.log(q);
+			exportDataUsingScript(q, connProps, fileName+"_IP", function(msg){
+				DEBUG.log(msg);
+				DEBUG.log("[DONE - EXPORT DIGGIT_IP]");
+			});
 			DEBUG.log("Completed Job #"+jobId);
 		}
 		if(typeof qObj.INFOHASHES != 'undefined'){
 			var q = qObj.INFOHASHES;
 			q = q.replace("<start>", startDate);
 			q = q.replace("<end>", endDate);
-			console.log(q);
+			DEBUG.log(q);
+			var exportInfohashes = function(callback) {
+				DEBUG.log("[START - EXPORT INFOHASHES]");
+				//_tquery += " limit 5 ";
+				var _tformatedQuery = mysql.format(q);
+				var tHeaders = [];
+				for (var i in fields.INFOHASHES) {
+					tHeaders.push(fields.INFOHASHES[i]);
+				}
+				db.getConnection(function(err, connection){
+					connection.query(_tformatedQuery, function (err, rows1) {
+						if(err){
+							console.log(err);
+							DEBUG.log("[DONE - EXPORT INFOHASHES]");
+							callback(null);
+						}
+						else{
+							DEBUG.log("[SIZE - INFOHASHES]:"+rows1.length);
+							saveDateRemort(req.body.fileName+"_INFOHASHES", tHeaders, rows1, connectionProperties, ftp_loc, function(msg){
+								DEBUG.log(msg);
+								DEBUG.log("[DONE - EXPORT INFOHASHES]");
+								//callback(null);
+							});
+						}
+					});
+					connection.release();
+				});
+			};
 		}
 		if(typeof qObj.TITLE != 'undefined'){
 			var q = qObj.TITLE;
 			q = q.replace("<start>", startDate);
 			q = q.replace("<end>", endDate);
-			console.log(q);
+			DEBUG.log(q);
+			var exportTitle = function(callback) {
+				DEBUG.log("[START - EXPORT TITLE]");
+				//_iquery += " limit 5 ";
+				var iHeaders = [];
+				for (var i in fields.TITLE) {
+					iHeaders.push(fields.TITLE[i]);
+				}
+				var _iformatedQuery = mysql.format(q);
+				db.getConnection(function(err, connection){
+					connection.query(_iformatedQuery, function (err, rows2) {
+						if(err){
+							console.log(err);
+							DEBUG.log("[DONE - EXPORT TITLE]");
+							callback(null);
+						}else{
+							DEBUG.log("[SIZE - TITLE]:"+rows2.length);
+							saveDateRemort(req.body.fileName+"_TITLE", iHeaders, rows2, connectionProperties, ftp_loc, function(msg){
+								DEBUG.log(msg);
+								DEBUG.log("[DONE - EXPORT TITLE]");
+								//callback(null);
+							});
+						}
+					});
+					connection.release();
+				});
+			};
 		}
 		callback("Completed Job #"+jobId);
 	}
