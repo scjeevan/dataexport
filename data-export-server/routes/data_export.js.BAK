@@ -12,8 +12,6 @@ var writer = csvWriter();
 
 var BIGQUERY_DATASET_HIST = process.env.DATAEXPORT_GQ_PROJECT_ID.trim();
 
-var BIGQUERY_DATASET_NAME = process.env.DATAEXPORT_GQ_DATASET_NAME.trim();
-
 var gcloud = require('gcloud')({
 	projectId: BIGQUERY_DATASET_HIST,
 	keyFilename: process.env.DATAEXPORT_GQ_KEY_PATH
@@ -103,7 +101,6 @@ function buildTitleQuery(paramArr, isCount, isSchedule){
 		_query += join + " mt.title IN "+selTitles;
 		appendedParams++;
 	}
-	
 	DEBUG.log("TITLE_QUERY : " + _query);
 	return _query;
 }
@@ -239,17 +236,17 @@ function buildQuery(paramArr, isCount, isSchedule){
 			_query += " * ";
 		}
 	}
-	_query += " FROM "+BIGQUERY_DATASET_NAME+".Diggit_IP AS t ";
+	_query += " FROM DevDiggit_Hist.Diggit_IP AS t ";
 	if(selTitles.length > 0 && genreQ.length > 0){ /*** NEED TO BE MODIFIED ***/
-		_query += " JOIN "+BIGQUERY_DATASET_NAME+".title_title_id AS tti ON t.TitleID = tti.title_id JOIN "+BIGQUERY_DATASET_NAME+".mm_title_genres AS gt ON t.TitleID = gt.title_id WHERE tti.title IN "+selTitles+" AND gt.genre_id IN "+genreQ+" ";
+		_query += " JOIN DevDiggit_Hist.title_title_id AS gt ON t.TitleID = gt.title_id WHERE gt.title IN "+selTitles+" ";
 		appendedParams++;
 	}
 	else if(selTitles.length > 0 && genreQ.length == 0){
-		_query += " JOIN "+BIGQUERY_DATASET_NAME+".title_title_id AS gt ON t.TitleID = gt.title_id WHERE gt.title IN "+selTitles+" ";
+		_query += " JOIN DevDiggit_Hist.title_title_id AS gt ON t.TitleID = gt.title_id WHERE gt.title IN "+selTitles+" ";
 		appendedParams++;
 	}
 	else if(genreQ.length > 0 && selTitles.length == 0){
-		_query += " JOIN "+BIGQUERY_DATASET_NAME+".mm_title_genres AS gt ON t.TitleID = gt.title_id WHERE gt.genre_id IN "+genreQ+" ";
+		_query += " JOIN DevDiggit_Hist.mm_title_genres AS gt ON t.TitleID = gt.title_id WHERE gt.genre_id IN "+genreQ+" ";
 		appendedParams++;
 	}
 	if(selGroups.length > 0){
@@ -269,32 +266,6 @@ function buildQuery(paramArr, isCount, isSchedule){
 	}
 	DEBUG.log("IP_QUERY : " + _query);
 	return _query;
-}
-
-function saveDataRemort(act_file, file_name, connectionProperties, ftl_loc, callback) {
-	var conn = new Client();
-	DEBUG.log("START METHOD - saveDataRemort():"+file_name);
-	//var act_file = process.env.DATAEXPORT_CSV_SAVE_PATH + file_name;
-	conn.on('ready', function () {
-		conn.sftp(function (err, sftp) {
-			if (err) {
-				console.log( "Error, problem starting SFTP: %s", err );
-				callback("ERROR");
-			}
-			var readStream = fs.createReadStream(act_file);
-			var destPath = ftl_loc +"/"+ file_name;
-			var writeStream = sftp.createWriteStream(destPath);
-			writeStream.on(
-				'close',
-				function () {
-					sftp.end();
-					callback("FINISHED " + file_name);
-				}
-			);
-			readStream.pipe( writeStream );
-		});
-	}).connect(connectionProperties);
-	DEBUG.log("END METHOD - saveDataRemort():"+file_name);
 }
 
 function saveDateRemort(file_name, headers, rows, connectionProperties, ftl_loc, callback) {
@@ -388,7 +359,7 @@ var exportDataMng = {
 	},
 	
 	getMovies : function(req, res){
-        var movieQuery = "SELECT title FROM "+BIGQUERY_DATASET_NAME+".title_title_id GROUP BY title";
+        var movieQuery = "SELECT title FROM [devdiggit-1:DevDiggit_Hist.title_title_id] GROUP BY title";
 		var movieArray = [];
 		executeGoogleBigQueryAllRows(movieQuery,function(rows){
             rows.forEach(function(movie){
@@ -400,29 +371,29 @@ var exportDataMng = {
     },
 	
 	continents : function (req, res) {
-		var query = "SELECT Continent AS name FROM "+BIGQUERY_DATASET_NAME+".ip_aggregation GROUP BY name ORDER BY name";
+		var query = 'SELECT Continent AS name FROM DevDiggit_Hist.ip_aggregation GROUP BY name ORDER BY name';
 		responseAll(query, res);
 	},
 	countries : function (req, res) {
 		console.log(req);
-		var query = "SELECT Country AS name FROM "+BIGQUERY_DATASET_NAME+".ip_aggregation WHERE Continent = '" + escape(req.body.continent) + "' GROUP BY name ORDER BY name";
+		var query = "SELECT Country AS name FROM DevDiggit_Hist.ip_aggregation WHERE Continent = '" + escape(req.body.continent) + "' GROUP BY name ORDER BY name";
 		responseAll(query, res);
 	},
 	regions : function (req, res) {
-		var query = "SELECT Region AS name FROM "+BIGQUERY_DATASET_NAME+".unique_ip_count_for_location WHERE Continent = '" + escape(req.body.continent) + "' AND Country = '" + escape(req.body.country) + "' GROUP BY name ORDER BY name";
+		var query = "SELECT Region AS name FROM DevDiggit_Hist.unique_ip_count_for_location WHERE Continent = '" + escape(req.body.continent) + "' AND Country = '" + escape(req.body.country) + "' GROUP BY name ORDER BY name";
 		responseAll(query, res);
 	},
 	states : function (req, res) {
-		var query = "SELECT State AS name FROM "+BIGQUERY_DATASET_NAME+".unique_ip_count_for_location WHERE Continent = '" + escape(req.body.continent) + "' AND Country = '" + escape(req.body.country) + "' AND Region = '" + escape(req.body.region) + "' GROUP BY name ORDER BY name";
+		var query = "SELECT State AS name FROM DevDiggit_Hist.unique_ip_count_for_location WHERE Continent = '" + escape(req.body.continent) + "' AND Country = '" + escape(req.body.country) + "' AND Region = '" + escape(req.body.region) + "' GROUP BY name ORDER BY name";
 		responseAll(query, res);
 	},
 	cities : function (req, res) {
-		var query = "SELECT City AS name FROM "+BIGQUERY_DATASET_NAME+".unique_ip_count_for_location WHERE Continent = '" + escape(req.body.continent) + "' AND Country = '" + escape(req.body.country) + "' AND Region = '" + escape(req.body.region) + "' AND State = '" + escape(req.body.state) + "' GROUP BY name ORDER BY name";
+		var query = "SELECT City AS name FROM DevDiggit_Hist.unique_ip_count_for_location WHERE Continent = '" + escape(req.body.continent) + "' AND Country = '" + escape(req.body.country) + "' AND Region = '" + escape(req.body.region) + "' AND State = '" + escape(req.body.state) + "' GROUP BY name ORDER BY name";
 		responseAll(query, res);
 	},
 	
 	getLocations : function(req, res){
-        var locationQuery = "SELECT Continent, Country, Region, State, City FROM "+BIGQUERY_DATASET_NAME+".unique_ip_count_for_location";
+        var locationQuery = "SELECT Continent, Country, Region, State, City FROM [devdiggit-1:DevDiggit_Hist.unique_ip_count_for_location]";
 		var locationArray = [];
 		executeGoogleBigQueryAllRows(locationQuery,function(rows){
             rows.forEach(function(loc){
@@ -523,9 +494,9 @@ var exportDataMng = {
 					if(req.body.table == 'Diggit_IP'){
 						file_name = file_name + "_IP";
 						if(req.body.isGenre){
-							_query += " FROM ["+BIGQUERY_DATASET_NAME+".Diggit_IP] AS t JOIN ["+BIGQUERY_DATASET_NAME+".mm_title_genres] AS gt ON t.TitleID = gt.title_id WHERE t.Date BETWEEN '"+start+"' AND '"+end+"' AND gt.genre_id IN "+genreQ; // LIMIT 10000
+							_query += " FROM [DevDiggit_Hist.Diggit_IP] AS t JOIN [DevDiggit_Hist.mm_title_genres] AS gt ON t.TitleID = gt.title_id WHERE t.Date BETWEEN '"+start+"' AND '"+end+"' AND gt.genre_id IN "+genreQ; // LIMIT 10000
 						} else {
-							_query += " FROM "+BIGQUERY_DATASET_NAME+".Diggit_IP WHERE Date BETWEEN '"+start+"' AND '"+end+"' "; // LIMIT 10000
+							_query += " FROM DevDiggit_Hist.Diggit_IP WHERE Date BETWEEN '"+start+"' AND '"+end+"' "; // LIMIT 10000
 						}
 						_query += " AND IP!='Peer IP'";
 						DEBUG.log(_query);
@@ -539,22 +510,14 @@ var exportDataMng = {
 					}
 					else if(req.body.table == 'infohashes'){
 						file_name = file_name + "_infohashes";
-						var act_file = process.env.DATAEXPORT_CSV_SAVE_PATH + file_name;
 						_query += " UNION ALL select i.infohash,mt.diggit_title_id, i.file_name,i.network,i.file_size,i.media_format,i.quality,i.audio_language, i.subtitle_language,i.created_time,i.added_time,i.episode_title,i.added_by,i.languages,i.verified, i.resolution,i.aspect_ratio,i.frame_rate,i.subtitles,i.bitrate from  torrents.mm_titles mt left join torrents.infohashes i on i.mm_title_id=mt.mm_title_id";
-						if(req.body.isGenre){
-							_query += " left join torrents.mm_title_genres g on g.title_id = mt.mm_title_id where g.genre_id in "+genreQ;
-						}
 						if(typeof req.body.startDate != 'undefined' && typeof req.body.endDate != 'undefined'){
 							var start = req.body.startDate;
 							var end = req.body.endDate;
-							if(req.body.isGenre){
-								_query += " AND ";
-							}
-							else {
-								_query += " WHERE ";
-							}
-							_query += " i.added_time BETWEEN '"+start+"' AND '"+end+"' ";
-							_query += " INTO OUTFILE '"+act_file+"' FIELDS ENCLOSED BY '\"'  TERMINATED BY ','  ESCAPED BY ''  LINES TERMINATED BY '\n' ";
+							_query += " WHERE i.added_time BETWEEN '"+start+"' AND '"+end+"' ";
+						}
+						if(req.body.isGenre){
+							_query += " left join torrents.mm_title_genres g on g.title_id = mt.mm_title_id where g.genre_id in "+genreQ;
 						}
 						//_query += " limit 5 ";
 						_formatedQuery = mysql.format(_query);
@@ -564,10 +527,7 @@ var exportDataMng = {
 							var status = "Data not found for selected criteria"
 							if(typeof rows != 'undefined' && typeof rows.length != 'undefined' && rows.length > 0){
 								status = "File exported successfully";
-								saveDataRemort(act_file, file_name, connectionProperties, ftp_loc, function(msg){
-									DEBUG.log(msg);
-									DEBUG.log("[DONE - EXPORT INFOHASHES]");
-								});
+								saveDateRemort(file_name, headers, rows, connectionProperties, ftp_loc);
 							}
 							res.json({
 								values: status
@@ -577,12 +537,10 @@ var exportDataMng = {
 					}
 					else{
 						file_name = file_name + "_title";
-						var act_file = process.env.DATAEXPORT_CSV_SAVE_PATH + file_name;
 						_query += " UNION ALL select mt.diggit_title_id as diggit_id,mt.title as title,mt.season ,mt.episode,mt.studio,mt.category, mt.genre,mt.mpaa_rating,mt.imdb_id,mt.episode_imdb_id, ie.Year as episode_Year,ie.Rating as episode_Rating,ie.Runtime as episode_Runtime ,ie.Genre as episode_Genre, ie.Released as episode_Released,ie.Season as episode_Season ,ie.Title as episode_title,ie.Director as episode_Director,ie.Writer as episode_Writer,ie.Cast as episode_Cast, ie.Metacritic as episode_Metacritic,ie.imdbRating as episode_imdbRating,ie.imdbVotes as episode_imdbVotes, ie.Poster as episode_Poster ,ie.Plot as episode_Plot,ie.FullPlot as episode_FullPlot, ie.Language as episode_Language,ie.Country as episode_Country,ie.Awards as episode_Awards, id.Year as Year,id.Rating,id.Runtime,id.Genre,id.Released,id.Director,id.Writer,id.Cast,id.Metacritic,id.imdbRating,   id.imdbVotes,id.Plot,id.FullPlot,id.Language,id.Country from torrents.mm_titles mt left join imdb.episodes ie on ie.imdbID=mt.imdb_id left join imdb.imdb_details id on id.imdbID=mt.imdb_id";
 						if(req.body.isGenre){
 							_query += " left join torrents.mm_title_genres g on g.title_id = mt.mm_title_id where g.genre_id in "+genreQ;
 						}
-						_query += " INTO OUTFILE '"+act_file+"' FIELDS ENCLOSED BY '\"'  TERMINATED BY ','  ESCAPED BY ''  LINES TERMINATED BY '\n' ";
 						//_query += " limit 5 ";
 						_formatedQuery = mysql.format(_query);
 						DEBUG.log("[QUERY]:"+_query);
@@ -591,11 +549,7 @@ var exportDataMng = {
 							var status = "Data not found for selected criteria"
 							if(typeof rows != 'undefined' && typeof rows.length != 'undefined' && rows.length > 0){
 								status = "File exported successfully";
-								saveDataRemort(act_file, file_name, connectionProperties, ftp_loc, function(msg){
-									DEBUG.log(msg);
-									DEBUG.log("[DONE - EXPORT INFOHASHES]");
-									//callback(null);
-								});
+								saveDateRemort(file_name, headers, rows, connectionProperties, ftp_loc);
 							}
 							res.json({
 								values: status
@@ -741,7 +695,7 @@ var exportDataMng = {
 							var exportIP = function(callback) {
 								DEBUG.log("[START - EXPORT DIGGIT_IP]");
 								_query += " AND IP!='Peer IP'";
-								var exportCommand = process.env.DATAEXPORT_GQ_SCRIPT_PATH + ' -dataset '+BIGQUERY_DATASET_NAME+' -query "' + _query + '" -download_local -local_path '+process.env.DATAEXPORT_CSV_SAVE_PATH+' -bucket_name devdiggitbucket -project_id '+process.env.DATAEXPORT_GQ_PROJECT_ID+' -sftp_transfer -ftp_user "'+connectionProperties.user+'"  -ftp_pass \''+connectionProperties.password+'\' -ftp_server "'+connectionProperties.host+'" -ftp_port '+connectionProperties.port+' -export_file_name '+fileName+'';
+								var exportCommand = process.env.DATAEXPORT_GQ_SCRIPT_PATH + ' -dataset DevDiggit_Hist -query "' + _query + '" -download_local -local_path '+process.env.DATAEXPORT_CSV_SAVE_PATH+' -bucket_name devdiggitbucket -project_id '+process.env.DATAEXPORT_GQ_PROJECT_ID+' -sftp_transfer -ftp_user "'+connectionProperties.user+'"  -ftp_pass \''+connectionProperties.password+'\' -ftp_server "'+connectionProperties.host+'" -ftp_port '+connectionProperties.port+' -export_file_name '+fileName+'';
 								DEBUG.log(exportCommand);
 								
 								exec(exportCommand, function(err, out, code) {
@@ -763,7 +717,7 @@ var exportDataMng = {
 							};
 							var exportInfohashes = function(callback) {
 								DEBUG.log("[START - EXPORT INFOHASHES]");
-								//_tquery += "INTO OUTFILE '/tmp/EXPORT_TitlesDetails_21oct2016.csv' FIELDS ENCLOSED BY '\"'  TERMINATED BY ','  ESCAPED BY ''  LINES TERMINATED BY '\n'"
+								//_tquery += " limit 5 ";
 								var _tformatedQuery = mysql.format(_tquery);
 								var tHeaders = [];
 								for (var i in req.body.infColumns) {
@@ -788,6 +742,7 @@ var exportDataMng = {
 							};
 							var exportTitle = function(callback) {
 								DEBUG.log("[START - EXPORT TITLE]");
+								//_iquery += " limit 5 ";
 								var iHeaders = [];
 								for (var i in req.body.tColumns) {
 									iHeaders.push(req.body.tColumns[i]);
@@ -892,9 +847,9 @@ var exportDataMng = {
 		var jsonQueries = "";
 		if(req.body.table=='Diggit_IP'){
 			if(req.body.isGenre){
-				_query += " FROM ["+BIGQUERY_DATASET_NAME+".Diggit_IP] AS t JOIN ["+BIGQUERY_DATASET_NAME+".mm_title_genres] AS gt ON t.TitleID = gt.title_id WHERE t.Date BETWEEN '<start>' AND '<end>' AND gt.genre_id IN "+genreQ;
+				_query += " FROM [DevDiggit_Hist.Diggit_IP] AS t JOIN [DevDiggit_Hist.mm_title_genres] AS gt ON t.TitleID = gt.title_id WHERE t.Date BETWEEN '<start>' AND '<end>' AND gt.genre_id IN "+genreQ;
 			} else {
-				_query += " FROM "+BIGQUERY_DATASET_NAME+".Diggit_IP WHERE Date BETWEEN '<start>' AND '<end>' ";
+				_query += " FROM DevDiggit_Hist.Diggit_IP WHERE Date BETWEEN '<start>' AND '<end>' ";
 			}
 			_query += " AND IP!='Peer IP'";
 			var fields = {DIGGIT_IP:req.body.columns};
@@ -1093,7 +1048,7 @@ function exportDataUsingScript(_query, connectionProperties, fileName, callback)
 	});
 	DEBUG.log("[END - EXPORT DIGGIT_IP]");
 	*/
-	var exportCommand = process.env.DATAEXPORT_GQ_SCRIPT_PATH + ' -dataset '+BIGQUERY_DATASET_NAME+' -query "' + _query + '" -download_local -local_path '+process.env.DATAEXPORT_CSV_SAVE_PATH+' -bucket_name devdiggitbucket -project_id '+process.env.DATAEXPORT_GQ_PROJECT_ID+' -sftp_transfer -ftp_user "'+connectionProperties.user+'"  -ftp_pass \''+connectionProperties.password+'\' -ftp_server "'+connectionProperties.host+'" -ftp_port '+connectionProperties.port+' -export_file_name '+fileName+'';
+	var exportCommand = process.env.DATAEXPORT_GQ_SCRIPT_PATH + ' -dataset DevDiggit_Hist -query "' + _query + '" -download_local -local_path '+process.env.DATAEXPORT_CSV_SAVE_PATH+' -bucket_name devdiggitbucket -project_id '+process.env.DATAEXPORT_GQ_PROJECT_ID+' -sftp_transfer -ftp_user "'+connectionProperties.user+'"  -ftp_pass \''+connectionProperties.password+'\' -ftp_server "'+connectionProperties.host+'" -ftp_port '+connectionProperties.port+' -export_file_name '+fileName+'';
 	console.log(exportCommand);
 	
 	exec(exportCommand, function(err, out, code) {

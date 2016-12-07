@@ -24,6 +24,7 @@ DATAEXPORT_FTP_PROTOCOL=SFTP
 DATAEXPORT_FTP_SERVER_KEY=/opt/jeevan/keys/Hydra_jeevan.pem
 DATAEXPORT_GQ_PROJECT_ID=devdiggit-1
 DATAEXPORT_GQ_KEY_PATH=/opt/jeevan/json/DevDiggit-2f271ead8f6e.json
+DATAEXPORT_GQ_DATASET_NAME=DevDiggit_Hist
 DATAEXPORT_GQ_SCRIPT_PATH=/opt/Rajnish/Script/ExportDataFromBigQuery.sh
 #MANAGEMENT_API_URL=http://dev.management.diggit.com/public/api/
 #AUTH_API_BASE_URL=http://dev.management.diggit.com/

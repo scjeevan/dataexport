@@ -44,6 +44,10 @@ mvpApp.config(function($routeProvider, $httpProvider) {
 			templateUrl: 'views/jobs.html',
 			controller: 'MainCtrl'
 		})
+		.when('/test', {
+			templateUrl: 'views/test.html',
+			controller: 'MainCtrl'
+		})
 		.otherwise({
 			redirectTo: '/login'
 		});
@@ -58,6 +62,100 @@ mvpApp.controller('MvpCtrl', ['$window', '$scope', '$location', function($window
 	}
 }
 ]);
+
+mvpApp.config(function(ivhTreeviewOptionsProvider) {
+	ivhTreeviewOptionsProvider.set({
+		idAttribute: 'id',
+		labelAttribute: 'label',
+		childrenAttribute: 'children',
+		selectedAttribute: 'selected',
+		useCheckboxes: true,
+		expandToDepth: 0,
+		indeterminateAttribute: '__ivhTreeviewIndeterminate',
+		expandedAttribute: '__ivhTreeviewExpanded',
+		defaultSelectedState: true,
+		validate: true,
+		twistieExpandedTpl: '-',
+		twistieCollapsedTpl: '+',
+		twistieLeafTpl: '<leaf></leaf>'
+	});
+});
+
+
+mvpApp.directive('leaf', function($rootScope, makeTree) {
+	return {
+		restrict: 'AE',
+		link: function(scope, element, attrs) {
+			element.text('#');
+			element.on('click', function() {
+				element.text('@');
+				setTimeout(function() {
+					element.text('#');
+					scope.$apply(function() {
+						console.log("LOADING");
+						Array.prototype.push.apply(scope.node.children,  makeTree(3, 3));
+					});
+				}, 500);
+			});
+		}
+	};
+});
+
+mvpApp.controller('testController', ['$scope', '$http','Api', 'ivhTreeviewBfs',function($scope, $http, Api, ivhTreeviewBfs, ivhTreeviewMgr) {
+	$scope.exp = {};
+	var val = [];
+	$http.post(Api.root_url+ "api/continents").
+	success(function (response, status, headers, config) {
+		angular.forEach(response.data, function (v, k) {
+			this.push({label:v.name, value:v.name, children:[]});
+		}, val);
+	}).
+	error(function (data, status, headers, config) {
+		console.log(data);
+	});
+	$scope.exp.locations = [{
+		label: 'Global',
+		value: 'Global', 
+		children: val
+	}];
+	
+	var selectedNodes = [];
+	ivhTreeviewBfs(val, function(node) {
+		console.log(node);
+		if(node.selected) {
+			console.log(node);
+			selectedNodes.push(node)
+		}
+	});
+	
+	
+}]);
+
+mvpApp.service('makeTree', function() {
+	var t = [ 'Mustachio','Cane','Monacle','Umbrella','Headphones','Top hat','Fedora','Flat cap','Phone','Wallet','Squirrel','Wizard hat','Great sword',   'Playing cards','Post-it notes','Stickers','Tea','Patch'];
+  
+	var makeNode = function(label) {
+		return {
+			label: label,
+			children: []
+		};
+	};
+	return function(arity, count) {
+		var list = count ? t.slice(0, count) : t.slice(0);
+		var node = makeNode(list.shift())
+			, nodes = [node]
+			, tree = [node];
+		while(list.length && nodes.length) {
+			node = nodes.shift();
+			while(list.length && node.children.length < arity) {
+				node.children.push(makeNode(list.shift()));
+			}
+			Array.prototype.push.apply(nodes, node.children);
+		}
+		return tree;
+	};
+});
+
 
 mvpApp.controller('dataExportForm', ['$window', '$scope', '$location', '$http', 'Api', 'ngToast', function($window, $scope, $location, $http, Api, ngToast) {
 	$scope.ftp_acc_list = [];
@@ -428,128 +526,6 @@ mvpApp.controller('ftpAccountManager', ['$window', '$scope', '$location', '$http
 		}
 	}
 }]);
-
-mvpApp.config(function(ivhTreeviewOptionsProvider) {
-		ivhTreeviewOptionsProvider.set({
-		idAttribute: 'id',
-		labelAttribute: 'label',
-		childrenAttribute: 'children',
-		selectedAttribute: 'selected',
-		useCheckboxes: true,
-		expandToDepth: 0,
-		indeterminateAttribute: '__ivhTreeviewIndeterminate',
-		expandedAttribute: '__ivhTreeviewExpanded',
-		defaultSelectedState: true,
-		validate: true,
-		twistieExpandedTpl: '-',
-		twistieCollapsedTpl: '+',
-		twistieLeafTpl: '<leaf></leaf>'
-	});
-});
-
-/*
-mvpApp.directive('leaf', function($rootScope, makeTree) {
-	return {
-		restrict: 'AE',
-		link: function(scope, element, attrs) {
-			console.log(scope)
-			element.text('#');
-			element.on('click', function() {
-				//element.text('@');
-				setTimeout(function() {
-					//element.text('#');
-					scope.$apply(function() {
-						Array.prototype.push.apply(scope.node.children,  makeTree(3, 3));
-					});
-				}, 500);
-			});
-		}
-	};
-});
-
-mvpApp.controller('DemoCtrl', function($scope, ivhTreeviewBfs, ivhTreeviewMgr) {
-	$scope.exp = {};
-	var data = [{
-			label: 'Asia',
-			value: 'Asia',
-			children: []
-		},
-		{
-			label: 'Europe',
-			value: 'Europe',
-			children: []
-		},
-		{
-			label: 'North America',
-			value: 'North America',
-			children: []
-		},
-		{
-			label: 'South America',
-			value: 'South America',
-			children: []
-		},
-		{
-			label: 'Oceania',
-			value: 'Oceania',
-			children: []
-		},
-		{
-			label: 'Other',
-			value: 'Other',
-			children: []
-		},
-		{
-			label: 'Africa',
-			value: 'Africa',
-			children: []
-		}
-		];
-	
-	$scope.exp.locations = [{
-		label: 'Global',
-		value: 'Global', 
-		children: data
-	}];
-	
-	var selectedNodes = [];
-	ivhTreeviewBfs(data, function(node) {
-		console.log(node);
-		if(node.selected) {
-			console.log(node);
-			selectedNodes.push(node)
-		}
-	});
-	
-	
-});
-
-mvpApp.service('makeTree', function() {
-	var t = [ 'Mustachio','Cane','Monacle','Umbrella','Headphones','Top hat','Fedora','Flat cap','Phone','Wallet','Squirrel','Wizard hat','Great sword',   'Playing cards','Post-it notes','Stickers','Tea','Patch'];
-  
-	var makeNode = function(label) {
-		return {
-			label: label,
-			children: []
-		};
-	};
-  
-	return function(arity, count) {
-		var list = count ? t.slice(0, count) : t.slice(0);
-		var node = makeNode(list.shift())
-			, nodes = [node]
-			, tree = [node];
-		while(list.length && nodes.length) {
-			node = nodes.shift();
-			while(list.length && node.children.length < arity) {
-				node.children.push(makeNode(list.shift()));
-			}
-			Array.prototype.push.apply(nodes, node.children);
-		}
-		return tree;
-	};
-});
-*/
 
 mvpApp.controller('dataExportFilter', ['ivhTreeviewBfs', '$window', '$scope', '$location', '$http', 'Api', 'ngToast', function(ivhTreeviewBfs, $window, $scope, $location, $http, Api, ngToast) {
 	$scope.columns = ipColumns;
