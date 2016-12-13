@@ -267,7 +267,7 @@ function buildQuery(paramArr, isCount, isSchedule){
 		_query += join + continents ;
 		appendedParams++;
 	}
-	_query += " ORDER BY Date DESC" ;
+	_query += " ORDER BY t.Date DESC " ;
 	DEBUG.log("IP_QUERY : " + _query);
 	return _query;
 }
