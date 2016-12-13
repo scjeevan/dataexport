@@ -136,7 +136,7 @@ function buildInfohashesQuery(paramArr, isCount, isSchedule){
 		}
 		selTitles = selTitles.substring(0, selTitles.length - 1) + ")";
 	}
-	var infohashesColumns = {infohash:'i.infohash',diggit_id:'mt.diggit_title_id',file_name:'i.file_name',network:'i.network',file_size:'i.file_size',media_format:'i.media_format',quality:'i.quality',audio_language:'i.audio_language',subtitle_language:'i.subtitle_language',
+	var infohashesColumns = {infohash:'i.infohash',diggit_id:'mt.diggit_title_id as diggit_id',file_name:'i.file_name',network:'i.network',file_size:'i.file_size',media_format:'i.media_format',quality:'i.quality',audio_language:'i.audio_language',subtitle_language:'i.subtitle_language',
 	created_time:'i.created_time',added_time:'i.added_time',episode_title:'i.episode_title',added_by:'i.added_by',languages:'i.languages',verified:'i.verified',resolution:'i.resolution',aspect_ratio:'i.aspect_ratio',frame_rate:'i.frame_rate',subtitles:'i.subtitles',bitrate:'i.bitrate'};
 	var _query = "SELECT ";
 	if(isCount){
@@ -267,6 +267,7 @@ function buildQuery(paramArr, isCount, isSchedule){
 		_query += join + continents ;
 		appendedParams++;
 	}
+	_query += " ORDER BY Date DESC" ;
 	DEBUG.log("IP_QUERY : " + _query);
 	return _query;
 }
