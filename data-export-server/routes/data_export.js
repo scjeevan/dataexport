@@ -567,10 +567,16 @@ var exportDataMng = {
 							var status = "Data not found for selected criteria"
 							if(typeof rows != 'undefined' && typeof rows.length != 'undefined' && rows.length > 0){
 								status = "File exported successfully";
+								saveDateRemort(file_name, headers, rows, connectionProperties, ftp_loc, function(msg){
+									DEBUG.log(msg);
+									DEBUG.log("[DONE - EXPORT INFOHASHES]");
+								});
+								/*
 								saveDataRemort(act_file, file_name, connectionProperties, ftp_loc, function(msg){
 									DEBUG.log(msg);
 									DEBUG.log("[DONE - EXPORT INFOHASHES]");
 								});
+								*/
 							}
 							res.json({
 								values: status
@@ -594,11 +600,16 @@ var exportDataMng = {
 							var status = "Data not found for selected criteria"
 							if(typeof rows != 'undefined' && typeof rows.length != 'undefined' && rows.length > 0){
 								status = "File exported successfully";
+								saveDateRemort(file_name, headers, rows, connectionProperties, ftp_loc, function(msg){
+									DEBUG.log(msg);
+									DEBUG.log("[DONE - EXPORT INFOHASHES]");
+								});
+								/*
 								saveDataRemort(act_file, file_name, connectionProperties, ftp_loc, function(msg){
 									DEBUG.log(msg);
 									DEBUG.log("[DONE - EXPORT INFOHASHES]");
-									//callback(null);
 								});
+								*/
 							}
 							res.json({
 								values: status
