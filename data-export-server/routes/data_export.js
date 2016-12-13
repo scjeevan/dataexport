@@ -559,7 +559,7 @@ var exportDataMng = {
 							_query += " i.added_time BETWEEN '"+start+"' AND '"+end+"' ";
 							//_query += " INTO OUTFILE '"+act_file+"' FIELDS ENCLOSED BY '\"'  TERMINATED BY ','  ESCAPED BY ''  LINES TERMINATED BY '\n' ";
 						}
-						//_query += " limit 5 ";
+						_query += " limit 5 ";
 						_formatedQuery = mysql.format(_query);
 						DEBUG.log("[QUERY]:"+_query);
 						connection.query(_formatedQuery, function (err, rows) {
@@ -592,7 +592,7 @@ var exportDataMng = {
 							_query += " left join torrents.mm_title_genres g on g.title_id = mt.mm_title_id where g.genre_id in "+genreQ;
 						}
 						//_query += " INTO OUTFILE '"+act_file+"' FIELDS ENCLOSED BY '\"'  TERMINATED BY ','  ESCAPED BY ''  LINES TERMINATED BY '\n' ";
-						//_query += " limit 5 ";
+						_query += " limit 5 ";
 						_formatedQuery = mysql.format(_query);
 						DEBUG.log("[QUERY]:"+_query);
 						connection.query(_formatedQuery, function (err, rows) {
