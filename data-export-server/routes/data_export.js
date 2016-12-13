@@ -557,7 +557,7 @@ var exportDataMng = {
 								_query += " WHERE ";
 							}
 							_query += " i.added_time BETWEEN '"+start+"' AND '"+end+"' ";
-							_query += " INTO OUTFILE '"+act_file+"' FIELDS ENCLOSED BY '\"'  TERMINATED BY ','  ESCAPED BY ''  LINES TERMINATED BY '\n' ";
+							//_query += " INTO OUTFILE '"+act_file+"' FIELDS ENCLOSED BY '\"'  TERMINATED BY ','  ESCAPED BY ''  LINES TERMINATED BY '\n' ";
 						}
 						//_query += " limit 5 ";
 						_formatedQuery = mysql.format(_query);
@@ -591,7 +591,7 @@ var exportDataMng = {
 						if(req.body.isGenre){
 							_query += " left join torrents.mm_title_genres g on g.title_id = mt.mm_title_id where g.genre_id in "+genreQ;
 						}
-						_query += " INTO OUTFILE '"+act_file+"' FIELDS ENCLOSED BY '\"'  TERMINATED BY ','  ESCAPED BY ''  LINES TERMINATED BY '\n' ";
+						//_query += " INTO OUTFILE '"+act_file+"' FIELDS ENCLOSED BY '\"'  TERMINATED BY ','  ESCAPED BY ''  LINES TERMINATED BY '\n' ";
 						//_query += " limit 5 ";
 						_formatedQuery = mysql.format(_query);
 						DEBUG.log("[QUERY]:"+_query);
