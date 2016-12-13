@@ -308,7 +308,7 @@ function saveDateRemort(file_name, headers, rows, connectionProperties, ftl_loc,
 		headers: headers,
 		separator: '\t',
 		newline: '\n',
-		sendHeaders: false
+		sendHeaders: true
 	});
 	writer.pipe(fs.createWriteStream( act_file ));
 	rows.forEach(function (row) {
