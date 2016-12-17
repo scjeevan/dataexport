@@ -334,6 +334,9 @@ function saveDateRemort(file_name, headers, rows, connectionProperties, ftl_loc,
 				'close',
 				function () {
 					sftp.end();
+					fs.unlink(act_file, function(){
+						console.log('successfully deleted '+act_file);
+					});
 					callback("FINISHED " + file_name);
 				}
 			);
