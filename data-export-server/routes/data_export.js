@@ -586,7 +586,7 @@ var exportDataMng = {
 							q += " i.added_time BETWEEN '"+start+"' AND '"+end+"' ";
 						}
 						q += " limit 5 ";
-						q += " INTO OUTFILE '"+act_file+"' FIELDS ENCLOSED BY '\"'  TERMINATED BY ','  ESCAPED BY ''  LINES TERMINATED BY '\n' ";
+						//q += " INTO OUTFILE '"+act_file+"' FIELDS ENCLOSED BY '\"'  TERMINATED BY ','  ESCAPED BY ''  LINES TERMINATED BY '\n' ";
 						_formatedQuery = mysql.format(q);
 						DEBUG.log("[QUERY]:"+q);
 						connection.query(_formatedQuery, function (err, rows) {
@@ -594,17 +594,17 @@ var exportDataMng = {
 							var status = "Data not found for selected criteria"
 							if(typeof rows != 'undefined' && typeof rows.length != 'undefined' && rows.length > 0){
 								status = "File exported successfully";
-								/*
+								
 								saveDateRemort(file_name, headers, rows, connectionProperties, ftp_loc, function(msg){
 									DEBUG.log(msg);
 									DEBUG.log("[DONE - EXPORT INFOHASHES]");
 								});
-								*/
+								/*
 								saveDataRemort(act_file, file_name, connectionProperties, ftp_loc, function(msg){
 									DEBUG.log(msg);
 									DEBUG.log("[DONE - EXPORT INFOHASHES]");
 								});
-								
+								*/
 							}
 							res.json({
 								values: status
@@ -615,14 +615,19 @@ var exportDataMng = {
 					else{
 						file_name = file_name + "_title";
 						var act_file = process.env.DATAEXPORT_CSV_SAVE_PATH + file_name;
-						_query += " UNION ALL select mt.diggit_title_id as diggit_id,mt.title as title,mt.season ,mt.episode,mt.studio,mt.category, mt.genre,mt.mpaa_rating,mt.imdb_id,mt.episode_imdb_id, ie.Year as episode_Year,ie.Rating as episode_Rating,ie.Runtime as episode_Runtime ,ie.Genre as episode_Genre, ie.Released as episode_Released,ie.Season as episode_Season ,ie.Title as episode_title,ie.Director as episode_Director,ie.Writer as episode_Writer,ie.Cast as episode_Cast, ie.Metacritic as episode_Metacritic,ie.imdbRating as episode_imdbRating,ie.imdbVotes as episode_imdbVotes, ie.Poster as episode_Poster ,ie.Plot as episode_Plot,ie.FullPlot as episode_FullPlot, ie.Language as episode_Language,ie.Country as episode_Country,ie.Awards as episode_Awards, id.Year as Year,id.Rating,id.Runtime,id.Genre,id.Released,id.Director,id.Writer,id.Cast,id.Metacritic,id.imdbRating,   id.imdbVotes,id.Plot,id.FullPlot,id.Language,id.Country from torrents.mm_titles mt left join imdb.episodes ie on ie.imdbID=mt.imdb_id left join imdb.imdb_details id on id.imdbID=mt.imdb_id";
-						if(req.body.isGenre){
-							_query += " left join torrents.mm_title_genres g on g.title_id = mt.mm_title_id where g.genre_id in "+genreQ;
+						var fields = "";
+						for (var i in req.body.columns) {
+							fields += titleColumns[req.body.columns[i]] + ",";
 						}
-						//_query += " INTO OUTFILE '"+act_file+"' FIELDS ENCLOSED BY '\"'  TERMINATED BY ','  ESCAPED BY ''  LINES TERMINATED BY '\n' ";
-						_query += " limit 5 ";
-						_formatedQuery = mysql.format(_query);
-						DEBUG.log("[QUERY]:"+_query);
+						fields = fields.substring(0, fields.length - 1);
+						var q = "SELECT " + fields;
+						q += " from torrents.mm_titles mt left join imdb.episodes ie on ie.imdbID=mt.imdb_id left join imdb.imdb_details id on id.imdbID=mt.imdb_id";
+						if(req.body.isGenre){
+							q += " left join torrents.mm_title_genres g on g.title_id = mt.mm_title_id where g.genre_id in "+genreQ;
+						}
+						q += " limit 5 ";
+						_formatedQuery = mysql.format(q);
+						DEBUG.log("[QUERY]:"+q);
 						connection.query(_formatedQuery, function (err, rows) {
 							if(err) console.log(err);
 							var status = "Data not found for selected criteria"
