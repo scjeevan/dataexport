@@ -176,8 +176,8 @@ function buildInfohashesQuery(paramArr, isCount, isSchedule){
 	}
 	var dateRange = "";
 	if((typeof paramArr.startDate != 'undefined' && paramArr.startDate.length > 0)&&(typeof paramArr.endDate != 'undefined' && paramArr.endDate.length > 0)){
-		var start = req.body.startDate;
-		var end = req.body.endDate;
+		var start = paramArr.startDate;
+		var end = paramArr.endDate;
 		dateRange = " i.added_time BETWEEN '"+start+"' AND '"+end+"' ";
 	}
 	if(isSchedule){
