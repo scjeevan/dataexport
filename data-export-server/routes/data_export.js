@@ -174,6 +174,20 @@ function buildInfohashesQuery(paramArr, isCount, isSchedule){
 		_query += join + " gi.diggit_group_id IN "+selGroups;
 		appendedParams++;
 	}
+	var dateRange = "";
+	if((typeof paramArr.startDate != 'undefined' && paramArr.startDate.length > 0)&&(typeof paramArr.endDate != 'undefined' && paramArr.endDate.length > 0)){
+		var start = req.body.startDate;
+		var end = req.body.endDate;
+		dateRange = " i.added_time BETWEEN '"+start+"' AND '"+end+"' ";
+	}
+	if(isSchedule){
+		dateRange = " i.added_time BETWEEN '<start>' AND '<end>' ";
+	}
+	if(dateRange.length > 0){
+		var join = (appendedParams == 0) ? " WHERE ":" AND ";
+		_query += join + dateRange;
+		appendedParams++;
+	}
 	DEBUG.log("INFOHASHES_QUERY : " + _query);
 	return _query;
 }
