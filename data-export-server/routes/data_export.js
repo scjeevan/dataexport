@@ -565,25 +565,29 @@ var exportDataMng = {
 					else if(req.body.table == 'infohashes'){
 						file_name = file_name + "_infohashes";
 						var act_file = process.env.DATAEXPORT_CSV_SAVE_PATH + file_name;
-						_query += " UNION ALL select i.infohash,mt.diggit_title_id, i.file_name,i.network,i.file_size,i.media_format,i.quality,i.audio_language, i.subtitle_language,i.created_time,i.added_time,i.episode_title,i.added_by,i.languages,i.verified, i.resolution,i.aspect_ratio,i.frame_rate,i.subtitles,i.bitrate from  torrents.mm_titles mt left join torrents.infohashes i on i.mm_title_id=mt.mm_title_id";
+						var fields = "";
+						for (var i in req.body.columns) {
+							fields += infohashesColumns[req.body.columns[i]] + ",";
+						}
+						fields = fields.substring(0, fields.length - 1);
+						var q = "SELECT " + fields;
+						q += " from torrents.mm_titles mt left join torrents.infohashes i on i.mm_title_id=mt.mm_title_id";
 						if(req.body.isGenre){
-							_query += " left join torrents.mm_title_genres g on g.title_id = mt.mm_title_id where g.genre_id in "+genreQ;
+							q += " left join torrents.mm_title_genres g on g.title_id = mt.mm_title_id where g.genre_id in "+genreQ;
 						}
 						if(typeof req.body.startDate != 'undefined' && typeof req.body.endDate != 'undefined'){
 							var start = req.body.startDate;
 							var end = req.body.endDate;
 							if(req.body.isGenre){
-								_query += " AND ";
+								q += " AND ";
+							} else {
+								q += " WHERE ";
 							}
-							else {
-								_query += " WHERE ";
-							}
-							_query += " i.added_time BETWEEN '"+start+"' AND '"+end+"' ";
-							//_query += " INTO OUTFILE '"+act_file+"' FIELDS ENCLOSED BY '\"'  TERMINATED BY ','  ESCAPED BY ''  LINES TERMINATED BY '\n' ";
+							q += " i.added_time BETWEEN '"+start+"' AND '"+end+"' ";
 						}
-						_query += " limit 5 ";
-						_formatedQuery = mysql.format(_query);
-						DEBUG.log("[QUERY]:"+_query);
+						q += " limit 5 ";
+						_formatedQuery = mysql.format(q);
+						DEBUG.log("[QUERY]:"+q);
 						connection.query(_formatedQuery, function (err, rows) {
 							if(err) console.log(err);
 							var status = "Data not found for selected criteria"
