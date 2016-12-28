@@ -586,6 +586,7 @@ var exportDataMng = {
 							q += " i.added_time BETWEEN '"+start+"' AND '"+end+"' ";
 						}
 						q += " limit 5 ";
+						q += " INTO OUTFILE '"+act_file+"' FIELDS ENCLOSED BY '\"'  TERMINATED BY ','  ESCAPED BY ''  LINES TERMINATED BY '\n' ";
 						_formatedQuery = mysql.format(q);
 						DEBUG.log("[QUERY]:"+q);
 						connection.query(_formatedQuery, function (err, rows) {
@@ -593,16 +594,17 @@ var exportDataMng = {
 							var status = "Data not found for selected criteria"
 							if(typeof rows != 'undefined' && typeof rows.length != 'undefined' && rows.length > 0){
 								status = "File exported successfully";
+								/*
 								saveDateRemort(file_name, headers, rows, connectionProperties, ftp_loc, function(msg){
 									DEBUG.log(msg);
 									DEBUG.log("[DONE - EXPORT INFOHASHES]");
 								});
-								/*
+								*/
 								saveDataRemort(act_file, file_name, connectionProperties, ftp_loc, function(msg){
 									DEBUG.log(msg);
 									DEBUG.log("[DONE - EXPORT INFOHASHES]");
 								});
-								*/
+								
 							}
 							res.json({
 								values: status
