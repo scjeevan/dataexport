@@ -176,8 +176,10 @@ function buildInfohashesQuery(paramArr, isCount, isSchedule){
 	}
 	var dateRange = "";
 	if((typeof paramArr.startDate != 'undefined' && paramArr.startDate.length > 0)&&(typeof paramArr.endDate != 'undefined' && paramArr.endDate.length > 0)){
-		var start = paramArr.startDate;
-		var end = paramArr.endDate;
+		var start = paramArr.startDate.replace(/T/, ' ').replace(/\..+/, '');
+		start = start.substring(0, 10)+' 00:00:00'; 
+		var end = paramArr.endDate.replace(/T/, ' ').replace(/\..+/, '');
+		end = end.substring(0, 10)+' 23:59:59';
 		dateRange = " i.added_time BETWEEN '"+start+"' AND '"+end+"' ";
 	}
 	if(isSchedule){
