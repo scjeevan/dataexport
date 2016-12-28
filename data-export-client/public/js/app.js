@@ -92,8 +92,14 @@ mvpApp.directive('leaf', function($rootScope, makeTree) {
 				setTimeout(function() {
 					element.text('#');
 					scope.$apply(function() {
-						console.log("LOADING");
-						Array.prototype.push.apply(scope.node.children,  makeTree(3, 3));
+						var locationData = makeTree.getData(scope.node.id, scope.node.value);
+						locationData.then(function(result) {
+							var tree = [];
+							angular.forEach(result.data, function (v, k) {
+								this.push({label:v.name, value:v.name, id:'countries',children:[]});
+							}, tree);
+							Array.prototype.push.apply(scope.node.children,  tree);
+						});
 					});
 				}, 500);
 			});
@@ -107,7 +113,7 @@ mvpApp.controller('testController', ['$scope', '$http','Api', 'ivhTreeviewBfs',f
 	$http.post(Api.root_url+ "api/continents").
 	success(function (response, status, headers, config) {
 		angular.forEach(response.data, function (v, k) {
-			this.push({label:v.name, value:v.name, children:[]});
+			this.push({label:v.name, value:v.name, id:'continents',children:[]});
 		}, val);
 	}).
 	error(function (data, status, headers, config) {
@@ -115,7 +121,7 @@ mvpApp.controller('testController', ['$scope', '$http','Api', 'ivhTreeviewBfs',f
 	});
 	$scope.exp.locations = [{
 		label: 'Global',
-		value: 'Global', 
+		value: 'Global',
 		children: val
 	}];
 	
@@ -127,33 +133,20 @@ mvpApp.controller('testController', ['$scope', '$http','Api', 'ivhTreeviewBfs',f
 			selectedNodes.push(node)
 		}
 	});
-	
-	
 }]);
 
-mvpApp.service('makeTree', function() {
-	var t = [ 'Mustachio','Cane','Monacle','Umbrella','Headphones','Top hat','Fedora','Flat cap','Phone','Wallet','Squirrel','Wizard hat','Great sword',   'Playing cards','Post-it notes','Stickers','Tea','Patch'];
-  
-	var makeNode = function(label) {
-		return {
-			label: label,
-			children: []
-		};
+mvpApp.service('makeTree', function($http, Api) {
+	var getData = function(id, value) {
+		return $http({
+			url: Api.root_url+ "api/countries",
+			method: "POST",
+			data: 'continent=' + value,
+			headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
+		}).then(function(result) {
+			return result.data;
+		});
 	};
-	return function(arity, count) {
-		var list = count ? t.slice(0, count) : t.slice(0);
-		var node = makeNode(list.shift())
-			, nodes = [node]
-			, tree = [node];
-		while(list.length && nodes.length) {
-			node = nodes.shift();
-			while(list.length && node.children.length < arity) {
-				node.children.push(makeNode(list.shift()));
-			}
-			Array.prototype.push.apply(nodes, node.children);
-		}
-		return tree;
-	};
+	return { getData: getData };
 });
 
 
