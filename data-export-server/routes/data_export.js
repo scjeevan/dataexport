@@ -431,6 +431,7 @@ var exportDataMng = {
 	countries : function (req, res) {
 		console.log(req);
 		var query = "SELECT Country AS name FROM "+BIGQUERY_DATASET_NAME+".ip_aggregation WHERE Continent = '" + escape(req.body.continent) + "' GROUP BY name ORDER BY name";
+		console.log(query);
 		responseAll(query, res);
 	},
 	regions : function (req, res) {
