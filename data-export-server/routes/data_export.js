@@ -429,8 +429,7 @@ var exportDataMng = {
 		responseAll(query, res);
 	},
 	countries : function (req, res) {
-		console.log(req);
-		var query = "SELECT Country AS name FROM "+BIGQUERY_DATASET_NAME+".ip_aggregation WHERE Continent = '" + escape(req.body.continent) + "' GROUP BY name ORDER BY name";
+		var query = "SELECT Country AS name FROM "+BIGQUERY_DATASET_NAME+".ip_aggregation WHERE Continent = '" + req.body.continent + "' GROUP BY name ORDER BY name";
 		console.log(query);
 		responseAll(query, res);
 	},
