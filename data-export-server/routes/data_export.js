@@ -233,25 +233,28 @@ function buildQuery(paramArr, isCount, isSchedule){
 		dateRange = " t.Date BETWEEN '<start>' AND '<end>' ";
 	}
 	var locations = paramArr.locations;
-	var continents = "";
+	var locQry = "";
 	if(typeof locations != 'undefined' && !locations[0].isSelected && locations[0].children.length > 0){
 		locations[0].children.forEach(function(entry) {
 			if(entry.isSelected){
 				console.log(entry.value);
-				continents += " t.Continent LIKE '"+entry.value + "' OR";
+				locQry += " t.Continent LIKE '"+entry.value + "' OR";
 			} else {
 				if((typeof entry.children != 'undefined') && (entry.children.length > 0)){
+					var countries = "";
 					entry.children.forEach(function(ent) {
 						if(ent.isSelected){
 							console.log(ent.value);
-							//continents += " t.Continent LIKE '"+ent.value + "' OR";
+							countries += " t.Country LIKE '"+ent.value + "' OR";
 						}
 					});
+					countries = countries.substring(0, countries.length - 2);
+					locQry += " t.Continent LIKE '"+entry.value + "' AND (" + countries + ") OR";
 				}
 			}
 			
 		});
-		continents = continents.substring(0, continents.length - 2);
+		locQry = locQry.substring(0, locQry.length - 2);
 	}
 	var appendedParams = 0;
 	var _query = "SELECT ";
@@ -292,9 +295,9 @@ function buildQuery(paramArr, isCount, isSchedule){
 		_query += join + dateRange;
 		appendedParams++;
 	}
-	if(continents != ""){
+	if(locQry != ""){
 		var join = (appendedParams == 0) ? " WHERE ":" AND ";
-		_query += join + continents ;
+		_query += join + locQry ;
 		appendedParams++;
 	}
 	if(!isCount){
