@@ -249,7 +249,9 @@ function buildQuery(paramArr, isCount, isSchedule){
 						}
 					});
 					countries = countries.substring(0, countries.length - 2);
-					locQry += " t.Continent LIKE '"+entry.value + "' AND (" + countries + ") OR";
+					if(countries != ""){
+						locQry += " t.Continent LIKE '"+entry.value + "' AND (" + countries + ") OR";
+					}
 				}
 			}
 			
