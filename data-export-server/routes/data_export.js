@@ -239,7 +239,17 @@ function buildQuery(paramArr, isCount, isSchedule){
 			if(entry.isSelected){
 				console.log(entry.value);
 				continents += " t.Continent LIKE '"+entry.value + "' OR";
+			} else {
+				if((typeof entry.children != 'undefined') && (entry.children.length > 0)){
+					entry.children.forEach(function(ent) {
+						if(ent.isSelected){
+							console.log(ent.value);
+							//continents += " t.Continent LIKE '"+ent.value + "' OR";
+						}
+					});
+				}
 			}
+			
 		});
 		continents = continents.substring(0, continents.length - 2);
 	}
