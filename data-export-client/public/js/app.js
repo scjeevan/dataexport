@@ -78,6 +78,7 @@ mvpApp.config(function(ivhTreeviewOptionsProvider) {
 		twistieExpandedTpl: '-',
 		twistieCollapsedTpl: '+',
 		twistieLeafTpl: '<leaf></leaf>'
+		
 	});
 });
 
@@ -90,18 +91,23 @@ mvpApp.directive('leaf', function($rootScope, makeTree) {
 			element.on('click', function() {
 				element.text('@');
 				setTimeout(function() {
-					element.text('#');
+					element.text('@');
 					scope.$apply(function() {
 						var locationData = makeTree.getData(scope.node.id, scope.node.value);
 						locationData.then(function(result) {
 							var tree = [];
 							angular.forEach(result.data, function (v, k) {
-								this.push({label:v.name, value:v.name, id:'countries',children:[]});
+								this.push({label:v.name, value:v.name, id:'countries'});
 							}, tree);
-							Array.prototype.push.apply(scope.node.children,  tree);
+							if(typeof scope.node.children == 'undefined'){
+								element.text(' ');
+							}
+							else{
+								Array.prototype.push.apply(scope.node.children,  tree);
+							}
 						});
 					});
-				}, 500);
+				}, 1000);
 			});
 		}
 	};
@@ -129,8 +135,9 @@ mvpApp.controller('testController', ['$scope', '$http','Api', 'ivhTreeviewBfs',f
 	ivhTreeviewBfs(val, function(node) {
 		console.log(node);
 		if(node.selected) {
-			console.log(node);
-			selectedNodes.push(node)
+			//console.log(node);
+			selectedNodes.push(node);
+			JSON.stringify(selectedNodes);
 		}
 	});
 }]);
