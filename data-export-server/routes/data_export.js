@@ -240,7 +240,7 @@ function buildQuery(paramArr, isCount, isSchedule){
 				console.log(entry.value);
 				locQry += " t.Continent LIKE '"+entry.value + "' OR";
 			} else {
-				if((typeof entry.children != 'undefined') && (entry.children.length > 0)){
+				if(!entry.isSelected && (typeof entry.children != 'undefined') && (entry.children.length > 0)){
 					var countries = "";
 					entry.children.forEach(function(ent) {
 						if(ent.isSelected){
