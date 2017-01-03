@@ -77,7 +77,7 @@ function buildTitleQuery(paramArr, isCount, isSchedule){
 	
 	var _query = "SELECT ";
 	if(isCount){
-		_query += " COUNT(mt.diggit_title_id) AS c from torrents.mm_titles mt ";
+		_query += " COUNT(mt.diggit_title_id) AS c from torrents.dc_titles mt ";
 	}
 	else{
 		var fields = "";
@@ -89,14 +89,14 @@ function buildTitleQuery(paramArr, isCount, isSchedule){
 		fields = fields.substring(0, fields.length - 1);
 		//_query += " UNION ALL select " + fields;
 		_query = "SELECT " + fields;
-		_query += " from torrents.mm_titles mt left join imdb.episodes ie on ie.imdbID=mt.imdb_id left join imdb.imdb_details id on id.imdbID=mt.imdb_id";
+		_query += " from torrents.dc_titles mt left join imdb.episodes ie on ie.imdbID=mt.imdb_id left join imdb.imdb_details id on id.imdbID=mt.imdb_id";
 	}
 	if(selGroups.length > 0){
 		_query += " left join torrents.groups_infohash_titles gi on gi.diggit_title_id = mt.diggit_title_id ";
 	}
 	if(genreQ.length > 0){
 		appendedParams++;
-		_query += " left join torrents.mm_title_genres g on g.title_id = mt.mm_title_id where g.genre_id in "+genreQ;
+		_query += " left join torrents.dc_title_genres g on g.title_id = mt.dc_title_id where g.genre_id in "+genreQ;
 	}
 	if(selGroups.length > 0){
 		var join = (appendedParams == 0) ? " WHERE ":" AND ";
@@ -143,7 +143,7 @@ function buildInfohashesQuery(paramArr, isCount, isSchedule){
 	}
 	var _query = "SELECT ";
 	if(isCount){
-		_query += " COUNT(i.infohash) AS c from torrents.mm_titles mt left join torrents.infohashes i on i.mm_title_id=mt.mm_title_id";
+		_query += " COUNT(i.infohash) AS c from torrents.dc_titles mt left join torrents.infohashes i on i.dc_title_id=mt.dc_title_id";
 	}
 	else{
 		var fields = "";
@@ -155,14 +155,14 @@ function buildInfohashesQuery(paramArr, isCount, isSchedule){
 		fields = fields.substring(0, fields.length - 1);
 		//_query += " UNION ALL select " + fields;
 		_query = "SELECT " + fields;
-		_query += " from torrents.mm_titles mt left join torrents.infohashes i on i.mm_title_id=mt.mm_title_id";
+		_query += " from torrents.dc_titles mt left join torrents.infohashes i on i.dc_title_id=mt.dc_title_id";
 	}
 	if(selGroups.length > 0){
 		_query += " left join torrents.group_infohashes gi on gi.infohash=i.infohash ";
 	}
 	if(genreQ.length > 0){
 		appendedParams++;
-		_query += " left join torrents.mm_title_genres g on g.title_id = mt.mm_title_id where g.genre_id in "+genreQ;
+		_query += " left join torrents.dc_title_genres g on g.title_id = mt.dc_title_id where g.genre_id in "+genreQ;
 	}
 	if(selTitles.length > 0){
 		var join = (appendedParams == 0) ? " WHERE ":" AND ";
@@ -276,7 +276,7 @@ function buildQuery(paramArr, isCount, isSchedule){
 	}
 	_query += " FROM "+BIGQUERY_DATASET_NAME+".Diggit_IP AS t ";
 	if(selTitles.length > 0 && genreQ.length > 0){ /*** NEED TO BE MODIFIED ***/
-		_query += " JOIN "+BIGQUERY_DATASET_NAME+".title_title_id AS tti ON t.TitleID = tti.title_id JOIN "+BIGQUERY_DATASET_NAME+".mm_title_genres AS gt ON t.TitleID = gt.title_id WHERE tti.title IN "+selTitles+" AND gt.genre_id IN "+genreQ+" ";
+		_query += " JOIN "+BIGQUERY_DATASET_NAME+".title_title_id AS tti ON t.TitleID = tti.title_id JOIN "+BIGQUERY_DATASET_NAME+".dc_title_genres AS gt ON t.TitleID = gt.title_id WHERE tti.title IN "+selTitles+" AND gt.genre_id IN "+genreQ+" ";
 		appendedParams++;
 	}
 	else if(selTitles.length > 0 && genreQ.length == 0){
@@ -284,7 +284,7 @@ function buildQuery(paramArr, isCount, isSchedule){
 		appendedParams++;
 	}
 	else if(genreQ.length > 0 && selTitles.length == 0){
-		_query += " JOIN "+BIGQUERY_DATASET_NAME+".mm_title_genres AS gt ON t.TitleID = gt.title_id WHERE gt.genre_id IN "+genreQ+" ";
+		_query += " JOIN "+BIGQUERY_DATASET_NAME+".dc_title_genres AS gt ON t.TitleID = gt.title_id WHERE gt.genre_id IN "+genreQ+" ";
 		appendedParams++;
 	}
 	if(selGroups.length > 0){
@@ -564,7 +564,7 @@ var exportDataMng = {
 					if(req.body.table == 'Diggit_IP'){
 						file_name = file_name + "_IP";
 						if(req.body.isGenre){
-							_query += " FROM ["+BIGQUERY_DATASET_NAME+".Diggit_IP] AS t JOIN ["+BIGQUERY_DATASET_NAME+".mm_title_genres] AS gt ON t.TitleID = gt.title_id WHERE t.Date BETWEEN '"+start+"' AND '"+end+"' AND gt.genre_id IN "+genreQ; // LIMIT 10000
+							_query += " FROM ["+BIGQUERY_DATASET_NAME+".Diggit_IP] AS t JOIN ["+BIGQUERY_DATASET_NAME+".dc_title_genres] AS gt ON t.TitleID = gt.title_id WHERE t.Date BETWEEN '"+start+"' AND '"+end+"' AND gt.genre_id IN "+genreQ; // LIMIT 10000
 						} else {
 							_query += " FROM "+BIGQUERY_DATASET_NAME+".Diggit_IP WHERE Date BETWEEN '"+start+"' AND '"+end+"' "; // LIMIT 10000
 						}
@@ -587,9 +587,9 @@ var exportDataMng = {
 						}
 						fields = fields.substring(0, fields.length - 1);
 						var q = "SELECT " + fields;
-						q += " from torrents.mm_titles mt left join torrents.infohashes i on i.mm_title_id=mt.mm_title_id";
+						q += " from torrents.dc_titles mt left join torrents.infohashes i on i.dc_title_id=mt.dc_title_id";
 						if(req.body.isGenre){
-							q += " left join torrents.mm_title_genres g on g.title_id = mt.mm_title_id where g.genre_id in "+genreQ;
+							q += " left join torrents.dc_title_genres g on g.title_id = mt.dc_title_id where g.genre_id in "+genreQ;
 						}
 						if(typeof req.body.startDate != 'undefined' && typeof req.body.endDate != 'undefined'){
 							var start = req.body.startDate;
@@ -637,9 +637,9 @@ var exportDataMng = {
 						}
 						fields = fields.substring(0, fields.length - 1);
 						var q = "SELECT " + fields;
-						q += " from torrents.mm_titles mt left join imdb.episodes ie on ie.imdbID=mt.imdb_id left join imdb.imdb_details id on id.imdbID=mt.imdb_id";
+						q += " from torrents.dc_titles mt left join imdb.episodes ie on ie.imdbID=mt.imdb_id left join imdb.imdb_details id on id.imdbID=mt.imdb_id";
 						if(req.body.isGenre){
-							q += " left join torrents.mm_title_genres g on g.title_id = mt.mm_title_id where g.genre_id in "+genreQ;
+							q += " left join torrents.dc_title_genres g on g.title_id = mt.dc_title_id where g.genre_id in "+genreQ;
 						}
 						q += " limit 5 ";
 						_formatedQuery = mysql.format(q);
@@ -955,7 +955,7 @@ var exportDataMng = {
 		var jsonQueries = "";
 		if(req.body.table=='Diggit_IP'){
 			if(req.body.isGenre){
-				_query += " FROM ["+BIGQUERY_DATASET_NAME+".Diggit_IP] AS t JOIN ["+BIGQUERY_DATASET_NAME+".mm_title_genres] AS gt ON t.TitleID = gt.title_id WHERE t.Date BETWEEN '<start>' AND '<end>' AND gt.genre_id IN "+genreQ;
+				_query += " FROM ["+BIGQUERY_DATASET_NAME+".Diggit_IP] AS t JOIN ["+BIGQUERY_DATASET_NAME+".dc_title_genres] AS gt ON t.TitleID = gt.title_id WHERE t.Date BETWEEN '<start>' AND '<end>' AND gt.genre_id IN "+genreQ;
 			} else {
 				_query += " FROM "+BIGQUERY_DATASET_NAME+".Diggit_IP WHERE Date BETWEEN '<start>' AND '<end>' ";
 			}
@@ -966,9 +966,9 @@ var exportDataMng = {
 			jsonQueries = JSON.stringify(queries);
 		}
 		else if(req.body.table == 'infohashes'){
-			_query += " UNION ALL select i.infohash,mt.diggit_title_id, i.file_name,i.network,i.file_size,i.media_format,i.quality,i.audio_language, i.subtitle_language,i.created_time,i.added_time,i.episode_title,i.added_by,i.languages,i.verified, i.resolution,i.aspect_ratio,i.frame_rate,i.subtitles,i.bitrate from  torrents.mm_titles mt left join torrents.infohashes i on i.mm_title_id=mt.mm_title_id WHERE i.added_time BETWEEN '<start>' AND '<end>' ";
+			_query += " UNION ALL select i.infohash,mt.diggit_title_id, i.file_name,i.network,i.file_size,i.media_format,i.quality,i.audio_language, i.subtitle_language,i.created_time,i.added_time,i.episode_title,i.added_by,i.languages,i.verified, i.resolution,i.aspect_ratio,i.frame_rate,i.subtitles,i.bitrate from  torrents.dc_titles mt left join torrents.infohashes i on i.dc_title_id=mt.dc_title_id WHERE i.added_time BETWEEN '<start>' AND '<end>' ";
 			if(req.body.isGenre){
-				_query += " left join torrents.mm_title_genres g on g.title_id = mt.mm_title_id where g.genre_id in "+genreQ;
+				_query += " left join torrents.dc_title_genres g on g.title_id = mt.dc_title_id where g.genre_id in "+genreQ;
 			}
 			//_query += " limit 5 ";
 			var fields = {INFOHASHES:req.body.columns};
@@ -977,9 +977,9 @@ var exportDataMng = {
 			jsonQueries = JSON.stringify(queries);
 		}
 		else{
-			_query += " UNION ALL select mt.diggit_title_id as diggit_id,mt.title as title,mt.season ,mt.episode,mt.studio,mt.category, mt.genre,mt.mpaa_rating,mt.imdb_id,mt.episode_imdb_id, ie.Year as episode_Year,ie.Rating as episode_Rating,ie.Runtime as episode_Runtime ,ie.Genre as episode_Genre, ie.Released as episode_Released,ie.Season as episode_Season ,ie.Title as episode_title,ie.Director as episode_Director,ie.Writer as episode_Writer,ie.Cast as episode_Cast, ie.Metacritic as episode_Metacritic,ie.imdbRating as episode_imdbRating,ie.imdbVotes as episode_imdbVotes, ie.Poster as episode_Poster ,ie.Plot as episode_Plot,ie.FullPlot as episode_FullPlot, ie.Language as episode_Language,ie.Country as episode_Country,ie.Awards as episode_Awards, id.Year as Year,id.Rating,id.Runtime,id.Genre,id.Released,id.Director,id.Writer,id.Cast,id.Metacritic,id.imdbRating,   id.imdbVotes,id.Plot,id.FullPlot,id.Language,id.Country from torrents.mm_titles mt left join imdb.episodes ie on ie.imdbID=mt.imdb_id left join imdb.imdb_details id on id.imdbID=mt.imdb_id";
+			_query += " UNION ALL select mt.diggit_title_id as diggit_id,mt.title as title,mt.season ,mt.episode,mt.studio,mt.category, mt.genre,mt.mpaa_rating,mt.imdb_id,mt.episode_imdb_id, ie.Year as episode_Year,ie.Rating as episode_Rating,ie.Runtime as episode_Runtime ,ie.Genre as episode_Genre, ie.Released as episode_Released,ie.Season as episode_Season ,ie.Title as episode_title,ie.Director as episode_Director,ie.Writer as episode_Writer,ie.Cast as episode_Cast, ie.Metacritic as episode_Metacritic,ie.imdbRating as episode_imdbRating,ie.imdbVotes as episode_imdbVotes, ie.Poster as episode_Poster ,ie.Plot as episode_Plot,ie.FullPlot as episode_FullPlot, ie.Language as episode_Language,ie.Country as episode_Country,ie.Awards as episode_Awards, id.Year as Year,id.Rating,id.Runtime,id.Genre,id.Released,id.Director,id.Writer,id.Cast,id.Metacritic,id.imdbRating,   id.imdbVotes,id.Plot,id.FullPlot,id.Language,id.Country from torrents.dc_titles mt left join imdb.episodes ie on ie.imdbID=mt.imdb_id left join imdb.imdb_details id on id.imdbID=mt.imdb_id";
 			if(req.body.isGenre){
-				_query += " left join torrents.mm_title_genres g on g.title_id = mt.mm_title_id where g.genre_id in "+genreQ;
+				_query += " left join torrents.dc_title_genres g on g.title_id = mt.dc_title_id where g.genre_id in "+genreQ;
 			}
 			//_query += " limit 5 ";
 			var fields = {TITLE:req.body.columns};
