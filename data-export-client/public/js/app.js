@@ -718,8 +718,20 @@ mvpApp.controller('dataExportFilter', ['ivhTreeviewBfs', '$window', '$scope', '$
 	});
 	
 	$scope.submitForm = function() {
-		if(typeof $scope.exp.columns == 'undefined' || $scope.exp.columns.length == 0){
-			alert("Please select atleast one table field");
+		if(typeof $scope.exp.checked_ip != 'undefined' || $scope.exp.checked_ip.length != 0){
+			if(typeof $scope.exp.columns == 'undefined' || $scope.exp.columns.length == 0){
+				alert("Please select atleast one table field");
+			}
+		}
+		else if(typeof $scope.exp.checked_title != 'undefined' || $scope.exp.checked_title.length != 0){
+			if(typeof $scope.exp.titleColumns == 'undefined' || $scope.exp.titleColumns.length == 0){
+				alert("Please select atleast one table field");
+			}
+		}
+		else if(typeof $scope.exp.checked_infohashes != 'undefined' || $scope.exp.checked_infohashes.length != 0){
+			if(typeof $scope.exp.infohashesColumns == 'undefined' || $scope.exp.infohashesColumns.length == 0){
+				alert("Please select atleast one table field");
+			}
 		}
 		else if(typeof $scope.exp.export_type == 'undefined' || $scope.exp.export_type.length == 0){
 			alert("Please select Export Type");

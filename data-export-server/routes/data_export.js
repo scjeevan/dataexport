@@ -803,12 +803,6 @@ var exportDataMng = {
 							};
 							var exportIP = function(callback) {
 								if(req.body.checked_ip){
-									console.log("CHECKED");
-								}
-								else{
-									console.log("UNCHECKED");
-								}
-								/*
 								DEBUG.log("[START - EXPORT DIGGIT_IP]");
 								_query += " AND IP!='Peer IP'";
 								var exportCommand = process.env.DATAEXPORT_GQ_SCRIPT_PATH + ' -dataset '+BIGQUERY_DATASET_NAME+' -query "' + _query + '" -download_local -local_path '+process.env.DATAEXPORT_CSV_SAVE_PATH+' -bucket_name diggitbucket -project_id '+process.env.DATAEXPORT_GQ_PROJECT_ID+' -sftp_transfer -ftp_user "'+connectionProperties.user+'"  -ftp_pass \''+connectionProperties.password+'\' -ftp_server "'+connectionProperties.host+'" -ftp_port '+connectionProperties.port+' -export_file_name '+fileName+'';
@@ -830,9 +824,10 @@ var exportDataMng = {
 									callback(null);
 								});
 								*/
+								}
 							};
 							var exportInfohashes = function(callback) {
-								if(req.body.checked_ip){
+								if(req.body.checked_infohashes){
 									console.log("INFO-CHECKED");
 								}
 								else{
@@ -864,7 +859,7 @@ var exportDataMng = {
 								*/
 							};
 							var exportTitle = function(callback) {
-								if(req.body.checked_ip){
+								if(req.body.checked_title){
 									console.log("TITLE-CHECKED");
 								}
 								else{
