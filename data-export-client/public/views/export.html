@@ -145,27 +145,30 @@
 													<b class="required">Fields</b>
 													<div class="row">
 													<div class="column">
-													<b class="required">Title</b>
+													
 													<div class="" style="max-height:150px; padding:5px; overflow:auto;">
-													<label style="font-weight: bold;"><input type="checkbox" checklist-model="exp.columns_all_title" checklist-value="1" ng-click="toggleAllTitleColumns()" class="ng-scope ng-pristine ng-untouched ng-valid"> Select All</label>
+													<label style="font-weight: bold;"><input type="checkbox" ng-model="checked_title" ng-value="title" ng-init="checked_title=true" class="ng-scope ng-pristine ng-untouched ng-valid"> Title</label><br/>
+													<label style="font-weight: bold;"><input type="checkbox" checklist-model="exp.columns_all_title" checklist-value="1" ng-click="toggleAllTitleColumns()" ng-disabled="!checked_title" class="ng-scope ng-pristine ng-untouched ng-valid"> Select All Fields</label>
 													<div class="checkbox" ng-repeat="tColumn in titleColumns">
-														<label><input type="checkbox" checklist-model="exp.tColumns" checklist-value="tColumn" class="ng-scope ng-pristine ng-untouched ng-valid checkbox_ck"> {{tColumn}}</label>
+														<label><input type="checkbox" checklist-model="exp.tColumns" checklist-value="tColumn" ng-disabled="!checked_title" class="ng-scope ng-pristine ng-untouched ng-valid checkbox_ck"> {{tColumn}}</label>
 													</div>
 													</div>
 													</div>
 													<div class="column">
-													<b class="required">Infohashes</b>
+													
 													<div class="" style="max-height:150px; padding:5px; overflow:auto;">
-													<label style="font-weight: bold;"><input type="checkbox" checklist-model="exp.columns_all_infohash" checklist-value="1" ng-click="toggleAllInfohashColumns()" class="ng-scope ng-pristine ng-untouched ng-valid"> Select All</label>
+													<label style="font-weight: bold;"><input type="checkbox" checklist-model="exp.columns_all_infohash" checklist-value="1" ng-click="toggleAllInfohashColumns()" class="ng-scope ng-pristine ng-untouched ng-valid"> Infohashes</label><br/>
+													<label style="font-weight: bold;"><input type="checkbox" checklist-model="exp.columns_all_infohash" checklist-value="1" ng-click="toggleAllInfohashColumns()" class="ng-scope ng-pristine ng-untouched ng-valid"> Select All Fields</label>
 													<div class="checkbox" ng-repeat="infColumn in infohashesColumns">
 														<label><input type="checkbox" checklist-model="exp.infColumns" checklist-value="infColumn" class="ng-scope ng-pristine ng-untouched ng-valid checkbox_ck"> {{infColumn}}</label>
 													</div>
 													</div>
 													</div>
 													<div class="column">
-													<b class="required">Diggit_IP</b>
+													
 													<div class="" style="max-height:150px; padding:5px; overflow:auto;">
-													<label style="font-weight: bold;"><input type="checkbox" checklist-model="exp.columns_all" checklist-value="1" ng-click="toggleAllColumns()" class="ng-scope ng-pristine ng-untouched ng-valid"> Select All</label>
+													<label style="font-weight: bold;"><input type="checkbox" checklist-model="exp.columns_all" checklist-value="1" ng-click="toggleAllColumns()" class="ng-scope ng-pristine ng-untouched ng-valid"> Diggit_IP</label><br/>
+													<label style="font-weight: bold;"><input type="checkbox" checklist-model="exp.columns_all" checklist-value="1" ng-click="toggleAllColumns()" class="ng-scope ng-pristine ng-untouched ng-valid"> Select All Fields</label>
 													<div class="checkbox" ng-repeat="column in columns">
 														<label><input type="checkbox" checklist-model="exp.columns" checklist-value="column" class="ng-scope ng-pristine ng-untouched ng-valid checkbox_ck"> {{column}}</label>
 													</div>

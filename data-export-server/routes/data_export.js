@@ -802,6 +802,13 @@ var exportDataMng = {
 								password: rows[0].password
 							};
 							var exportIP = function(callback) {
+								if(req.body.checked_ip){
+									console.log("CHECKED");
+								}
+								else{
+									console.log("UNCHECKED");
+								}
+								/*
 								DEBUG.log("[START - EXPORT DIGGIT_IP]");
 								_query += " AND IP!='Peer IP'";
 								var exportCommand = process.env.DATAEXPORT_GQ_SCRIPT_PATH + ' -dataset '+BIGQUERY_DATASET_NAME+' -query "' + _query + '" -download_local -local_path '+process.env.DATAEXPORT_CSV_SAVE_PATH+' -bucket_name diggitbucket -project_id '+process.env.DATAEXPORT_GQ_PROJECT_ID+' -sftp_transfer -ftp_user "'+connectionProperties.user+'"  -ftp_pass \''+connectionProperties.password+'\' -ftp_server "'+connectionProperties.host+'" -ftp_port '+connectionProperties.port+' -export_file_name '+fileName+'';
@@ -825,6 +832,13 @@ var exportDataMng = {
 								*/
 							};
 							var exportInfohashes = function(callback) {
+								if(req.body.checked_ip){
+									console.log("INFO-CHECKED");
+								}
+								else{
+									console.log("INFO-UNCHECKED");
+								}
+								/*
 								DEBUG.log("[START - EXPORT INFOHASHES]");
 								//_tquery += "INTO OUTFILE '/tmp/EXPORT_TitlesDetails_21oct2016.csv' FIELDS ENCLOSED BY '\"'  TERMINATED BY ','  ESCAPED BY ''  LINES TERMINATED BY '\n'"
 								var _tformatedQuery = mysql.format(_tquery);
@@ -847,9 +861,16 @@ var exportDataMng = {
 										});
 									}
 								});
-								
+								*/
 							};
 							var exportTitle = function(callback) {
+								if(req.body.checked_ip){
+									console.log("TITLE-CHECKED");
+								}
+								else{
+									console.log("TITLE-UNCHECKED");
+								}
+								/*
 								DEBUG.log("[START - EXPORT TITLE]");
 								var iHeaders = [];
 								for (var i in req.body.tColumns) {
@@ -870,6 +891,7 @@ var exportDataMng = {
 										});
 									}
 								});
+								*/
 							};
 							exportTitle(exportInfohashes(exportIP(function(msg){
 								DEBUG.log("completed");
