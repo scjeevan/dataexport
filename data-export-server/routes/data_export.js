@@ -912,10 +912,25 @@ var exportDataMng = {
 					}
 					selTitles = selTitles.substring(0, selTitles.length - 1) + ")";
 				}
-				var fields = {DIGGIT_IP:req.body.columns, TITLE:req.body.tColumns, INFOHASHES:req.body.infColumns};
+				var fields = {};
+				var queries = {}
+				if(req.body.checked_ip){
+					fields["DIGGIT_IP"] = req.body.columns;
+					queries["DIGGIT_IP"] = _query;
+				}
+				if(req.body.checked_infohashes){
+					fields["INFOHASHES"] = req.body.infColumns;
+					queries["INFOHASHES"] = _tquery;
+				}
+				if(req.body.checked_title){
+					fields["TITLE"] = req.body.tColumns;
+					queries["TITLE"] = _iquery;
+				}
 				var jsonFields = JSON.stringify(fields);
-				var queries = {DIGGIT_IP:_query, TITLE:_iquery, INFOHASHES:_tquery};
 				var jsonQueries = JSON.stringify(queries);
+				console.log(jsonFields);
+				console.log(jsonQueries);
+				/*
 				var _inQuery = "INSERT INTO data_export_schedules (title, frequency,table_name,selected_columns,added_date,ftp_account_id, filename, file_format, titles, query) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 				var _formatedQuery = mysql.format(_inQuery, [scheduleTitle, frequency, 'Diggit_IP', jsonFields, now, ftp_account_id, fileName, 1, selTitles, jsonQueries]);
 				db.getConnection(function(err, connection){
@@ -926,6 +941,7 @@ var exportDataMng = {
 					});
 					connection.release();
 				});
+				*/
 			}
 		}
 		else{
